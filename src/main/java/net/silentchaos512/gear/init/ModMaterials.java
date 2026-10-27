@@ -43,9 +43,13 @@ public class ModMaterials implements IPhasedInitializer {
         PartRegistry.putPart(new PartMain(getPath("main_netherwood"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_crimson_iron"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_crimson_steel"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartMain(getPath("main_end_stone"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartMain(getPath("main_sandstone"), PartOrigins.BUILTIN_CORE));
 
         for (ToolRods rod : ToolRods.values())
             PartRegistry.putPart(rod.getPart());
+        PartRegistry.putPart(new PartRod(getPath("rod_end_stone"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartRod(getPath("rod_sandstone"), PartOrigins.BUILTIN_CORE));
 
         for (TipUpgrades tip : TipUpgrades.values())
             PartRegistry.putPart(tip.getPart());
@@ -57,6 +61,7 @@ public class ModMaterials implements IPhasedInitializer {
         bowstringString = PartRegistry.putPart(new PartBowstring(getPath("bowstring_string"), PartOrigins.BUILTIN_CORE));
         bowstringSinew = PartRegistry.putPart(new PartBowstring(getPath("bowstring_sinew"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartBowstring(getPath("bowstring_flax"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartBowstring(getPath("bowstring_vine"), PartOrigins.BUILTIN_CORE));
 
         for (MiscUpgrades upgrade : MiscUpgrades.values())
             PartRegistry.putPart(upgrade.getPart());

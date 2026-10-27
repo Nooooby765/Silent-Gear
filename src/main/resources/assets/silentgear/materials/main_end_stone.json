@@ -1,0 +1,43 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value": 1164},
+        {"name": "armor_durability", "value":   15},
+        {"name": "enchantability",   "value":   10},
+        {"name": "harvest_level",    "value":    1},
+        {"name": "harvest_speed",    "value":    7},
+        {"name": "melee_damage",     "value":    2},
+        {"name": "magic_damage",     "value":    3},
+        {"name": "attack_speed",     "value":  0.1},
+        {"name": "armor",            "value":   15},
+        {"name": "armor_toughness",  "value":    1},
+        {"name": "magic_armor",      "value":    6},
+        {"name": "ranged_damage",    "value":    0},
+        {"name": "ranged_speed",     "value":  0.0},
+        {"name": "rarity",           "value":   32}
+    ],
+    "traits": [
+        {"name": "silentgear:jagged", "level": 3},
+        {"name": "silentgear:ancient", "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "minecraft:end_stone",
+            "data": 0,
+            "oredict": "endstone"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "FFFFCC",
+            "broken_color": "FFFFCC"
+        },
+        "name_color": "light_purple"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 3,
+        "tool_blacklist": []
+    }
+}
