@@ -21,6 +21,7 @@ public final class PartRegistry {
     private static ImmutableList<PartMain> visibleMains = null;
     private static ImmutableList<PartRod> visibleRods = null;
     private static Map<String, ItemPart> STACK_TO_PART = new HashMap<>();
+    private static final Set<String> STACK_TO_PART_MISSES = new HashSet<>();
     @Getter private static int highestMainPartTier = 0;
 
     private PartRegistry() {
@@ -63,10 +64,16 @@ public final class PartRegistry {
         String key = stack.getItem().getRegistryName() + "@" + stack.getItemDamage();
         if (STACK_TO_PART.containsKey(key))
             return STACK_TO_PART.get(key);
+        if (STACK_TO_PART_MISSES.contains(key))
+            return null;
 
         // Match exact item first, then ore dictionary
         ItemPart part = getPart(key, stack, false);
-        return part != null ? part : getPart(key, stack, true);
+        if (part == null)
+            part = getPart(key, stack, true);
+        if (part == null)
+            STACK_TO_PART_MISSES.add(key);
+        return part;
     }
 
     @Nullable
@@ -90,6 +97,10 @@ public final class PartRegistry {
         if (map.containsKey(key))
             throw new IllegalArgumentException("Already have a part with key " + part.registryName);
         map.put(key, part);
+
+        // Cached views are stale as soon as another part is registered (add-ons register parts
+        // during pre-init, possibly after another mod already queried a view).
+        resetCaches();
 
         if (part instanceof PartMain && part.getTier() > highestMainPartTier)
             highestMainPartTier = part.getTier();
@@ -156,8 +167,16 @@ public final class PartRegistry {
     }
 
     public static void resetVisiblePartCaches() {
+        resetCaches();
+    }
+
+    private static void resetCaches() {
+        mains = null;
+        rods = null;
         visibleMains = null;
         visibleRods = null;
+        STACK_TO_PART.clear();
+        STACK_TO_PART_MISSES.clear();
     }
 
     public static void getDebugLines(List<String> list) {

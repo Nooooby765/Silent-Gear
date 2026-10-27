@@ -34,6 +34,7 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
     private Minecraft mc;
     private final TextureManager renderEngine;
     private final TextureAtlasSprite[] destroyBlockIcons = new TextureAtlasSprite[10];
+    private int lastCleanupTick = -1;
 
     private ExtraBlockBreakHandler(Minecraft mcIn) {
         this.mc = mcIn;
@@ -43,6 +44,10 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
 
     @SubscribeEvent
     public void renderBlockBreakAnim(RenderWorldLastEvent event) {
+        // Nothing to draw most of the time: skip the GL state changes and texture binding
+        if (this.extraDamagedBlocks.isEmpty())
+            return;
+
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         this.mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
@@ -87,7 +92,9 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
         double d4 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double) partialTicks;
         double d5 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double) partialTicks;
 
-        if (this.mc.world.getWorldTime() % 20 == 0) {
+        if (this.mc.world.getWorldTime() % 20 == 0
+                && this.mc.world.getWorldTime() != this.lastCleanupTick) {
+            this.lastCleanupTick = (int) this.mc.world.getWorldTime();
             this.cleanupExtraDamagedBlocks();
         }
 
@@ -106,8 +113,9 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
                     double d6 = (double) blockpos.getX() - d3;
                     double d7 = (double) blockpos.getY() - d4;
                     double d8 = (double) blockpos.getZ() - d5;
-                    Block block = this.mc.world.getBlockState(blockpos).getBlock();
-                    TileEntity te = this.mc.world.getTileEntity(blockpos);
+                    IBlockState iblockstate = mc.world.getBlockState(blockpos);
+                    Block block = iblockstate.getBlock();
+                    TileEntity te = block.hasTileEntity(iblockstate) ? mc.world.getTileEntity(blockpos) : null;
                     boolean hasBreak = block instanceof BlockChest || block instanceof BlockEnderChest || block instanceof BlockSign || block instanceof BlockSkull;
                     if (!hasBreak)
                         hasBreak = te != null && te.canRenderBreaking();
@@ -116,8 +124,6 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
                         if (d6 * d6 + d7 * d7 + d8 * d8 > 16384) {
                             this.extraDamagedBlocks.remove(entry.getKey());
                         } else {
-                            IBlockState iblockstate = mc.world.getBlockState(blockpos);
-
                             if (iblockstate.getMaterial() != Material.AIR) {
                                 int k1 = destroyblockprogress.getPartialBlockDamage();
                                 TextureAtlasSprite textureatlassprite = this.destroyBlockIcons[k1];
@@ -156,6 +162,9 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
     }
 
     public void sendBlockBreakProgress(int breakerId, BlockPos[] positions, int progress) {
+        if (this.mc.world == null)
+            return;
+
         if (positions.length > 0 && progress >= 0 && progress < 10) {
             DestroyExtraBlocksProgress destroyextrablocksprogress = new DestroyExtraBlocksProgress(breakerId, positions);
             this.extraDamagedBlocks.put(Integer.valueOf(breakerId), destroyextrablocksprogress);
@@ -192,11 +201,7 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
 
         public void setPartialBlockDamage(int damage) {
 
-            if (damage > 10) {
-                damage = 10;
-            }
-
-            this.partialBlockProgress = damage;
+            this.partialBlockProgress = net.minecraft.util.math.MathHelper.clamp(damage, 0, 9);
         }
 
         public int getPartialBlockDamage() {

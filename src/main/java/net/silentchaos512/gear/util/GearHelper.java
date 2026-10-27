@@ -1,5 +1,6 @@
 package net.silentchaos512.gear.util;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -31,7 +32,6 @@ import net.silentchaos512.gear.config.Config;
 import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.init.ModMaterials;
-import net.silentchaos512.gear.item.MiscUpgrades;
 import net.silentchaos512.gear.item.ToolRods;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.registry.RecipeMaker;
@@ -76,24 +76,27 @@ public final class GearHelper {
     }
 
     public static Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+        // Gear tools only provide main-hand modifiers. ItemStack#getTooltip queries all six slots
+        // every time it is rebuilt, so avoid creating six multimaps for the other five.
+        if (slot != EntityEquipmentSlot.MAINHAND)
+            return ImmutableMultimap.of();
+
         @SuppressWarnings("deprecation")
         Multimap<String, AttributeModifier> map = stack.getItem().getItemAttributeModifiers(slot);
 
-        if (slot == EntityEquipmentSlot.MAINHAND) {
-            // Melee Damage
-            String key = SharedMonsterAttributes.ATTACK_DAMAGE.getName();
-            float value = getMeleeDamageModifier(stack);
-            replaceAttributeModifierInMap(map, key, value);
+        // Melee Damage
+        String key = SharedMonsterAttributes.ATTACK_DAMAGE.getName();
+        float value = getMeleeDamageModifier(stack);
+        replaceAttributeModifierInMap(map, key, value);
 
-            // Melee Speed
-            key = SharedMonsterAttributes.ATTACK_SPEED.getName();
-            value = getAttackSpeedModifier(stack);
-            replaceAttributeModifierInMap(map, key, value);
+        // Melee Speed
+        key = SharedMonsterAttributes.ATTACK_SPEED.getName();
+        value = getAttackSpeedModifier(stack);
+        replaceAttributeModifierInMap(map, key, value);
 
-            // Reach distance
-            map.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(REACH_MODIFIER_UUID, "Gear reach",
-                    GearData.getStat(stack, CommonItemStats.REACH_DISTANCE), 0));
-        }
+        // Reach distance
+        map.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(REACH_MODIFIER_UUID, "Gear reach",
+                GearData.getStat(stack, CommonItemStats.REACH_DISTANCE), 0));
 
         return map;
     }
@@ -122,7 +125,7 @@ public final class GearHelper {
     public static void attemptDamage(ItemStack stack, int amount, EntityLivingBase entityLiving) {
         if (isUnbreakable(stack) || (entityLiving instanceof EntityPlayer && ((EntityPlayer) entityLiving).capabilities.isCreativeMode))
             return;
-        final boolean canBreakPermanently = Config.gearBreaksPermanently || GearData.hasPart(stack, MiscUpgrades.RED_CARD.getPart());
+        final boolean canBreakPermanently = Config.gearBreaksPermanently || GearData.hasRedCard(stack);
 
         EntityPlayerMP player = entityLiving instanceof EntityPlayerMP ? (EntityPlayerMP) entityLiving : null;
         final int preTraitAmount = amount;
@@ -180,7 +183,7 @@ public final class GearHelper {
     // Used by setDamage in gear items to prevent other mods from breaking them
     public static int calcDamageClamped(ItemStack stack, int damage) {
         if (isUnbreakable(stack)) return 0;
-        final boolean canBreakPermanently = Config.gearBreaksPermanently || GearData.hasPart(stack, MiscUpgrades.RED_CARD.getPart());
+        final boolean canBreakPermanently = Config.gearBreaksPermanently || GearData.hasRedCard(stack);
 
         if (!canBreakPermanently) {
             if (damage > stack.getItemDamage()) damage = Math.min(stack.getMaxDamage(), damage);
@@ -195,7 +198,7 @@ public final class GearHelper {
         // return true;
         // }
 
-        if (Config.gearBreaksPermanently || GearData.hasPart(stack, MiscUpgrades.RED_CARD.getPart()))
+        if (Config.gearBreaksPermanently || GearData.hasRedCard(stack))
             return false;
 
         int maxDamage = stack.getMaxDamage();

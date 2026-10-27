@@ -165,7 +165,9 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        int maxDamageFactor = GearData.getStatInt(stack, CommonItemStats.ARMOR_DURABILITY);
+        // Never allow a zero/negative max damage: that would make the armor unbreakable and
+        // produce a 0/0 damage ratio in stat recalculation.
+        int maxDamageFactor = Math.max(1, GearData.getStatInt(stack, CommonItemStats.ARMOR_DURABILITY));
         return MAX_DAMAGE_ARRAY[armorType.getIndex()] * maxDamageFactor;
     }
 

@@ -56,10 +56,14 @@ public class MessageExtraBlockBreak extends MessageSL {
 
     @Override
     public IMessage handleMessage(MessageContext context) {
-        BlockPos[] positions = new BlockPos[this.numBlocks];
-        for (int i = 0; i < this.numBlocks; ++i)
-            positions[i] = new BlockPos(this.positions[i][0], this.positions[i][1], this.positions[i][2]);
-        ExtraBlockBreakHandler.INSTANCE.sendBlockBreakProgress(this.entityID, positions, this.progress);
+        // Network handlers run on the netty thread; client render state must only be touched on
+        // the client thread.
+        net.minecraft.client.Minecraft.getMinecraft().addScheduledTask(() -> {
+            BlockPos[] positions = new BlockPos[this.numBlocks];
+            for (int i = 0; i < this.numBlocks; ++i)
+                positions[i] = new BlockPos(this.positions[i][0], this.positions[i][1], this.positions[i][2]);
+            ExtraBlockBreakHandler.INSTANCE.sendBlockBreakProgress(this.entityID, positions, this.progress);
+        });
 
         return null;
     }

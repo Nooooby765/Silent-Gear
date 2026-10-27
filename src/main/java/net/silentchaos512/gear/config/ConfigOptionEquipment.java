@@ -16,6 +16,7 @@ import net.silentchaos512.gear.api.stats.StatInstance.Operation;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -91,23 +92,26 @@ public class ConfigOptionEquipment {
     private void loadJsonResources() {
         // Main resource file in JAR
         String path = "assets/" + SilentGear.MOD_ID + "/equipment/" + item.getGearClass() + ".json";
-        SilentGear.log.info("Loading equipment asset file: " + path);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(path), "UTF-8"))) {
-            readResourceFile(reader);
-        } catch (Exception e) {
-            SilentGear.log.fatal("Error loading resource file! Either Silent screwed up or the JAR has been modified.");
-            SilentGear.log.fatal("    item: " + item);
-            SilentGear.log.fatal("    item type: " + item.getGearClass());
-            e.printStackTrace();
+        InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(path);
+        if (resourceStream == null) {
+            SilentGear.LOGGER.error("Missing equipment data file '{}' (item type {})", path, item.getGearClass());
+        } else {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceStream, StandardCharsets.UTF_8))) {
+                readResourceFile(reader);
+            } catch (Exception e) {
+                SilentGear.LOGGER.error("Error reading equipment data file '{}'", path, e);
+            }
         }
 
-        // Override in config folder
-        try (BufferedReader reader = new BufferedReader(new FileReader(new File(Config.INSTANCE.directory.getPath(), "equipment/" + item.getGearClass() + ".json")))) {
+        // Override in config folder (optional)
+        File overrideFile = new File(Config.INSTANCE.getDirectory(), "equipment/" + item.getGearClass() + ".json");
+        if (!overrideFile.isFile())
+            return;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(overrideFile), StandardCharsets.UTF_8))) {
             readResourceFile(reader);
-        } catch (FileNotFoundException ex) {
-            // Ignore
         } catch (Exception e) {
-            e.printStackTrace();
+            SilentGear.LOGGER.error("Error reading equipment override '{}'", overrideFile.getAbsolutePath(), e);
         }
     }
 

@@ -21,6 +21,8 @@ import java.util.Map;
 
 public abstract class AbstractToolModel extends LayeredBakedModel {
 
+    private static final ImmutableMap<TransformType, TRSRTransformation> ITEM_TRANSFORMS = createItemTransforms();
+
     protected final ImmutableMap<TransformType, TRSRTransformation> transforms;
 
     public AbstractToolModel(IModel parent, ImmutableList<ImmutableList<BakedQuad>> immutableList, VertexFormat format,
@@ -29,17 +31,16 @@ public abstract class AbstractToolModel extends LayeredBakedModel {
 
         super(parent, immutableList, format);
 
-        this.transforms = itemTransforms();
+        this.transforms = ITEM_TRANSFORMS;
     }
 
     @Nonnull
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType cameraTransformType) {
-        final boolean debug = false;
-        return PerspectiveMapWrapper.handlePerspective(this, debug ? itemTransforms() : this.transforms, cameraTransformType);
+        return PerspectiveMapWrapper.handlePerspective(this, this.transforms, cameraTransformType);
     }
 
-    protected ImmutableMap<TransformType, TRSRTransformation> itemTransforms() {
+    private static ImmutableMap<TransformType, TRSRTransformation> createItemTransforms() {
         // TODO: Crossbow angles: -90, 0, 45 (at least for first-person right hand)
         ImmutableMap.Builder<TransformType, TRSRTransformation> builder = ImmutableMap.builder();
         builder.put(TransformType.GROUND, get(0, 2, 0, 0, 0, 0, 0.5f));
@@ -52,7 +53,7 @@ public abstract class AbstractToolModel extends LayeredBakedModel {
         return builder.build();
     }
 
-    protected TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
+    private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
         return TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
                 new Vector3f(tx / 16, ty / 16, tz / 16),
                 TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)), new Vector3f(s, s, s), null));

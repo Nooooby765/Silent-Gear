@@ -2,7 +2,6 @@ package net.silentchaos512.gear.api.parts;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.common.primitives.UnsignedInts;
 import com.google.gson.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,10 +34,10 @@ import net.silentchaos512.gear.config.Config;
 import net.silentchaos512.gear.item.ToolHead;
 import net.silentchaos512.gear.util.GearData;
 import net.silentchaos512.gear.util.GearHelper;
-import net.silentchaos512.lib.util.Color;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -78,6 +77,8 @@ public abstract class ItemPart {
      */
     @Getter(AccessLevel.NONE) protected int modelIndex;
     private static int lastModelIndex = -1;
+    @Getter(AccessLevel.NONE) private final String modelIndexString;
+    @Getter(AccessLevel.NONE) private final String modelIndexStringFrame3;
 
     @Getter(AccessLevel.NONE) protected Multimap<ItemStat, StatInstance> stats = new StatModifierMap();
     @Getter(AccessLevel.NONE) protected Map<Trait, Integer> traits = new LinkedHashMap<>();
@@ -87,6 +88,8 @@ public abstract class ItemPart {
         String suffix = REGEX_TEXTURE_SUFFIX_REPLACE.matcher(registryName.getPath()).replaceFirst("");
         display.put("all", new PartDisplayProperties(registryName.getNamespace(), suffix));
         this.modelIndex = ++lastModelIndex;
+        this.modelIndexString = Integer.toString(this.modelIndex);
+        this.modelIndexStringFrame3 = this.modelIndexString + "_3";
         this.origin = origin;
         loadJsonResources();
     }
@@ -204,7 +207,12 @@ public abstract class ItemPart {
     // ===================================
 
     /**
-     * Gets a texture to use based on the item class
+     * Gets a texture to use based on the item class.
+     *
+     * <p>Resolves the display properties from the gear stack, then delegates to
+     * {@link #getTexture(PartDisplayProperties, String, IPartPosition, int)}. Subclasses must
+     * override that method instead of this one, so texture dependencies can be gathered for
+     * every display variant with {@link #getTextureVariants(String, IPartPosition, int)}.
      *
      * @param part           The part
      * @param gear           The equipment item (tool/weapon/armor)
@@ -212,10 +220,38 @@ public abstract class ItemPart {
      * @param animationFrame Animation frame, usually 0
      */
     @Nullable
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
-        PartDisplayProperties props = getDisplayProperties(part, gear, animationFrame);
-        String path = "items/" + gearClass + "/" + position.getTexturePrefix() + "_" + props.textureSuffix;
-        return new ResourceLocation(props.textureDomain, path);
+    public final ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
+        return getTexture(getDisplayProperties(part, gear, animationFrame), gearClass, position, animationFrame);
+    }
+
+    /**
+     * Builds a texture location from a specific set of display properties.
+     */
+    @Nullable
+    protected ResourceLocation getTexture(PartDisplayProperties props, String gearClass, IPartPosition position, int animationFrame) {
+        String path = "items/" + gearClass + "/" + position.getTexturePrefix() + "_" + props.getTextureSuffix();
+        return new ResourceLocation(props.getTextureDomain(), path);
+    }
+
+    /**
+     * Gets every texture this part may use for the given gear class.
+     *
+     * <p>Textures returned here are declared as model dependencies, so they are guaranteed to be
+     * stitched into the texture atlas before the model is baked. Runtime rendering resolves the
+     * display properties from the actual gear stack, so every gear type override (for example
+     * {@code "hoe": {"texture_suffix": "generic_hc"}}) has to be included here, not just the
+     * default {@code "all"} variant.
+     */
+    public Set<ResourceLocation> getTextureVariants(String gearClass, IPartPosition position, int animationFrame) {
+        Set<ResourceLocation> textures = new LinkedHashSet<>();
+
+        for (PartDisplayProperties props : getDisplayPropertiesFor(gearClass)) {
+            ResourceLocation texture = getTexture(props, gearClass, position, animationFrame);
+            if (texture != null)
+                textures.add(texture);
+        }
+
+        return textures;
     }
 
     /**
@@ -234,7 +270,7 @@ public abstract class ItemPart {
      * Used for model caching. Be sure to include the animation frame if it matters!
      */
     public String getModelIndex(ItemPartData part, int animationFrame) {
-        return this.modelIndex + (animationFrame == 3 ? "_3" : "");
+        return animationFrame == 3 ? this.modelIndexStringFrame3 : this.modelIndexString;
     }
 
     public int getColor(ItemPartData part, ItemStack gear, int animationFrame) {
@@ -252,24 +288,57 @@ public abstract class ItemPart {
 
     public PartDisplayProperties getDisplayProperties(ItemPartData part, ItemStack gear, int animationFrame) {
         if (!gear.isEmpty()) {
-            GearType gearType = gear.getItem() instanceof ToolHead
-                    ? GearType.get(ToolHead.getToolClass(gear))
-                    : ((ICoreItem) gear.getItem()).getGearType();
-            if (gearType == null) return display.get("all"); // TODO: Remove this line when tool heads are gone
-
-            // Gear class-specific override
-            if (display.containsKey(gearType.getName())) {
-                return display.get(gearType.getName());
-            }
-            // Parent type overrides, like "armor"
-            for (String key : display.keySet()) {
-                if (gearType.matches(key)) {
-                    return display.get(key);
-                }
-            }
+            GearType gearType = getGearType(gear);
+            if (gearType != null)
+                return getDisplayProperties(gearType);
         }
         // Default
-        return display.get("all");
+        return getDefaultDisplayProperties();
+    }
+
+    /**
+     * Resolves display properties for a gear type. The exact type wins, then the nearest parent
+     * (for example "hoe" -> "harvest_tool" -> "tool"), then the "all" fallback. Walking the parent
+     * chain explicitly keeps the result deterministic, unlike iterating the display map.
+     */
+    private PartDisplayProperties getDisplayProperties(@Nullable GearType gearType) {
+        for (GearType type = gearType; type != null; type = type.getParent()) {
+            PartDisplayProperties props = display.get(type.getName());
+            if (props != null)
+                return props;
+        }
+        return getDefaultDisplayProperties();
+    }
+
+    /**
+     * Gets every display property variant that can apply to a gear class. Used for texture
+     * dependency gathering.
+     */
+    private Collection<PartDisplayProperties> getDisplayPropertiesFor(String gearClass) {
+        Set<PartDisplayProperties> props = new LinkedHashSet<>();
+
+        for (GearType type = GearType.get(gearClass); type != null; type = type.getParent()) {
+            PartDisplayProperties typeProps = display.get(type.getName());
+            if (typeProps != null)
+                props.add(typeProps);
+        }
+        props.add(getDefaultDisplayProperties());
+
+        return props;
+    }
+
+    private PartDisplayProperties getDefaultDisplayProperties() {
+        PartDisplayProperties props = display.get("all");
+        return props != null ? props : PartDisplayProperties.DEFAULT;
+    }
+
+    @Nullable
+    private static GearType getGearType(ItemStack gear) {
+        if (gear.getItem() instanceof ToolHead)
+            return GearType.get(ToolHead.getToolClass(gear));
+        if (gear.getItem() instanceof ICoreItem)
+            return ((ICoreItem) gear.getItem()).getGearType();
+        return null;
     }
 
     /**
@@ -352,7 +421,7 @@ public abstract class ItemPart {
         String path = getResourceFileLocation();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(path);
         if (resourceAsStream != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8))) {
                 readResourceFile(reader);
             } catch (Exception e) {
                 SilentGear.LOGGER.warn("Error reading part file '{}'", path);
@@ -362,12 +431,13 @@ public abstract class ItemPart {
             SilentGear.LOGGER.error("ItemPart '{}' is missing its data file!", this.registryName);
         }
 
-        // Override in config folder
-        File file = new File(Config.INSTANCE.getDirectory().getPath(), "materials/" + this.registryName.getPath() + ".json");
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        // Override in config folder (optional)
+        File file = new File(Config.INSTANCE.getDirectory(), "materials/" + this.registryName.getPath() + ".json");
+        if (!file.isFile())
+            return;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             readResourceFile(reader);
-        } catch (FileNotFoundException e) {
-            // Ignore, overrides are not required
         } catch (Exception e) {
             SilentGear.LOGGER.warn("Error reading part override '{}'", file.getAbsolutePath());
             SilentGear.LOGGER.catching(e);
@@ -395,7 +465,7 @@ public abstract class ItemPart {
 
     public void postInitChecks() {
         // Crafting item missing? Try to acquire an item from the ore dictionary.
-        if (getCraftingStack().isEmpty()) {
+        if (requiresCraftingItem() && getCraftingStack().isEmpty()) {
             ItemStack fromOredict = getCraftingItemFromOreDict();
             if (!fromOredict.isEmpty())
                 craftingStack = () -> fromOredict;
@@ -407,6 +477,15 @@ public abstract class ItemPart {
         if (this.origin == PartOrigins.BUILTIN_CORE && !SilentGear.MOD_ID.equals(this.registryName.getNamespace()))
             throw new IllegalArgumentException(String.format("Part \"%s\" has origin %s, but should be %s",
                     this.registryName, PartOrigins.BUILTIN_CORE, PartOrigins.BUILTIN_ADDON));
+    }
+
+    /**
+     * Whether this part is obtained by crafting and therefore needs a crafting item. Render-only
+     * parts (for example the highlight overlay) return false, so post-init validation does not
+     * report a missing crafting item for them.
+     */
+    public boolean requiresCraftingItem() {
+        return true;
     }
 
     @SuppressWarnings("MethodWithMultipleReturnPoints")
@@ -461,11 +540,10 @@ public abstract class ItemPart {
                     }
                 }
 
-                // Move the newly loaded modifiers into the stat map, replacing existing ones
-                statMap.forEach((stat, instance) -> {
-                    part.stats.removeAll(stat);
-                    part.stats.put(stat, instance);
-                });
+                // Replace existing modifiers for the stats present in the file, but keep every
+                // modifier (files may legitimately contain an ADD and a MUL entry for one stat).
+                statMap.keySet().forEach(part.stats::removeAll);
+                part.stats.putAll(statMap);
             }
         }
 
@@ -575,37 +653,6 @@ public abstract class ItemPart {
                 part.enabled = JsonUtils.getBoolean(obj, "enabled", part.enabled);
                 part.tier = JsonUtils.getInt(obj, "tier", part.tier);
                 // TODO: blacklist
-            }
-        }
-
-        @Deprecated
-        private static void readColorMap(Map<String, Integer> map, int fallback, JsonElement jsonElement) {
-            if (jsonElement.isJsonPrimitive()) {
-                int color = readColorCode(jsonElement.getAsString());
-                map.put("all", color);
-            } else if (jsonElement.isJsonObject()) {
-                JsonObject json = jsonElement.getAsJsonObject();
-
-                json.entrySet().forEach(entry -> {
-                    int color = readColorCode(entry.getValue().getAsString());
-                    map.put(entry.getKey(), color);
-                });
-            } else {
-                SilentGear.LOGGER.error("Could not read color map, unknown element type: {}", jsonElement);
-            }
-
-            if (!map.containsKey("all")) {
-                map.put("all", fallback);
-            }
-        }
-
-        @Deprecated
-        private static int readColorCode(String str) {
-            try {
-                return UnsignedInts.parseUnsignedInt(str, 16);
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
-                return Color.VALUE_WHITE;
             }
         }
 

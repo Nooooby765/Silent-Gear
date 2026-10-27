@@ -134,6 +134,7 @@ public class GuiHandlerSilentGear implements IGuiHandler {
                     TileSalvager tileSalvager = (TileSalvager) tile;
                     return new GuiSalvager(player.inventory, tileSalvager);
                 }
+                return null;
             case BLUEPRINT_BOOK:
                 ContainerBlueprintBook container = (ContainerBlueprintBook) getServerGuiElement(ID, player, world, x, y, z);
                 return container != null ? new GuiBlueprintBook(container) : null;

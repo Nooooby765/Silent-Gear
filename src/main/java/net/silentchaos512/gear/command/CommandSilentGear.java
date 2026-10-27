@@ -13,7 +13,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.parts.PartRegistry;
-import net.silentchaos512.gear.client.util.GearClientHelper;
 import net.silentchaos512.gear.util.GearData;
 
 import javax.annotation.Nullable;
@@ -72,8 +71,7 @@ public class CommandSilentGear extends CommandBase {
 
         SubCommand subCommand = SubCommand.fromArgs(args[0]);
         if (subCommand == SubCommand.RESET_MODEL_CACHES) {
-            int total = GearClientHelper.modelCache.size();
-            GearClientHelper.modelCache.clear();
+            int total = SilentGear.proxy.clearModelCaches();
             tell(sender, "Reset gear model caches, removed " + total + " objects", false);
         } else if (subCommand == SubCommand.REGISTRY_ANALYZE) {
             tell(sender, "PartRegistry.all: " + PartRegistry.getValues().size(), false);

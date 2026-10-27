@@ -1,20 +1,65 @@
 {
     "type": "tip",
     "stats": [
-        {"name": "durability",      "value":    0, "op": "ADD"},
-        {"name": "enchantability",  "value":  0.1, "op": "MUL2"},
-        {"name": "harvest_level",   "value":    0, "op": "MAX"},
-        {"name": "harvest_speed",   "value":  0.4, "op": "MUL2"},
-        {"name": "melee_damage",    "value":  2.0, "op": "ADD"},
-        {"name": "magic_damage",    "value":  2.0, "op": "ADD"},
-        {"name": "attack_speed",    "value":  0.0, "op": "ADD"},
-        {"name": "ranged_damage",   "value":  0.0, "op": "ADD"},
-        {"name": "ranged_speed",    "value":  0.3, "op": "MUL2"},
-        {"name": "rarity",          "value":   10}
+        {
+            "name": "durability",
+            "value": 0,
+            "op": "ADD"
+        },
+        {
+            "name": "enchantability",
+            "value": 0.1,
+            "op": "MUL2"
+        },
+        {
+            "name": "harvest_level",
+            "value": 0,
+            "op": "MAX"
+        },
+        {
+            "name": "harvest_speed",
+            "value": 0.4,
+            "op": "MUL2"
+        },
+        {
+            "name": "melee_damage",
+            "value": 2.0,
+            "op": "ADD"
+        },
+        {
+            "name": "magic_damage",
+            "value": 2.0,
+            "op": "ADD"
+        },
+        {
+            "name": "attack_speed",
+            "value": 0.0,
+            "op": "ADD"
+        },
+        {
+            "name": "ranged_damage",
+            "value": 0.0,
+            "op": "ADD"
+        },
+        {
+            "name": "ranged_speed",
+            "value": 0.3,
+            "op": "MUL2"
+        },
+        {
+            "name": "rarity",
+            "value": 10
+        }
     ],
     "traits": [
-        {"name": "silentgear:refractive", "level": 1},
-        {"name": "silentgear:speed_boost_light", "level": 4}
+        {
+            "name": "silentgear:refractive",
+            "level": 1
+        },
+        {
+            "name": "silentgear:speed_boost_light",
+            "level": 4
+        }
     ],
     "crafting_items": {
         "normal": {
@@ -26,7 +71,42 @@
             "texture_suffix": "glowstone",
             "texture_color": "ffffff"
         },
-        "name_color": "yellow"
+        "name_color": "yellow",
+        "hoe": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "paxel": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "saw": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "shears": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "mace": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "spear": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        },
+        "knife": {
+            "texture_suffix": "sharp",
+            "texture_color": "FCDD6B",
+            "broken_color": "FCDD6B"
+        }
     },
     "availability": {
         "enabled": true,

@@ -21,11 +21,10 @@ public final class PartTip extends ItemPart implements IUpgradePart {
     }
 
     @Override
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
+    protected ResourceLocation getTexture(PartDisplayProperties props, String gearClass, IPartPosition position, int animationFrame) {
         String frameStr = "bow".equals(gearClass) && animationFrame == 3 ? "_3" : "";
-        PartDisplayProperties props = getDisplayProperties(part, gear, animationFrame);
-        String path = "items/" + gearClass + "/tip_" + props.textureSuffix + frameStr;
-        return new ResourceLocation(props.textureDomain, path);
+        String path = "items/" + gearClass + "/tip_" + props.getTextureSuffix() + frameStr;
+        return new ResourceLocation(props.getTextureDomain(), path);
     }
 
     @Override

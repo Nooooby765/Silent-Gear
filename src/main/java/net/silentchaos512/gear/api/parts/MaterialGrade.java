@@ -30,6 +30,7 @@ public enum MaterialGrade {
     NONE(0), E(-8), D(-4), C(0), B(5), A(10), S(20), SS(30), SSS(40);
 
     private static final String NBT_KEY = SilentGear.MOD_ID + "_grade";
+    private static final MaterialGrade[] VALUES = values();
 
     public final int bonusPercent;
 
@@ -47,7 +48,7 @@ public enum MaterialGrade {
 
     public static MaterialGrade fromString(String str) {
         if (!str.isEmpty()) {
-            for (MaterialGrade grade : values()) {
+            for (MaterialGrade grade : VALUES) {
                 if (grade.name().equalsIgnoreCase(str)) {
                     return grade;
                 }
@@ -86,7 +87,7 @@ public enum MaterialGrade {
     public static MaterialGrade selectRandom(Random random, MaterialGrade median, double stdDev, MaterialGrade maxGrade) {
         int val = (int) (stdDev * random.nextGaussian() + median.ordinal());
         val = MathHelper.clamp(val, 1, maxGrade.ordinal());
-        return values()[val];
+        return VALUES[val];
     }
 
     public void setGradeOnStack(@Nonnull ItemStack stack) {

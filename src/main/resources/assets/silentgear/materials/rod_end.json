@@ -1,20 +1,65 @@
 {
     "type": "rod",
     "stats": [
-        {"name": "durability",      "value":  0.5, "op": "MUL2"},
-        {"name": "enchantability",  "value":  0.2, "op": "MUL2"},
-        {"name": "harvest_level",   "value":    1, "op": "ADD"},
-        {"name": "harvest_speed",   "value":  0.4, "op": "MUL2"},
-        {"name": "melee_damage",    "value":  0.2, "op": "MUL2"},
-        {"name": "magic_damage",    "value":  0.2, "op": "MUL2"},
-        {"name": "attack_speed",    "value":  0.2, "op": "ADD"},
-        {"name": "ranged_damage",   "value":  0.2, "op": "MUL2"},
-        {"name": "ranged_speed",    "value":  0.2, "op": "MUL2"},
-        {"name": "rarity",          "value":   40}
+        {
+            "name": "durability",
+            "value": 0.5,
+            "op": "MUL2"
+        },
+        {
+            "name": "enchantability",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "harvest_level",
+            "value": 1,
+            "op": "ADD"
+        },
+        {
+            "name": "harvest_speed",
+            "value": 0.4,
+            "op": "MUL2"
+        },
+        {
+            "name": "melee_damage",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "magic_damage",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "attack_speed",
+            "value": 0.2,
+            "op": "ADD"
+        },
+        {
+            "name": "ranged_damage",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "ranged_speed",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "rarity",
+            "value": 40
+        }
     ],
     "traits": [
-        {"name": "silentgear:speed_boost_light", "level": 3},
-        {"name": "silentgear:ancient", "level": 2}
+        {
+            "name": "silentgear:speed_boost_light",
+            "level": 3
+        },
+        {
+            "name": "silentgear:ancient",
+            "level": 2
+        }
     ],
     "crafting_items": {
         "normal": {
@@ -27,7 +72,42 @@
             "texture_color": "FFFFFF",
             "fallback_color": "F6EACD"
         },
-        "name_color": "light_purple"
+        "name_color": "light_purple",
+        "hoe": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "paxel": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "saw": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "shears": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "mace": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "spear": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        },
+        "knife": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "F6EACD",
+            "broken_color": "F6EACD"
+        }
     },
     "availability": {
         "enabled": true,

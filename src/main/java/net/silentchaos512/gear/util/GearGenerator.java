@@ -69,8 +69,13 @@ public final class GearGenerator {
 
         if (partClass == PartRod.class)
             return ToolRods.WOOD.getPart();
-        else if (partClass == PartBowstring.class)
-            return selectRandom(partClass, -1).orElse(ModMaterials.bowstringString);
+        else if (partClass == PartBowstring.class) {
+            // Do not call selectRandom here: when every bowstring is disabled it would recurse
+            // into this fallback forever.
+            List<? extends ItemPart> bowstrings = getPartsOfType(partClass);
+            return bowstrings.isEmpty() ? ModMaterials.bowstringString
+                    : bowstrings.get(SilentGear.RANDOM.nextInt(bowstrings.size()));
+        }
 
         SilentGear.log.debug("    no fallback part available");
         return null;

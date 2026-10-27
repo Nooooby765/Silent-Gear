@@ -23,8 +23,8 @@ import net.silentchaos512.gear.inventory.SlotItemPart;
 import net.silentchaos512.gear.item.ToolHead;
 import net.silentchaos512.gear.crafting.recipe.RecipeModularItem;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -126,11 +126,6 @@ public class ContainerCraftingStation extends Container {
     @Override
     public boolean canInteractWith(EntityPlayer playerIn) {
         return tile.isUsableByPlayer(playerIn);
-    }
-
-    @Override
-    public Slot getSlot(int slotId) {
-        return slotId == outputSlot.getSlotIndex() ? outputSlot : super.getSlot(slotId);
     }
 
     @Override
@@ -263,13 +258,15 @@ public class ContainerCraftingStation extends Container {
             }
         }
 
-        final int index = outputSlot.getSlotIndex();
-        craftResult.setInventorySlotContents(index, itemstack);
-        entityplayermp.connection.sendPacket(new SPacketSetSlot(this.windowId, index, itemstack));
+        // Send the update for the output slot's *container* index, not its inventory index.
+        final int slotIndex = this.inventorySlots.indexOf(outputSlot);
+        craftResult.setInventorySlotContents(0, itemstack);
+        entityplayermp.connection.sendPacket(new SPacketSetSlot(this.windowId, slotIndex, itemstack));
     }
 
     public Map<ItemPartData, Integer> getCompatibleParts(ICoreItem item) {
-        Map<ItemPartData, Integer> result = new HashMap<>();
+        // LinkedHashMap: deterministic slot order for part list construction and consumption
+        Map<ItemPartData, Integer> result = new LinkedHashMap<>();
         Set<PartType> typesFound = new HashSet<>();
 
         for (int i = TileCraftingStation.GEAR_PARTS_START; i < TileCraftingStation.GEAR_PARTS_START + TileCraftingStation.GEAR_PARTS_SIZE; ++i) {

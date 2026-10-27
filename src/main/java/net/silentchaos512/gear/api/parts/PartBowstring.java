@@ -24,13 +24,12 @@ public final class PartBowstring extends ItemPart {
     }
 
     @Override
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
+    protected ResourceLocation getTexture(PartDisplayProperties props, String gearClass, IPartPosition position, int animationFrame) {
         if (!"bow".equals(gearClass)) return BLANK_TEXTURE;
-        PartDisplayProperties props = getDisplayProperties(part, gear, animationFrame);
         // items/bow/bowstring_material_frame.png
         String path = String.format("items/%s/%s_%s_%d", gearClass, position.getTexturePrefix(),
-                props.textureSuffix, animationFrame);
-        return new ResourceLocation(props.textureDomain, path);
+                props.getTextureSuffix(), animationFrame);
+        return new ResourceLocation(props.getTextureDomain(), path);
     }
 
     @Nullable

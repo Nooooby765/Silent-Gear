@@ -33,6 +33,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.init.ModTraits;
@@ -42,7 +43,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = SilentGear.MOD_ID)
 public final class GearEvents {
     private GearEvents() {}
 
@@ -72,8 +73,10 @@ public final class GearEvents {
         if (!(weapon.getItem() instanceof ICoreTool)) return;
 
         final float baseDamage = event.getAmount();
+        // Pass the accumulated value, not the original damage: multiple damage traits on the same
+        // weapon must stack instead of overwriting each other.
         final float newDamage = TraitHelper.activateTraits(weapon, baseDamage, (trait, level, value) ->
-                trait.onAttackEntity(player, attacked, level, weapon, baseDamage));
+                trait.onAttackEntity(player, attacked, level, weapon, value));
 
         if (Math.abs(newDamage - baseDamage) > 0.0001f) {
             event.setCanceled(true);
@@ -101,6 +104,9 @@ public final class GearEvents {
 
             if (canHarvest) {
                 int level = TraitHelper.getTraitLevel(tool, ModTraits.speedBoostLight);
+                if (level <= 0)
+                    return;
+
                 // FIXME: Seems to be very inconsistent. Need to check block/sky light separately?
                 // Like this: player.world.getLightFor(EnumSkyBlock.BLOCK, player.getPosition());
                 float light = getAreaLightBrightness(player.world, player.getPosition());

@@ -48,12 +48,16 @@ public class PartHighlight extends ItemPart {
         return "highlight";
     }
 
+    @Override
+    public boolean requiresCraftingItem() {
+        return false;
+    }
+
     @Nullable
     @Override
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
+    protected ResourceLocation getTexture(PartDisplayProperties props, String gearClass, IPartPosition position, int animationFrame) {
         String frameStr = "bow".equals(gearClass) && animationFrame == 3 ? "_3" : "";
-        PartDisplayProperties props = getDisplayProperties(part, gear, animationFrame);
-        String path = "items/" + gearClass + "/_" + props.textureSuffix + frameStr;
-        return new ResourceLocation(props.textureDomain, path);
+        String path = "items/" + gearClass + "/_" + props.getTextureSuffix() + frameStr;
+        return new ResourceLocation(props.getTextureDomain(), path);
     }
 }

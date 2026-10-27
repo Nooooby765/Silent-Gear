@@ -48,7 +48,9 @@ public class RecipeModularItem extends RecipeBaseSL {
 
     public ItemStack getCraftingResult(Collection<ItemStack> parts) {
         List<ItemPartData> data = new ArrayList<>();
-        Map<PartType, ItemPartData> partsByType = new HashMap<>();
+        // LinkedHashMap keeps the result deterministic: the order of non-main parts can affect
+        // floating-point stat aggregation slightly.
+        Map<PartType, ItemPartData> partsByType = new LinkedHashMap<>();
 
         for (ItemStack stack : parts) {
             ItemPartData part = ItemPartData.fromStack(stack);

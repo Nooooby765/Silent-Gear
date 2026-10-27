@@ -106,21 +106,14 @@ public class ToolHeadModel implements IModel {
         for (String toolClass : ModItems.toolClasses.keySet()) {
             for (PartMain part : PartRegistry.getMains()) {
                 ItemPartData partData = ItemPartData.instance(part);
-                ResourceLocation textureHead = partData.getTexture(ItemStack.EMPTY, toolClass, PartPositions.HEAD, 0);
-                if (textureHead != null)
-                    builder.add(textureHead);
+                builder.addAll(partData.getTextureVariants(toolClass, PartPositions.HEAD, 0));
 
-                if ("sword".equals(toolClass)) {
-                    ResourceLocation textureGuard = partData.getTexture(ItemStack.EMPTY, toolClass, PartPositions.GUARD, 0);
-                    if (textureGuard != null)
-                        builder.add(textureGuard);
-                }
+                if ("sword".equals(toolClass))
+                    builder.addAll(partData.getTextureVariants(toolClass, PartPositions.GUARD, 0));
             }
 
             final ItemPartData highlight = ItemPartData.instance(ModMaterials.highlight);
-            final ResourceLocation highlightTexture = highlight.getTexture(ItemStack.EMPTY, toolClass, PartPositions.HIGHLIGHT, 0);
-            if (highlightTexture != null)
-                builder.add(highlightTexture);
+            builder.addAll(highlight.getTextureVariants(toolClass, PartPositions.HIGHLIGHT, 0));
         }
         return builder.build();
     }
@@ -196,7 +189,7 @@ public class ToolHeadModel implements IModel {
             ItemPartData secondaryPart = hasGuard ? ToolHead.getSecondaryPart(stack) : null;
             ItemPartData highlightPart = getHighlightPart(primaryPart, stack);
 
-            String key = ToolHead.getModelKey(toolClass, primaryPart, secondaryPart);
+            String key = ToolHead.getModelKey(stack);
 
             if (!GearClientHelper.modelCache.containsKey(key)) {
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();

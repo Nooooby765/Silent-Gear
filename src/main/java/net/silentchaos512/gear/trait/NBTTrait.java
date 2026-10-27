@@ -89,14 +89,16 @@ public final class NBTTrait extends Trait {
         static DataEntry from(JsonObject json) {
             DataEntry ret = new DataEntry();
             ret.level = JsonUtils.getInt(json, "level", 1);
+            JsonElement element = json.get("data");
+            if (element == null || element.isJsonNull())
+                return ret;
             try {
-                JsonElement element = json.get("data");
                 if (element.isJsonObject())
                     ret.data = JsonToNBT.getTagFromJson(GSON.toJson(element));
                 else
                     ret.data = JsonToNBT.getTagFromJson(JsonUtils.getString(json, "data"));
             } catch (NBTException e) {
-                e.printStackTrace();
+                SilentGear.LOGGER.warn("Invalid NBT data in a trait JSON entry: {}", element, e);
             }
             return ret;
         }

@@ -1,25 +1,76 @@
 {
     "type": "main",
     "stats": [
-        {"name": "durability",      "value":  32},
-        {"name": "armor_durability","value":   7},
-        {"name": "enchantability",  "value":  22},
-        {"name": "harvest_level",   "value":   0},
-        {"name": "harvest_speed",   "value":  12},
-        {"name": "melee_damage",    "value":   0},
-        {"name": "magic_damage",    "value":   4},
-        {"name": "attack_speed",    "value": 0.2},
-        {"name": "armor",           "value":  11},
-        {"name": "armor_toughness", "value":   0},
-        {"name": "magic_armor",     "value":   8},
-        {"name": "ranged_damage",   "value":   0},
-        {"name": "ranged_speed",    "value": 0.3},
-        {"name": "rarity",          "value":  25},
-        {"name": "chargeability",   "value": 1.2}
+        {
+            "name": "durability",
+            "value": 32
+        },
+        {
+            "name": "armor_durability",
+            "value": 7
+        },
+        {
+            "name": "enchantability",
+            "value": 22
+        },
+        {
+            "name": "harvest_level",
+            "value": 0
+        },
+        {
+            "name": "harvest_speed",
+            "value": 12
+        },
+        {
+            "name": "melee_damage",
+            "value": 0
+        },
+        {
+            "name": "magic_damage",
+            "value": 4
+        },
+        {
+            "name": "attack_speed",
+            "value": 0.2
+        },
+        {
+            "name": "armor",
+            "value": 11
+        },
+        {
+            "name": "armor_toughness",
+            "value": 0
+        },
+        {
+            "name": "magic_armor",
+            "value": 8
+        },
+        {
+            "name": "ranged_damage",
+            "value": 0
+        },
+        {
+            "name": "ranged_speed",
+            "value": 0.3
+        },
+        {
+            "name": "rarity",
+            "value": 25
+        },
+        {
+            "name": "chargeability",
+            "value": 1.2
+        }
     ],
     "traits": [
-        {"name": "silentgear:malleable", "level": 1},
-        {"name": "silentgear:soft", "level": 2}
+        {
+            "name": "silentgear:malleable",
+            "level": 1
+        },
+        {
+            "name": "silentgear:soft",
+            "level": 2
+        }
     ],
     "crafting_items": {
         "normal": {
@@ -39,7 +90,42 @@
             "texture_color": "FFFFFF",
             "broken_color": "EAEE57"
         },
-        "name_color": "gold"
+        "name_color": "gold",
+        "hoe": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "paxel": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "saw": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "shears": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "mace": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "spear": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        },
+        "knife": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "EAEE57",
+            "broken_color": "EAEE57"
+        }
     },
     "availability": {
         "enabled": true,

@@ -159,6 +159,11 @@ public interface IAOETool {
                             state.getBlock().onPlayerDestroy(world, pos2, state);
                     } else {
                         int xp = ForgeHooks.onBlockBreakEvent(world, ((EntityPlayerMP) player).interactionManager.getGameType(), (EntityPlayerMP) player, pos2);
+                        // A canceled BreakEvent (protection plugin, spawn protection, etc.) returns
+                        // -1 and must leave the block untouched.
+                        if (xp < 0)
+                            continue;
+
                         state.getBlock().onBlockHarvested(world, pos2, state, player);
                         tool.getItem().onBlockDestroyed(tool, world, state, pos2, player);
                         if (state.getBlock().removedByPlayer(state, world, pos2, player, true)) {

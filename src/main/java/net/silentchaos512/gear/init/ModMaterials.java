@@ -89,6 +89,7 @@ public class ModMaterials implements IPhasedInitializer {
 
             final Pattern typeRegex = Pattern.compile("^[a-z]+");
             for (File file : files) {
+                if (!file.isFile() || !file.getName().endsWith(".json")) continue;
                 SilentGear.log.info("Material file found: {}", file);
                 String filename = file.getName().replace(".json", "");
                 ResourceLocation name = getPath(filename);

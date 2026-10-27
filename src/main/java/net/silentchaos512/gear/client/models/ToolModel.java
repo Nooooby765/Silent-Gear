@@ -20,7 +20,6 @@ import net.minecraftforge.client.model.*;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.silentchaos512.gear.SilentGear;
-import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.*;
 import net.silentchaos512.gear.client.ColorHandlers;
@@ -29,7 +28,6 @@ import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.item.gear.CoreBow;
 import net.silentchaos512.gear.util.GearData;
 import net.silentchaos512.gear.util.GearHelper;
-import net.silentchaos512.lib.util.StackHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,34 +71,28 @@ public final class ToolModel implements IModel {
 //        SilentGear.log.info("Getting item part textures... what could go wrong?");
         for (String toolClass : ModItems.toolClasses.keySet()) {
             boolean hasGuard = "sword".equals(toolClass);
-            ICoreItem item = ModItems.toolClasses.get(toolClass);
+            ICoreTool item = ModItems.toolClasses.get(toolClass);
 
-            for (int frame = 0; frame < item.getAnimationFrames(); ++frame)
-                for (ItemPart part : PartRegistry.getValues()) {
-                    if (part.isBlacklisted()) continue;
-                    ItemPartData partData = ItemPartData.instance(part);
+            for (ItemPart part : PartRegistry.getValues()) {
+                // Do not skip disabled parts: gear made before a material was disabled still
+                // renders with it, and unstitched sprites would silently become missingno.
+                ItemPartData partData = ItemPartData.instance(part);
 
-                    // Basic texture
-                    // position could be HEAD, but I added ANY to make it clear this is not just mains.
-                    ResourceLocation texBasic = partData.getTexture(ItemStack.EMPTY, toolClass, part.getPartPosition(), frame);
-//                    SilentGear.log.info(String.format("    %s, frame=%d, part=%s, tex=%s", toolClass, frame, part.getKey().getResourcePath(), texBasic));
-                    if (texBasic != null)
-                        builder.add(texBasic);
-
-                    // Broken texture
-                    ResourceLocation texBroken = partData.getBrokenTexture(ItemStack.EMPTY, toolClass, part.getPartPosition());
-//                    SilentGear.log.info("      +broken: " + texBroken);
-                    if (texBroken != null)
-                        builder.add(texBroken);
+                // Every display variant the part can select at runtime (gear type overrides such
+                // as "hoe": { "texture_suffix": "generic_hc" } included), for every animation frame
+                for (int frame = 0; frame < item.getAnimationFrames(); ++frame) {
+                    builder.addAll(partData.getTextureVariants(toolClass, part.getPartPosition(), frame));
 
                     // Guard texture for swords
-                    if (hasGuard && part instanceof PartMain) {
-                        ResourceLocation texGuard = partData.getTexture(ItemStack.EMPTY, toolClass, PartPositions.GUARD, frame);
-//                        SilentGear.log.info("      +guard: " + texGuard);
-                        if (texGuard != null)
-                            builder.add(texGuard);
-                    }
+                    if (hasGuard && part instanceof PartMain)
+                        builder.addAll(partData.getTextureVariants(toolClass, PartPositions.GUARD, frame));
                 }
+
+                // Broken texture (does not depend on the animation frame)
+                ResourceLocation texBroken = partData.getBrokenTexture(ItemStack.EMPTY, toolClass, part.getPartPosition());
+                if (texBroken != null)
+                    builder.add(texBroken);
+            }
         }
 
         return builder.build();
@@ -183,7 +175,7 @@ public final class ToolModel implements IModel {
 
             int animationFrame = getAnimationFrame(stack, world, entity);
             String key = GearData.getCachedModelKey(stack, animationFrame);
-            StackHelper.getTagCompound(stack, true).setString("debug_modelkey", key);
+            GearClientHelper.updateDebugModelKey(stack, key);
 
             // DEBUG:
             // model.cache.clear();

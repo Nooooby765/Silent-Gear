@@ -40,6 +40,7 @@ import net.silentchaos512.lib.util.MathUtils;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -134,7 +135,7 @@ public class Trait {
         String path = getResourceFileLocation();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(path);
         if (resourceAsStream != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream, StandardCharsets.UTF_8))) {
                 readResourceFile(reader);
             } catch (Exception e) {
                 SilentGear.log.warn("Error reading trait file '{}'", path);
@@ -144,12 +145,13 @@ public class Trait {
             SilentGear.log.error("Trait '{}' is missing its data file!", this.name);
         }
 
-        // Override in config folder
-        File file = new File(Config.INSTANCE.getDirectory().getPath(), "traits/" + this.name.getPath() + ".json");
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        // Override in config folder (optional)
+        File file = new File(Config.INSTANCE.getDirectory(), "traits/" + this.name.getPath() + ".json");
+        if (!file.isFile())
+            return;
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
             readResourceFile(reader);
-        } catch (FileNotFoundException e) {
-            // Ignore, overrides are not required
         } catch (Exception e) {
             SilentGear.log.warn("Error reading trait override '{}'", file.getAbsolutePath());
             SilentGear.log.catching(e);

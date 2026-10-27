@@ -1,5 +1,6 @@
 package net.silentchaos512.gear.client.util;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
@@ -165,6 +166,20 @@ public final class GearClientHelper {
 
     public static boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !oldStack.equals(newStack);
+    }
+
+    /**
+     * Stores the model key used by the advanced tooltip debug line. Only writes when advanced
+     * tooltips are enabled and the value actually changed: this method runs during item model
+     * lookup, which happens every frame for every visible gear stack.
+     */
+    public static void updateDebugModelKey(ItemStack stack, String key) {
+        if (!Minecraft.getMinecraft().gameSettings.advancedItemTooltips)
+            return;
+
+        NBTTagCompound tags = StackHelper.getTagCompound(stack, true);
+        if (!key.equals(tags.getString("debug_modelkey")))
+            tags.setString("debug_modelkey", key);
     }
 
     public static Map<String, ItemPartData> getRenderParts(ItemStack stack) {

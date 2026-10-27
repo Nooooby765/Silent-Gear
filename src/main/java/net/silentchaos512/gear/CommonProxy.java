@@ -15,7 +15,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.silentchaos512.gear.api.parts.ItemPart;
 import net.silentchaos512.gear.api.parts.PartRegistry;
 import net.silentchaos512.gear.client.gui.GuiHandlerSilentGear;
-import net.silentchaos512.gear.compat.evilcraft.EvilCraftCompat;
 import net.silentchaos512.gear.config.Config;
 import net.silentchaos512.gear.event.*;
 import net.silentchaos512.gear.init.*;
@@ -58,9 +57,10 @@ public class CommonProxy {
     public void init(SRegistry registry, FMLInitializationEvent event) {
         registry.init(event);
 
-        if (Loader.isModLoaded("evilcraft")) {
-            EvilCraftCompat.init();
-        }
+        // TODO: re-add EvilCraft blood-chest repair compat once a dev jar is available
+        // if (Loader.isModLoaded("evilcraft")) {
+        //     EvilCraftCompat.init();
+        // }
     }
 
     public void postInit(SRegistry registry, FMLPostInitializationEvent event) {
@@ -77,5 +77,15 @@ public class CommonProxy {
 
         // Log issues with registered parts
         PartRegistry.getValues().forEach(ItemPart::postInitChecks);
+    }
+
+    /**
+     * Clears client-side baked model and color caches. This is a no-op on the dedicated server,
+     * so common code (commands, cache invalidation) never has to reference client-only classes.
+     *
+     * @return Number of cached models that were removed
+     */
+    public int clearModelCaches() {
+        return 0;
     }
 }

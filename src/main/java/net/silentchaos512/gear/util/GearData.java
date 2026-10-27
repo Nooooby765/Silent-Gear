@@ -22,6 +22,7 @@ import net.silentchaos512.gear.api.stats.StatModifierMap;
 import net.silentchaos512.gear.api.traits.Trait;
 import net.silentchaos512.gear.init.ModMaterials;
 import net.silentchaos512.gear.init.ModTraits;
+import net.silentchaos512.gear.item.MiscUpgrades;
 import net.silentchaos512.lib.util.PlayerHelper;
 import net.silentchaos512.lib.util.StackHelper;
 
@@ -42,6 +43,7 @@ public final class GearData {
     private static final String NBT_ROOT_STATISTICS = "Statistics";
 
     private static final String NBT_CONSTRUCTION_PARTS = "Parts";
+    private static final String NBT_HAS_RED_CARD = "HasRedCard";
     private static final String NBT_LOCK_STATS = "LockStats";
     private static final String NBT_IS_EXAMPLE = "IsExample";
     private static final String NBT_RANDOM_GRADING_DONE = "RandomGradingDone";
@@ -61,6 +63,9 @@ public final class GearData {
      * Recalculate gear stats and setup NBT. This should be called ANY TIME an item is modified!
      */
     public static void recalculateStats(EntityPlayer player, ItemStack stack) {
+        if (!(stack.getItem() instanceof ICoreItem))
+            return;
+
         getUUID(stack);
         ICoreItem item = (ICoreItem) stack.getItem();
         PartDataList parts = getConstructionParts(stack);
@@ -88,7 +93,8 @@ public final class GearData {
             Multimap<ItemStat, StatInstance> stats = getStatModifiers(stack, parts, synergy);
 
             // Calculate and write stats
-            final float damageRatio = (float) stack.getItemDamage() / (float) stack.getMaxDamage();
+            int maxDamage = stack.getMaxDamage();
+            final float damageRatio = maxDamage > 0 ? (float) stack.getItemDamage() / (float) maxDamage : 0f;
             for (ItemStat stat : stats.keySet()) {
                 final float initialValue = stat.compute(0f, stats.get(stat));
                 final float value = TraitHelper.activateTraits(stack, initialValue, (trait, level, val) ->
@@ -151,11 +157,20 @@ public final class GearData {
         if (!(stack.getItem() instanceof ICoreItem))
             return "Invalid item!";
 
-        NBTTagCompound tags = getData(stack, NBT_ROOT_MODEL_KEYS);
         String key = Integer.toString(animationFrame);
-        if (!tags.hasKey(key))
-            tags.setString(key, ((ICoreItem) stack.getItem()).getModelKey(stack, animationFrame));
-        return tags.getString(Integer.toString(animationFrame));
+
+        // Fast read-only path. getData/getOrCreateSubCompound would create NBT compounds, and
+        // this method is called for every tint index of every visible gear stack.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        if (root != null) {
+            NBTTagCompound modelKeys = root.getCompoundTag(NBT_ROOT_MODEL_KEYS);
+            if (modelKeys.hasKey(key))
+                return modelKeys.getString(key);
+        }
+
+        NBTTagCompound tags = getData(stack, NBT_ROOT_MODEL_KEYS);
+        tags.setString(key, ((ICoreItem) stack.getItem()).getModelKey(stack, animationFrame));
+        return tags.getString(key);
     }
 
     public static Multimap<ItemStat, StatInstance> getStatModifiers(ItemStack gear, PartDataList parts, double synergy) {
@@ -395,11 +410,31 @@ public final class GearData {
     public static void writeConstructionParts(ItemStack stack, Collection<ItemPartData> parts) {
         NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
         NBTTagList tagList = new NBTTagList();
+        boolean hasRedCard = false;
 
-        for (ItemPartData data : parts)
-            if (data != null)
+        for (ItemPartData data : parts) {
+            if (data != null) {
                 tagList.appendTag(data.writeToNBT(new NBTTagCompound()));
+                if (data.getPart() == MiscUpgrades.RED_CARD.getPart())
+                    hasRedCard = true;
+            }
+        }
+
         tags.setTag(NBT_CONSTRUCTION_PARTS, tagList);
+        // Cached so GearHelper.isBroken (called on every render/mining check) does not have to
+        // scan the part list for the red card upgrade.
+        tags.setBoolean(NBT_HAS_RED_CARD, hasRedCard);
+    }
+
+    /**
+     * Whether this gear contains the red card upgrade (keeps it from breaking permanently).
+     * Items written before the flag existed fall back to a part-list scan.
+     */
+    public static boolean hasRedCard(ItemStack gear) {
+        NBTTagCompound tags = getData(gear, NBT_ROOT_CONSTRUCTION);
+        if (tags.hasKey(NBT_HAS_RED_CARD))
+            return tags.getBoolean(NBT_HAS_RED_CARD);
+        return hasPart(gear, MiscUpgrades.RED_CARD.getPart());
     }
 
     /**
@@ -422,6 +457,10 @@ public final class GearData {
     }
 
     private static NBTTagCompound getData(ItemStack stack, String compoundKey) {
+        // Never mutate the shared ItemStack.EMPTY singleton. Recipe scanning can reach this
+        // path before the gear item is found in the grid.
+        if (stack.isEmpty())
+            return new NBTTagCompound();
         NBTTagCompound rootTag = stack.getOrCreateSubCompound(NBT_ROOT);
         if (!rootTag.hasKey(compoundKey))
             rootTag.setTag(compoundKey, new NBTTagCompound());

@@ -1,40 +1,34 @@
-# eclipse
-bin
-*.launch
-.settings
-.settings/*
-.metadata
-.classpath
-.project
+# Gradle / build
+.gradle/
+build/
+build.gradle.kts.bak
 
-# idea
-out
+# Eclipse / IDE
+.idea/
+*.iml
 *.ipr
 *.iws
-*.iml
-.idea
+.eclipse/
+.settings/
+.classpath
+.project
+bin/
 
-# gradle
-build
-.gradle
+# Run dirs
+run/
+runs/
 
-# other
-eclipse
-run
-classes
+# Temp / extracted sources
+_src/
+_buildlog*.txt
+_bt*.txt
+_bt_exit.txt
+jdk25.msi
+jdk25.zip
 
-/README.txt
-/forge-*-changelog.txt
-
-secret.json
-libs/*
-!/libs/README.txt
-curse_logo.png
-image_test/
-
+# OS
+Thumbs.db
 .DS_Store
-
-version.properties
-*.png~
-
-todo_list\.md
+/_tools
+ARCHITECTURE.md
+DEVLOG.md

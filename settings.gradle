@@ -1,1 +1,26 @@
-rootProject.name = archivesBaseName
+pluginManagement {
+    repositories {
+        maven {
+            // RetroFuturaGradle plugin from GTNH
+            name 'GTNH Maven'
+            url 'https://nexus.gtnewhorizons.com/repository/public/'
+            mavenContent {
+                includeGroup 'com.gtnewhorizons'
+                includeGroup 'com.gtnewhorizons.retrofuturagradle'
+            }
+        }
+        // Tencent/Aliyun mirrors for Gradle plugin portal (slow in CN)
+        maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/gradle-plugins/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        gradlePluginPortal()
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+plugins {
+    // Auto-provision Java 8 (Azul) toolchain via foojay
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'SilentGear'

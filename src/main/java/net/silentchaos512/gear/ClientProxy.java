@@ -3,6 +3,7 @@ package net.silentchaos512.gear;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -18,6 +19,7 @@ import net.silentchaos512.gear.client.event.ExtraBlockBreakHandler;
 import net.silentchaos512.gear.client.models.ArmorItemModel;
 import net.silentchaos512.gear.client.models.ToolHeadModel;
 import net.silentchaos512.gear.client.models.ToolModel;
+import net.silentchaos512.gear.client.util.GearClientHelper;
 import net.silentchaos512.gear.compat.jei.JeiPlugin;
 import net.silentchaos512.gear.init.ModBlocks;
 import net.silentchaos512.lib.registry.SRegistry;
@@ -71,5 +73,24 @@ public class ClientProxy extends CommonProxy {
         } else {
             SilentGear.LOGGER.info("JEI is not installed?");
         }
+    }
+
+    /**
+     * The baked models hold atlas sprites and the color cache holds tint arrays, both keyed by
+     * model key. After a resource reload (F3+T, resource pack change) those keys stay the same
+     * while the sprites are rebuilt, so stale entries must be dropped or items keep rendering
+     * with the previous atlas.
+     */
+    @SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) {
+        clearModelCaches();
+    }
+
+    @Override
+    public int clearModelCaches() {
+        int removed = GearClientHelper.modelCache.size();
+        GearClientHelper.modelCache.clear();
+        ColorHandlers.gearColorCache.clear();
+        return removed;
     }
 }

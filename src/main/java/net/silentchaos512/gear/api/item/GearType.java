@@ -22,8 +22,12 @@ public final class GearType {
     public static final GearType AXE = getOrCreate("axe", HARVEST_TOOL);
     public static final GearType EXCAVATOR = getOrCreate("excavator", HARVEST_TOOL);
     public static final GearType HAMMER = getOrCreate("hammer", HARVEST_TOOL);
+    public static final GearType HOE = getOrCreate("hoe", HARVEST_TOOL);
     public static final GearType MATTOCK = getOrCreate("mattock", HARVEST_TOOL);
     public static final GearType PICKAXE = getOrCreate("pickaxe", HARVEST_TOOL);
+    public static final GearType PAXEL = getOrCreate("paxel", HARVEST_TOOL);
+    public static final GearType SAW = getOrCreate("saw", HARVEST_TOOL);
+    public static final GearType SHEARS = getOrCreate("shears", HARVEST_TOOL);
     public static final GearType SHOVEL = getOrCreate("shovel", HARVEST_TOOL);
     public static final GearType SICKLE = getOrCreate("sickle", HARVEST_TOOL);
     // Melee weapons (swords)
@@ -31,6 +35,9 @@ public final class GearType {
     public static final GearType DAGGER = getOrCreate("dagger", MELEE_WEAPON);
     public static final GearType KATANA = getOrCreate("katana", MELEE_WEAPON);
     public static final GearType MACHETE = getOrCreate("machete", MELEE_WEAPON);
+    public static final GearType MACE = getOrCreate("mace", MELEE_WEAPON);
+    public static final GearType SPEAR = getOrCreate("spear", MELEE_WEAPON);
+    public static final GearType KNIFE = getOrCreate("knife", MELEE_WEAPON);
     public static final GearType SWORD = getOrCreate("sword", MELEE_WEAPON);
     // Ranged weapons (bows)
     public static final GearType RANGED_WEAPON = getOrCreate("ranged_weapon", TOOL);

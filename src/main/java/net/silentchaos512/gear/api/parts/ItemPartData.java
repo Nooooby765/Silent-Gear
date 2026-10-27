@@ -34,6 +34,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Getter(value = AccessLevel.PUBLIC)
 public final class ItemPartData {
@@ -120,6 +121,14 @@ public final class ItemPartData {
         return part.getTexture(this, gear, gearClass, position, animationFrame);
     }
 
+    /**
+     * Gets all textures this part may use for the given gear class. Call this when declaring
+     * model texture dependencies, so the atlas contains every display variant.
+     */
+    public Set<ResourceLocation> getTextureVariants(String gearClass, IPartPosition position, int animationFrame) {
+        return part.getTextureVariants(gearClass, position, animationFrame);
+    }
+
     @Nullable
     public ResourceLocation getBrokenTexture(ItemStack gear, String gearClass, IPartPosition position) {
         return part.getBrokenTexture(this, gear, gearClass, position);
@@ -169,6 +178,20 @@ public final class ItemPartData {
             return this.part == other.part && this.grade == other.grade && this.craftingItem.isItemEqual(other.craftingItem);
         }
         return super.equals(obj);
+    }
+
+    /**
+     * Must stay consistent with {@link #equals(Object)}: equal instances are compared by part
+     * identity, grade and the crafting item's item+metadata. Without this, maps keyed by part
+     * data (for example the crafting station's compatible parts) can hold duplicate entries.
+     */
+    @Override
+    public int hashCode() {
+        int result = System.identityHashCode(part);
+        result = 31 * result + (grade != null ? grade.hashCode() : 0);
+        result = 31 * result + System.identityHashCode(craftingItem.getItem());
+        result = 31 * result + craftingItem.getMetadata();
+        return result;
     }
 
     public boolean isMain() {

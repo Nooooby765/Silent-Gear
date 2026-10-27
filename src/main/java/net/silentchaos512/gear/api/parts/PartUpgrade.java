@@ -43,7 +43,7 @@ public class PartUpgrade extends ItemPart implements IUpgradePart {
 
     @Nullable
     @Override
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {
+    protected ResourceLocation getTexture(PartDisplayProperties props, String gearClass, IPartPosition position, int animationFrame) {
         return null;
     }
 

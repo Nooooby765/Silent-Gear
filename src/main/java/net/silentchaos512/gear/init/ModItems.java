@@ -38,10 +38,17 @@ public final class ModItems {
 
     public static CoreSword sword = new CoreSword();
     public static CoreDagger dagger = new CoreDagger();
+    public static CoreKnife knife = new CoreKnife();
     public static CoreKatana katana = new CoreKatana();
     public static CoreMachete machete = new CoreMachete();
+    public static CoreMace mace = new CoreMace();
+    public static CoreSpear spear = new CoreSpear();
     public static CorePickaxe pickaxe = new CorePickaxe();
     public static CoreShovel shovel = new CoreShovel();
+    public static CoreHoe hoe = new CoreHoe();
+    public static CorePaxel paxel = new CorePaxel();
+    public static CoreSaw saw = new CoreSaw();
+    public static CoreShears shears = new CoreShears();
     public static CoreAxe axe = new CoreAxe();
     public static CoreHammer hammer = new CoreHammer();
     public static CoreExcavator excavator = new CoreExcavator();
@@ -60,10 +67,17 @@ public final class ModItems {
         // Build gear maps now because blueprints need them
         toolClasses.put("sword", sword);
         toolClasses.put("dagger", dagger);
+        toolClasses.put("knife", knife);
         toolClasses.put("katana", katana);
         toolClasses.put("machete", machete);
+        toolClasses.put("mace", mace);
+        toolClasses.put("spear", spear);
         toolClasses.put("pickaxe", pickaxe);
         toolClasses.put("shovel", shovel);
+        toolClasses.put("hoe", hoe);
+        toolClasses.put("paxel", paxel);
+        toolClasses.put("saw", saw);
+        toolClasses.put("shears", shears);
         toolClasses.put("axe", axe);
         toolClasses.put("hammer", hammer);
         toolClasses.put("excavator", excavator);

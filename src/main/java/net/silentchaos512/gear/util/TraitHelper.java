@@ -55,8 +55,21 @@ public final class TraitHelper {
      *                   result.
      * @return The {@code inputValue} modified by traits.
      */
+    /**
+     * Gets the trait list, or null when the gear has no traits. Avoids allocating an empty
+     * NBTTagList (NBTTagCompound#getTagList creates one when the key is absent).
+     */
+    @Nullable
+    private static NBTTagList getTraitList(ItemStack gear) {
+        NBTTagCompound properties = GearData.getPropertiesData(gear);
+        return properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
+    }
+
     public static float activateTraits(ItemStack gear, final float inputValue, TraitFunction action) {
-        NBTTagList tagList = GearData.getPropertiesData(gear).getTagList("Traits", 10);
+        NBTTagList tagList = getTraitList(gear);
+        if (tagList == null)
+            return inputValue;
+
         float value = inputValue;
 
         for (NBTBase nbt : tagList) {
@@ -85,7 +98,9 @@ public final class TraitHelper {
      * @return The level of the trait on the gear, or zero if it does not have the trait
      */
     public static int getTraitLevel(ItemStack gear, Trait trait) {
-        NBTTagList tagList = GearData.getPropertiesData(gear).getTagList("Traits", 10);
+        NBTTagList tagList = getTraitList(gear);
+        if (tagList == null)
+            return 0;
 
         for (NBTBase nbt : tagList) {
             if (nbt instanceof NBTTagCompound) {
@@ -176,7 +191,9 @@ public final class TraitHelper {
 
     static void tickTraits(World world, @Nullable EntityPlayer player, ItemStack gear, boolean isEquipped) {
         // Performance test on 2018-11-26 - roughly 5% FPS loss max (negligible), average ~420 FPS
-        NBTTagList tagList = GearData.getPropertiesData(gear).getTagList("Traits", 10);
+        NBTTagList tagList = getTraitList(gear);
+        if (tagList == null)
+            return;
 
         for (NBTBase nbt : tagList) {
             if (nbt instanceof NBTTagCompound) {

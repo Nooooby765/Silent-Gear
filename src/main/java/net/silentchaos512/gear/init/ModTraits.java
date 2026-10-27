@@ -45,7 +45,6 @@ import net.silentchaos512.lib.registry.SRegistry;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public final class ModTraits implements IPhasedInitializer {
@@ -162,13 +161,14 @@ public final class ModTraits implements IPhasedInitializer {
             }
 
             for (File file : files) {
+                if (!file.isFile() || !file.getName().endsWith(".json")) continue;
                 SilentGear.log.info("Trait file found: {}", file);
-                String filename = file.getName().replace(".json", "");
+                String filename = file.getName().substring(0, file.getName().length() - 5);
                 ResourceLocation name = path(filename);
 
                 if (TraitRegistry.get(name.toString()) == null) {
-                    try {
-                        JsonObject json = JsonUtils.fromJson(GSON, Files.newReader(file, StandardCharsets.UTF_8), JsonObject.class);
+                    try (java.io.Reader reader = Files.newReader(file, StandardCharsets.UTF_8)) {
+                        JsonObject json = JsonUtils.fromJson(GSON, reader, JsonObject.class);
                         String type = JsonUtils.getString(json, "type", "stat_modifier");
                         if (!type.contains(":")) type = "silentgear:" + type;
 
@@ -183,8 +183,8 @@ public final class ModTraits implements IPhasedInitializer {
                         }
 
                         TraitRegistry.register(trait);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        SilentGear.LOGGER.error("Error reading trait file '{}'", file.getAbsolutePath(), e);
                     }
                 }
             }

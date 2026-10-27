@@ -27,13 +27,12 @@ public final class PartMain extends ItemPart {
     }
 
     @Override
-    public ResourceLocation getTexture(ItemPartData part, ItemStack gear, String toolClass, IPartPosition position, int animationFrame) {
+    protected ResourceLocation getTexture(PartDisplayProperties props, String toolClass, IPartPosition position, int animationFrame) {
         String frameStr = "bow".equals(toolClass) && animationFrame == 3 ? "_3" : "";
         String partPosition = position.getTexturePrefix();
         String subtypePrefix = partPosition + (partPosition.isEmpty() ? "" : "_");
-        PartDisplayProperties props = getDisplayProperties(part, gear, animationFrame);
-        String path = "items/" + toolClass + "/" + subtypePrefix + props.textureSuffix + frameStr;
-        return new ResourceLocation(props.textureDomain, path);
+        String path = "items/" + toolClass + "/" + subtypePrefix + props.getTextureSuffix() + frameStr;
+        return new ResourceLocation(props.getTextureDomain(), path);
     }
 
     @Override

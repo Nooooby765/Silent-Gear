@@ -1,16 +1,55 @@
 {
     "type": "rod",
     "stats": [
-        {"name": "durability",      "value":  0.1, "op": "MUL2"},
-        {"name": "enchantability",  "value":  0.1, "op": "MUL2"},
-        {"name": "harvest_level",   "value":    0, "op": "ADD"},
-        {"name": "harvest_speed",   "value": -0.1, "op": "MUL2"},
-        {"name": "melee_damage",    "value":  0.2, "op": "MUL2"},
-        {"name": "magic_damage",    "value": -0.2, "op": "MUL2"},
-        {"name": "attack_speed",    "value":  0.0, "op": "ADD"},
-        {"name": "ranged_damage",   "value":  0.0, "op": "MUL2"},
-        {"name": "ranged_speed",    "value":  0.0, "op": "MUL2"},
-        {"name": "rarity",          "value":    5}
+        {
+            "name": "durability",
+            "value": 0.1,
+            "op": "MUL2"
+        },
+        {
+            "name": "enchantability",
+            "value": 0.1,
+            "op": "MUL2"
+        },
+        {
+            "name": "harvest_level",
+            "value": 0,
+            "op": "ADD"
+        },
+        {
+            "name": "harvest_speed",
+            "value": -0.1,
+            "op": "MUL2"
+        },
+        {
+            "name": "melee_damage",
+            "value": 0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "magic_damage",
+            "value": -0.2,
+            "op": "MUL2"
+        },
+        {
+            "name": "attack_speed",
+            "value": 0.0,
+            "op": "ADD"
+        },
+        {
+            "name": "ranged_damage",
+            "value": 0.0,
+            "op": "MUL2"
+        },
+        {
+            "name": "ranged_speed",
+            "value": 0.0,
+            "op": "MUL2"
+        },
+        {
+            "name": "rarity",
+            "value": 5
+        }
     ],
     "crafting_items": {
         "normal": {
@@ -24,7 +63,42 @@
             "texture_color": "FFFFFF",
             "fallback_color": "EDEBCA"
         },
-        "name_color": "white"
+        "name_color": "white",
+        "hoe": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "paxel": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "saw": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "shears": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "mace": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "spear": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        },
+        "knife": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "E8E0D0",
+            "broken_color": "E8E0D0"
+        }
     },
     "availability": {
         "enabled": true,

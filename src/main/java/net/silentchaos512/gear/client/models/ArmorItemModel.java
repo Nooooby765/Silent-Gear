@@ -27,7 +27,6 @@ import net.silentchaos512.gear.client.util.GearClientHelper;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.util.GearData;
 import net.silentchaos512.gear.util.GearHelper;
-import net.silentchaos512.lib.util.StackHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -79,10 +78,9 @@ public class ArmorItemModel implements IModel {
         for (String armorClass : ModItems.armorClasses.keySet()) {
             for (PartMain part : PartRegistry.getMains()) {
                 ItemPartData partData = ItemPartData.instance(part);
-                // Basic texture
-                ResourceLocation textureMain = partData.getTexture(ItemStack.EMPTY, armorClass, PartPositions.ARMOR, 0);
-                if (textureMain != null)
-                    builder.add(textureMain);
+
+                // Every display variant the part can select at runtime
+                builder.addAll(partData.getTextureVariants(armorClass, PartPositions.ARMOR, 0));
 
                 // Broken texture
                 ResourceLocation textureBroken = partData.getBrokenTexture(ItemStack.EMPTY, armorClass, PartPositions.ARMOR);
@@ -170,7 +168,7 @@ public class ArmorItemModel implements IModel {
             ICoreArmor itemArmor = (ICoreArmor) stack.getItem();
 
             String key = GearData.getCachedModelKey(stack, 0);
-            StackHelper.getTagCompound(stack, true).setString("debug_modelkey", key);
+            GearClientHelper.updateDebugModelKey(stack, key);
 
             if (!GearClientHelper.modelCache.containsKey(key)) {
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
@@ -182,11 +180,11 @@ public class ArmorItemModel implements IModel {
                         Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
                 IBakedModel bakedModel = parent.bake(new SimpleModelState(model.transforms), model.getVertexFormat(), textureGetter);
                 GearClientHelper.modelCache.put(key, bakedModel);
+
+                // Color cache (must be populated together with the model, or the first frame is white)
+                ColorHandlers.gearColorCache.put(key, new Integer[] {itemArmor.getPrimaryPart(stack).getColor(stack, 0)});
                 return bakedModel;
             }
-
-            // Color cache
-            ColorHandlers.gearColorCache.put(key, new Integer[] {itemArmor.getPrimaryPart(stack).getColor(stack, 0)});
 
             return GearClientHelper.modelCache.get(key);
         }

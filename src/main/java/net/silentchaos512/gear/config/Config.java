@@ -107,13 +107,13 @@ public class Config extends ConfigBaseNew {
      * Nerfed gear
      */
 
-    public static Set<String> nerfedGear;
+    public static Set<String> nerfedGear = ImmutableSet.of();
     private static final String NERFED_GEAR_COMMENT = "These items will have reduced durability to discourage use, but they can still be crafted and used as normal. Items from other mods can be added to the list, but I cannot guarantee their durability will actually change.";
 
     @ConfigOption(name = "Durability Multiplier", category = CAT_NERFED_GEAR)
     @ConfigOption.RangeFloat(value = 0.5f, min = 0f, max = 1f)
     @ConfigOption.Comment("The durability of items in the nerfed gear list will be multiplied by this value.")
-    public static float nerfedGearMulti;
+    public static float nerfedGearMulti = 0.5f;
 
     /*
      * Tools
@@ -122,10 +122,17 @@ public class Config extends ConfigBaseNew {
     private static List<ConfigOptionEquipment> equipmentConfigs = new ArrayList<>();
     public static ConfigOptionEquipment sword = forEquipment(ModItems.sword);
     public static ConfigOptionEquipment dagger = forEquipment(ModItems.dagger);
+    public static ConfigOptionEquipment knife = forEquipment(ModItems.knife);
     public static ConfigOptionEquipment katana = forEquipment(ModItems.katana);
     public static ConfigOptionEquipment machete = forEquipment(ModItems.machete);
+    public static ConfigOptionEquipment mace = forEquipment(ModItems.mace);
+    public static ConfigOptionEquipment spear = forEquipment(ModItems.spear);
     public static ConfigOptionEquipment pickaxe = forEquipment(ModItems.pickaxe);
     public static ConfigOptionEquipment shovel = forEquipment(ModItems.shovel);
+    public static ConfigOptionEquipment hoe = forEquipment(ModItems.hoe);
+    public static ConfigOptionEquipment paxel = forEquipment(ModItems.paxel);
+    public static ConfigOptionEquipment saw = forEquipment(ModItems.saw);
+    public static ConfigOptionEquipment shears = forEquipment(ModItems.shears);
     public static ConfigOptionEquipment axe = forEquipment(ModItems.axe);
     public static ConfigOptionEquipment hammer = forEquipment(ModItems.hammer);
     public static ConfigOptionEquipment excavator = forEquipment(ModItems.excavator);

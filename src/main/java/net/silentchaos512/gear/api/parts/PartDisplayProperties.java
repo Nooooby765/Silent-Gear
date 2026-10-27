@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.util.JsonUtils;
+import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.lib.util.Color;
 
 import java.util.regex.Pattern;
@@ -89,7 +90,7 @@ public final class PartDisplayProperties {
         try {
             return UnsignedInts.parseUnsignedInt(str, 16);
         } catch (NumberFormatException ex) {
-            ex.printStackTrace();
+            SilentGear.LOGGER.warn("Invalid color code '{}' in a material display block, using white", str);
             return Color.VALUE_WHITE;
         }
     }
