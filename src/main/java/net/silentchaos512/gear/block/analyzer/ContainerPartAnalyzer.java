@@ -28,6 +28,7 @@ import net.silentchaos512.lib.inventory.ContainerSL;
 import net.silentchaos512.lib.inventory.SlotOutputOnly;
 
 public class ContainerPartAnalyzer extends ContainerSL {
+    private int lastProgress = -1;
 
     public ContainerPartAnalyzer(InventoryPlayer playerInventory, IInventory tileInventory) {
         super(playerInventory, tileInventory);
@@ -46,6 +47,32 @@ public class ContainerPartAnalyzer extends ContainerSL {
     public void addListener(IContainerListener listener) {
         super.addListener(listener);
         listener.sendAllContents(this, getInventory());
+        // Send the current progress to players who open the GUI mid-operation.
+        listener.sendAllWindowProperties(this, tileInventory);
+        this.lastProgress = tileInventory.getField(0);
+    }
+
+    /**
+     * Progress is a container field (a few bytes per change) instead of a per-tick block update,
+     * which used to serialize the entire inventory to every nearby client 20 times per second.
+     */
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+
+        final int progress = tileInventory.getField(0);
+        if (progress != this.lastProgress) {
+            this.lastProgress = progress;
+            for (int i = 0; i < this.listeners.size(); ++i) {
+                this.listeners.get(i).sendWindowProperty(this, 0, progress);
+            }
+        }
+    }
+
+    @Override
+    public void updateProgressBar(int id, int data) {
+        if (id == 0)
+            tileInventory.setField(0, data);
     }
 
     @Override

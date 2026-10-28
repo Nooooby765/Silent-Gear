@@ -95,23 +95,24 @@ public final class GearEvents {
         ItemStack tool = player.getHeldItemMainhand();
 
         if (tool.getItem() instanceof ICoreItem) {
+            // Fires every tick while a block is being mined. Check the trait first: resolving the
+            // harvest level costs several NBT reads, and almost no tool has this trait.
+            int level = TraitHelper.getTraitLevel(tool, ModTraits.speedBoostLight);
+            if (level <= 0)
+                return;
+
             final IBlockState state = event.getState();
             String toolClass = state.getBlock().getHarvestTool(state);
             if (toolClass == null) toolClass = "";
             final int blockLevel = state.getBlock().getHarvestLevel(state);
             final int toolLevel = tool.getItem().getHarvestLevel(tool, toolClass, player, state);
-            final boolean canHarvest = toolLevel >= blockLevel;
+            if (toolLevel < blockLevel)
+                return;
 
-            if (canHarvest) {
-                int level = TraitHelper.getTraitLevel(tool, ModTraits.speedBoostLight);
-                if (level <= 0)
-                    return;
-
-                // FIXME: Seems to be very inconsistent. Need to check block/sky light separately?
-                // Like this: player.world.getLightFor(EnumSkyBlock.BLOCK, player.getPosition());
-                float light = getAreaLightBrightness(player.world, player.getPosition());
-                event.setNewSpeed(event.getOriginalSpeed() + 3 * level * light);
-            }
+            // FIXME: Seems to be very inconsistent. Need to check block/sky light separately?
+            // Like this: player.world.getLightFor(EnumSkyBlock.BLOCK, player.getPosition());
+            float light = getAreaLightBrightness(player.world, player.getPosition());
+            event.setNewSpeed(event.getOriginalSpeed() + 3 * level * light);
         }
     }
 

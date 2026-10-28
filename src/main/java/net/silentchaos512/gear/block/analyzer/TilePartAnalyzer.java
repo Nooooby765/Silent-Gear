@@ -49,7 +49,6 @@ public class TilePartAnalyzer extends TileSidedInventorySL implements ITickable 
 
     @SyncVariable(name = "progress")
     int progress = 0;
-    private boolean requireClientSync = false;
 
     @Override
     public void update() {
@@ -59,10 +58,10 @@ public class TilePartAnalyzer extends TileSidedInventorySL implements ITickable 
         ItemPart part = PartRegistry.get(input);
 
         if (part != null) {
-            // Analyzing
+            // Analyzing. The progress bar is synced through the container window property, so
+            // bumping the counter does not need to notify clients every tick.
             if (progress < BASE_ANALYZE_TIME) {
                 ++progress;
-                requireClientSync = true;
             }
 
             // Grade part if any output slot is free
@@ -87,17 +86,15 @@ public class TilePartAnalyzer extends TileSidedInventorySL implements ITickable 
                         }
                     }
 
-                    requireClientSync = true;
+                    // The tile edited its own inventory, which does not mark it dirty by itself.
+                    markDirty();
+                    // Contents changed: let clients refresh the tile data once per item.
+                    IBlockState state = world.getBlockState(pos);
+                    world.notifyBlockUpdate(pos, state, state, 3);
                 }
             }
         } else {
             progress = 0;
-        }
-
-        if (requireClientSync) {
-            IBlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 3);
-            requireClientSync = false;
         }
     }
 

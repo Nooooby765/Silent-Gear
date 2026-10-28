@@ -249,14 +249,20 @@ public final class GearData {
     }
 
     public static float getStat(ItemStack stack, ItemStat stat) {
-        NBTTagCompound tags = getData(stack, NBT_ROOT_PROPERTIES);
-        String key = stat.getName().getPath();
-
-        if (tags.hasKey(key)) {
-            return tags.getFloat(key);
-        } else {
-            return stat.getDefaultValue();
+        // Read-only fast path. getData(...) creates the root/properties compounds whenever the
+        // value is absent, and this is called for every durability and attack speed query.
+        // Reading through getSubCompound has no side effects and yields the same result.
+        if (!stack.isEmpty()) {
+            NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+            if (root != null && root.hasKey(NBT_ROOT_PROPERTIES, 10)) {
+                NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_PROPERTIES);
+                String key = stat.getName().getPath();
+                if (tags.hasKey(key)) {
+                    return tags.getFloat(key);
+                }
+            }
         }
+        return stat.getDefaultValue();
     }
 
     public static int getStatInt(ItemStack stack, ItemStat stat) {

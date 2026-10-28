@@ -43,6 +43,7 @@ import net.silentchaos512.lib.util.StackHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -235,6 +236,20 @@ public interface IAOETool {
     final class HighlightHandler {
         private HighlightHandler() {}
 
+        /**
+         * The highlight is drawn once per frame, but the extra blocks it shows only change when
+         * the targeted block, the face, the held stack or the player's sneaking changes. Caching
+         * one result per client tick removes eight block state lookups, ore-set lookups and
+         * hardness queries from every frame without changing what is drawn.
+         */
+        private static long cachedTick = Long.MIN_VALUE;
+        private static BlockPos cachedPos;
+        private static EnumFacing cachedSide;
+        private static ItemStack cachedStack = ItemStack.EMPTY;
+        private static boolean cachedSneaking;
+        private static int cachedPlayerId = -1;
+        private static List<BlockPos> cachedBlocks = Collections.emptyList();
+
         @SubscribeEvent
         public static void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
             EntityPlayer player = event.getPlayer();
@@ -245,8 +260,26 @@ public interface IAOETool {
                 if (stack.getItem() instanceof IAOETool) {
                     World world = player.getEntityWorld();
                     IAOETool item = (IAOETool) stack.getItem();
+                    RayTraceResult target = event.getTarget();
+                    final long tick = world.getTotalWorldTime();
+                    final boolean sneaking = player.isSneaking();
 
-                    for (BlockPos pos : item.getExtraBlocks(world, event.getTarget(), player, stack)) {
+                    if (tick != cachedTick
+                            || sneaking != cachedSneaking
+                            || player.getEntityId() != cachedPlayerId
+                            || stack != cachedStack
+                            || target.sideHit != cachedSide
+                            || !target.getBlockPos().equals(cachedPos)) {
+                        cachedTick = tick;
+                        cachedSneaking = sneaking;
+                        cachedPlayerId = player.getEntityId();
+                        cachedStack = stack;
+                        cachedSide = target.sideHit;
+                        cachedPos = target.getBlockPos();
+                        cachedBlocks = item.getExtraBlocks(world, target, player, stack);
+                    }
+
+                    for (BlockPos pos : cachedBlocks) {
                         event.getContext().drawSelectionBox(player, new RayTraceResult(Vec3d.ZERO, EnumFacing.UP, pos), 0, event.getPartialTicks());
                     }
                 }

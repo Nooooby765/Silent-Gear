@@ -52,8 +52,17 @@ public final class PartDataList implements List<ItemPartData> {
 
     public PartDataList getUniqueParts(boolean mainsOnly) {
         PartDataList result = PartDataList.of();
+        // Indexed loop instead of one stream per element: this runs on every stat recalculation
+        // and tooltip build, and the lists only ever hold a handful of parts.
         for (ItemPartData data : (mainsOnly ? getMains() : this.list)) {
-            if (result.stream().map(ItemPartData::getPart).noneMatch(part -> part == data.part)) {
+            boolean duplicate = false;
+            for (int i = 0; i < result.size(); ++i) {
+                if (result.get(i).part == data.part) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (!duplicate) {
                 result.add(data);
             }
         }

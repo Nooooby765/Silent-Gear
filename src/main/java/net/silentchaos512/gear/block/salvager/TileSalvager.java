@@ -62,13 +62,12 @@ public class TileSalvager extends TileSidedInventorySL implements ITickable {
     public void update() {
         if (world.isRemote) return;
 
-        boolean requiresClientSync = false;
-
         ItemStack input = getInputStack();
         if (!input.isEmpty()) {
             if (progress < BASE_WORK_TIME) {
+                // The progress bar is synced through the container window property, so no block
+                // update is needed for every step (that sent the whole inventory each tick).
                 ++progress;
-                requiresClientSync = true;
             }
 
             if (progress >= BASE_WORK_TIME && areAllOutputSlotsFree()) {
@@ -83,13 +82,14 @@ public class TileSalvager extends TileSidedInventorySL implements ITickable {
 
                 progress = 0;
                 input.shrink(1);
-                requiresClientSync = true;
-            }
-        }
 
-        if (requiresClientSync) {
-            IBlockState state = world.getBlockState(pos);
-            world.notifyBlockUpdate(pos, state, state, 3);
+                // The tile edits its own inventory here; the slot API only marks the block dirty
+                // for player edits, so without this the results could be lost on chunk unload.
+                markDirty();
+                // Tell clients the contents changed (once per completed item, not every tick).
+                IBlockState state = world.getBlockState(pos);
+                world.notifyBlockUpdate(pos, state, state, 3);
+            }
         }
     }
 
@@ -272,18 +272,23 @@ public class TileSalvager extends TileSidedInventorySL implements ITickable {
         return isOutputSlot(index);
     }
 
+    // O(1) slot role lookups. Hoppers and the container query these on every insert/extract.
+    private static final boolean[] INPUT_SLOT_FLAGS = new boolean[INVENTORY_SIZE];
+    private static final boolean[] OUTPUT_SLOT_FLAGS = new boolean[INVENTORY_SIZE];
+
+    static {
+        for (int slot : SLOTS_INPUT)
+            INPUT_SLOT_FLAGS[slot] = true;
+        for (int slot : SLOTS_OUTPUT)
+            OUTPUT_SLOT_FLAGS[slot] = true;
+    }
+
     private static boolean isInputSlot(int index) {
-        for (int k : SLOTS_INPUT)
-            if (index == k)
-                return true;
-        return false;
+        return index >= 0 && index < INPUT_SLOT_FLAGS.length && INPUT_SLOT_FLAGS[index];
     }
 
     private static boolean isOutputSlot(int index) {
-        for (int k : SLOTS_OUTPUT)
-            if (index == k)
-                return true;
-        return false;
+        return index >= 0 && index < OUTPUT_SLOT_FLAGS.length && OUTPUT_SLOT_FLAGS[index];
     }
 
     @Override

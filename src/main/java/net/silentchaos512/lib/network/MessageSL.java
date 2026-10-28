@@ -100,16 +100,18 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
         }
     }
 
-    @SuppressWarnings("unlikely-arg-type")
     private static Field[] getClassFields(Class<?> clazz) {
-        if (fieldCache.containsValue(clazz))
-            return fieldCache.get(clazz);
-        else {
-            Field[] fields = clazz.getFields();
-            Arrays.sort(fields, Comparator.comparing(Field::getName));
-            fieldCache.put(clazz, fields);
-            return fields;
-        }
+        // The cache is keyed by class. This used to call containsValue(clazz), which compares the
+        // class against the cached Field[] values and therefore never matched: getFields() and the
+        // sort ran again for every packet, on the netty thread.
+        Field[] cached = fieldCache.get(clazz);
+        if (cached != null)
+            return cached;
+
+        Field[] fields = clazz.getFields();
+        Arrays.sort(fields, Comparator.comparing(Field::getName));
+        fieldCache.put(clazz, fields);
+        return fields;
     }
 
     private final void writeField(Field f, Class clazz, ByteBuf buf) throws IllegalArgumentException, IllegalAccessException {
