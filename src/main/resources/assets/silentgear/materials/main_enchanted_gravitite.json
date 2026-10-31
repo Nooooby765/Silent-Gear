@@ -1,0 +1,44 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value": 1650},
+        {"name": "armor_durability", "value":   34},
+        {"name": "enchantability",   "value":   12},
+        {"name": "harvest_level",    "value":    3},
+        {"name": "harvest_speed",    "value":    9},
+        {"name": "melee_damage",     "value":    3},
+        {"name": "magic_damage",     "value":    1},
+        {"name": "attack_speed",     "value":  0.0},
+        {"name": "armor",            "value":   20},
+        {"name": "armor_toughness",  "value":   10},
+        {"name": "magic_armor",      "value":    6},
+        {"name": "ranged_damage",    "value":    2},
+        {"name": "ranged_speed",     "value": -0.2},
+        {"name": "rarity",           "value":   45},
+        {"name": "chargeability",    "value":  0.8}
+    ],
+    "traits": [
+        {"name": "silentgear:malleable", "level": 2},
+        {"name": "silentgear:speed_boost_light", "level": 3}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "aether_legacy:enchanted_gravitite",
+            "data": 0,
+            "oredict": "blockEnchantedGravitite"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "5C2A8C",
+            "broken_color": "5C2A8C"
+        },
+        "name_color": "dark_purple"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 3,
+        "tool_blacklist": []
+    }
+}

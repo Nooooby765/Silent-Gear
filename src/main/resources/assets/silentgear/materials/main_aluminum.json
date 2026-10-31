@@ -1,0 +1,43 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":  365},
+        {"name": "armor_durability", "value":   15},
+        {"name": "enchantability",   "value":   14},
+        {"name": "harvest_level",    "value":    2},
+        {"name": "harvest_speed",    "value":    8},
+        {"name": "melee_damage",     "value":    2},
+        {"name": "magic_damage",     "value":    2},
+        {"name": "attack_speed",     "value":  0.2},
+        {"name": "armor",            "value":   14},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "magic_armor",      "value":    3},
+        {"name": "ranged_damage",    "value":  2.0},
+        {"name": "ranged_speed",     "value":  0.0},
+        {"name": "rarity",           "value":   25},
+        {"name": "chargeability",    "value":  0.9}
+    ],
+    "traits": [
+        {"name": "silentgear:malleable",    "level": 3},
+        {"name": "silentgear:soft",         "level": 2},
+        {"name": "silentgear:synergy_boost", "level": 1}
+    ],
+    "crafting_items": {
+        "normal": {
+            "oredict": "ingotAluminum"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "BFD4DE",
+            "broken_color": "BFD4DE"
+        },
+        "name_color": "gray"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 2,
+        "tool_blacklist": []
+    }
+}

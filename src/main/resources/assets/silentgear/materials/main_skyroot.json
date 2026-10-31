@@ -1,0 +1,42 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":   70},
+        {"name": "armor_durability", "value":   10},
+        {"name": "enchantability",   "value":   16},
+        {"name": "harvest_level",    "value":    0},
+        {"name": "harvest_speed",    "value":  2.5},
+        {"name": "melee_damage",     "value":    0},
+        {"name": "magic_damage",     "value":    0},
+        {"name": "attack_speed",     "value":  0.1},
+        {"name": "armor",            "value":    8},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "magic_armor",      "value":    2},
+        {"name": "ranged_damage",    "value":    0},
+        {"name": "ranged_speed",     "value":  0.0},
+        {"name": "rarity",           "value":    3},
+        {"name": "chargeability",    "value":  0.7}
+    ],
+    "traits": [
+        {"name": "silentgear:speed_boost_light", "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "aether_legacy:skyroot_plank",
+            "data": 0
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "9C8B63",
+            "broken_color": "9C8B63"
+        },
+        "name_color": "gold"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 0,
+        "tool_blacklist": []
+    }
+}

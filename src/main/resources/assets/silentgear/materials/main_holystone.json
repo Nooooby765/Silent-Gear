@@ -1,0 +1,42 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":  150},
+        {"name": "armor_durability", "value":    6},
+        {"name": "enchantability",   "value":    8},
+        {"name": "harvest_level",    "value":    1},
+        {"name": "harvest_speed",    "value":  4.5},
+        {"name": "melee_damage",     "value":    1},
+        {"name": "magic_damage",     "value":    1},
+        {"name": "attack_speed",     "value":  0.0},
+        {"name": "armor",            "value":    6},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "magic_armor",      "value":    2},
+        {"name": "ranged_damage",    "value":    0},
+        {"name": "ranged_speed",     "value": -0.2},
+        {"name": "rarity",           "value":   10},
+        {"name": "chargeability",    "value":  0.6}
+    ],
+    "traits": [
+        {"name": "silentgear:holy", "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "aether_legacy:holystone",
+            "data": 0
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "D0D0C8",
+            "broken_color": "D0D0C8"
+        },
+        "name_color": "yellow"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 1,
+        "tool_blacklist": []
+    }
+}

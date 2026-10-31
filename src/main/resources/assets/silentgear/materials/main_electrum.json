@@ -1,0 +1,42 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":   96},
+        {"name": "armor_durability", "value":   10},
+        {"name": "enchantability",   "value":   25},
+        {"name": "harvest_level",    "value":    2},
+        {"name": "harvest_speed",    "value":   14},
+        {"name": "melee_damage",     "value":    2},
+        {"name": "magic_damage",     "value":    5},
+        {"name": "attack_speed",     "value":  0.3},
+        {"name": "armor",            "value":   15},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "magic_armor",      "value":   11},
+        {"name": "ranged_damage",    "value":  1.0},
+        {"name": "ranged_speed",     "value":  0.0},
+        {"name": "rarity",           "value":   40},
+        {"name": "chargeability",    "value":  1.5}
+    ],
+    "traits": [
+        {"name": "silentgear:malleable", "level": 2},
+        {"name": "silentgear:soft",      "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "oredict": "ingotElectrum"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "D6E037",
+            "broken_color": "D6E037"
+        },
+        "name_color": "yellow"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 2,
+        "tool_blacklist": []
+    }
+}

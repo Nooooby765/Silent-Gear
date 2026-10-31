@@ -1,0 +1,44 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":  250},
+        {"name": "armor_durability", "value":   10},
+        {"name": "enchantability",   "value":   18},
+        {"name": "harvest_level",    "value":    1},
+        {"name": "harvest_speed",    "value":    2},
+        {"name": "melee_damage",     "value":    0},
+        {"name": "magic_damage",     "value":    0},
+        {"name": "attack_speed",     "value":  0.0},
+        {"name": "armor",            "value":    7},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "magic_armor",      "value":    2},
+        {"name": "ranged_damage",    "value":    0},
+        {"name": "ranged_speed",     "value":  0.0},
+        {"name": "rarity",           "value":    8},
+        {"name": "chargeability",    "value":  0.7}
+    ],
+    "traits": [
+        {"name": "silentgear:jagged", "level": 5},
+        {"name": "silentgear:chipping", "level": 5}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "aether_legacy:zanite_gemstone",
+            "data": 0,
+            "oredict": "gemZanite"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "D8A0F0",
+            "broken_color": "D8A0F0"
+        },
+        "name_color": "light_purple"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 2,
+        "tool_blacklist": []
+    }
+}
