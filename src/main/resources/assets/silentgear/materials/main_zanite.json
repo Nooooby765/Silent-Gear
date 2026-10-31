@@ -31,8 +31,8 @@
     "display": {
         "all": {
             "texture_suffix": "generic_hc",
-            "texture_color": "D8A0F0",
-            "broken_color": "D8A0F0"
+            "texture_color": "8B50DE",
+            "broken_color": "8B50DE"
         },
         "name_color": "light_purple"
     },

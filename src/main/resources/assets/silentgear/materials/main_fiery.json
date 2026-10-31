@@ -29,8 +29,8 @@
     "display": {
         "all": {
             "texture_suffix": "generic_hc",
-            "texture_color": "FF5A2A",
-            "broken_color": "FF5A2A"
+            "texture_color": "655B49",
+            "broken_color": "655B49"
         },
         "name_color": "red"
     },

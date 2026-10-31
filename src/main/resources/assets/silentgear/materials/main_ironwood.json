@@ -29,8 +29,8 @@
     "display": {
         "all": {
             "texture_suffix": "generic_hc",
-            "texture_color": "8F7A4D",
-            "broken_color": "8F7A4D"
+            "texture_color": "84501E",
+            "broken_color": "84501E"
         },
         "name_color": "gold"
     },

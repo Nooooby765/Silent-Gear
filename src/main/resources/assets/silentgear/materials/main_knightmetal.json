@@ -28,8 +28,8 @@
     "display": {
         "all": {
             "texture_suffix": "generic_hc",
-            "texture_color": "5B6470",
-            "broken_color": "5B6470"
+            "texture_color": "828D75",
+            "broken_color": "828D75"
         },
         "name_color": "gray"
     },
