@@ -26,6 +26,7 @@ import net.silentchaos512.gear.api.parts.ItemPartData;
 import net.silentchaos512.gear.api.parts.PartDisplayProperties;
 import net.silentchaos512.gear.api.parts.PartMain;
 import net.silentchaos512.gear.api.parts.PartRegistry;
+import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.api.stats.CommonItemStats;
 import net.silentchaos512.gear.client.util.GearClientHelper;
 import net.silentchaos512.gear.config.Config;
@@ -199,11 +200,12 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
 
         Ingredient blueprint = Blueprint.getBlueprintIngredientForGear(this);
         if (blueprint != null) {
+            int mainCount = getConfig().getCraftingPartCount(PartType.MAIN);
             for (PartMain part : PartRegistry.getVisibleMains()) {
                 ItemStack result = construct(this, part.getCraftingStack());
                 NonNullList<Ingredient> ingredients = NonNullList.create();
                 ingredients.add(blueprint);
-                for (int i = 0; i < getConfig().getHeadCount(); ++i) {
+                for (int i = 0; i < mainCount; ++i) {
                     ingredients.add(Ingredient.fromStacks(part.getCraftingStack()));
                 }
                 list.add(new ShapelessRecipes(SilentGear.MOD_ID, result, ingredients));

@@ -100,7 +100,7 @@ public interface ICoreTool extends ICoreItem {
                 if (!headClass.equals(this.getGearClass()))
                     return false;
                 head = stack;
-                partCounts.put(PartType.MAIN, config.getHeadCount());
+                partCounts.put(PartType.MAIN, config.getCraftingPartCount(PartType.MAIN));
             } else if (part != null) {
                 // Count parts
                 final PartType type = part.getType();

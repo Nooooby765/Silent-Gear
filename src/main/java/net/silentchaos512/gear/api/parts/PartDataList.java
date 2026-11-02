@@ -46,7 +46,12 @@ public final class PartDataList implements List<ItemPartData> {
     public static PartDataList from(Collection<ItemStack> stacks) {
         PartDataList ret = new PartDataList();
         // Get part data for each stack, if it is a part. Silently ignore non-parts.
-        stacks.stream().map(ItemPartData::fromStack).filter(Objects::nonNull).forEach(data -> ret.list.add(data));
+        // Indexed/foreach loop instead of a Stream: same order, same null filtering, no pipeline.
+        for (ItemStack stack : stacks) {
+            ItemPartData data = ItemPartData.fromStack(stack);
+            if (data != null)
+                ret.list.add(data);
+        }
         return ret;
     }
 
@@ -98,8 +103,13 @@ public final class PartDataList implements List<ItemPartData> {
     }
 
     public List<ItemPartData> getParts(Predicate<ItemPartData> predicate) {
+        // Plain loop instead of a Stream: keeps the same order and predicate calls, but avoids
+        // allocating the stream pipeline. Called several times per stat recalculation.
         ImmutableList.Builder<ItemPartData> builder = ImmutableList.builder();
-        this.list.stream().filter(predicate).forEach(builder::add);
+        for (ItemPartData data : this.list) {
+            if (predicate.test(data))
+                builder.add(data);
+        }
         return builder.build();
     }
 

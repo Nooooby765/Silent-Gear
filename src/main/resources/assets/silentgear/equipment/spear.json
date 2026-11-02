@@ -58,7 +58,7 @@
         "reach_distance": 1.0
     },
     "crafting": {
-        "main": 2,
+        "main": 1,
         "rod": 1
     }
 }

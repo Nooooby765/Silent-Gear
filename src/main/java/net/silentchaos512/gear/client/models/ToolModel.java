@@ -148,8 +148,9 @@ public final class ToolModel implements IModel {
 
         @Override
         public boolean accepts(@Nonnull ResourceLocation modelLocation) {
-            boolean matchesPath = ModItems.toolClasses.keySet().stream().anyMatch(s -> modelLocation.getPath().equals(s));
-            return modelLocation.getNamespace().equals(SilentGear.MOD_ID) && matchesPath;
+            // Key lookup instead of a Stream scan; same set of paths as toolClasses' keys.
+            return modelLocation.getNamespace().equals(SilentGear.MOD_ID)
+                    && ModItems.toolClasses.containsKey(modelLocation.getPath());
         }
 
         @Nonnull

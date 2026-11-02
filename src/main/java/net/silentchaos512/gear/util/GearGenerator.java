@@ -23,6 +23,7 @@ import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.*;
+import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModMaterials;
 import net.silentchaos512.gear.item.ToolRods;
 
@@ -98,14 +99,15 @@ public final class GearGenerator {
 
         // Make the base item
         PartDataList parts = PartDataList.of();
+        ConfigOptionEquipment config = item.getConfig();
         // Proper number of mains for head
-        for (int i = 0; i < item.getConfig().getHeadCount(); ++i)
+        for (int i = 0; i < config.getCraftingPartCount(PartType.MAIN); ++i)
             parts.addPart(main.get());
         // Requires a rod?
-        if (item.getConfig().getRodCount() > 0)
+        if (config.getRodCount() > 0)
             parts.addPart(rod.get());
         // Requires bowstring?
-        if (item.getConfig().getBowstringCount() > 0) {
+        if (config.getBowstringCount() > 0) {
             Optional<ItemPart> bowstring = selectRandom(PartBowstring.class, tier);
             bowstring.ifPresent(parts::addPart);
         }

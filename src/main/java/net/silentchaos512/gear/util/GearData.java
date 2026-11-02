@@ -20,6 +20,7 @@ import net.silentchaos512.gear.api.stats.StatInstance;
 import net.silentchaos512.gear.api.stats.StatInstance.Operation;
 import net.silentchaos512.gear.api.stats.StatModifierMap;
 import net.silentchaos512.gear.api.traits.Trait;
+import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModMaterials;
 import net.silentchaos512.gear.init.ModTraits;
 import net.silentchaos512.gear.item.MiscUpgrades;
@@ -175,11 +176,12 @@ public final class GearData {
 
     public static Multimap<ItemStat, StatInstance> getStatModifiers(ItemStack gear, PartDataList parts, double synergy) {
         Multimap<ItemStat, StatInstance> stats = new StatModifierMap();
+        final ICoreItem item = (ICoreItem) gear.getItem();
+        final ConfigOptionEquipment config = item.getConfig();
         for (ItemStat stat : ItemStat.ALL_STATS.values()) {
             // Item class modifiers
-            ICoreItem item = (ICoreItem) gear.getItem();
-            stats.put(stat, item.getConfig().getBaseModifier(stat));
-            stats.put(stat, item.getConfig().getStatModifier(stat));
+            stats.put(stat, config.getBaseModifier(stat));
+            stats.put(stat, config.getStatModifier(stat));
             // Part modifiers
             int partCount = 0;
             for (ItemPartData partData : parts) {
@@ -305,7 +307,12 @@ public final class GearData {
     }
 
     public static float getSynergyDisplayValue(ItemStack equipment) {
-        return getData(equipment, NBT_ROOT_PROPERTIES).getFloat(NBT_SYNERGY_DISPLAY);
+        // Read-only fast path; the value is only read on tooltips. Avoid creating an empty
+        // Properties compound for stacks that have not been recalculated.
+        NBTTagCompound root = equipment.getSubCompound(NBT_ROOT);
+        if (root == null || !root.hasKey(NBT_ROOT_PROPERTIES, 10))
+            return 0f;
+        return root.getCompoundTag(NBT_ROOT_PROPERTIES).getFloat(NBT_SYNERGY_DISPLAY);
     }
 
     @Nullable
@@ -327,7 +334,11 @@ public final class GearData {
      */
     @Nullable
     public static ItemPartData getPrimaryRenderPartFast(ItemStack stack) {
-        NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
+        // Read-only fast path: called for every armor piece every frame. Do not create NBT here.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        if (root == null || !root.hasKey(NBT_ROOT_CONSTRUCTION, 10))
+            return null;
+        NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_CONSTRUCTION);
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
 
         NBTBase nbt = tagList.get(0);
@@ -398,7 +409,13 @@ public final class GearData {
      */
     public static boolean hasPart(ItemStack gear, ItemPart upgrade) {
         NBTTagCompound tags = getData(gear, NBT_ROOT_CONSTRUCTION);
-        NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
+        return hasPartInConstruction(tags, upgrade);
+    }
+
+    private static boolean hasPartInConstruction(@Nullable NBTTagCompound construction, ItemPart upgrade) {
+        if (construction == null)
+            return false;
+        NBTTagList tagList = construction.getTagList(NBT_CONSTRUCTION_PARTS, 10);
         String upgradeName = upgrade.getRegistryName().toString();
 
         for (NBTBase nbt : tagList) {
@@ -437,10 +454,14 @@ public final class GearData {
      * Items written before the flag existed fall back to a part-list scan.
      */
     public static boolean hasRedCard(ItemStack gear) {
-        NBTTagCompound tags = getData(gear, NBT_ROOT_CONSTRUCTION);
-        if (tags.hasKey(NBT_HAS_RED_CARD))
-            return tags.getBoolean(NBT_HAS_RED_CARD);
-        return hasPart(gear, MiscUpgrades.RED_CARD.getPart());
+        // Read-only fast path: called on every isBroken() (rendering, mining checks). Avoid
+        // creating ToolCore_Data/Construction on stacks that do not have it yet.
+        NBTTagCompound root = gear.getSubCompound(NBT_ROOT);
+        NBTTagCompound construction = root != null && root.hasKey(NBT_ROOT_CONSTRUCTION, 10)
+                ? root.getCompoundTag(NBT_ROOT_CONSTRUCTION) : null;
+        if (construction != null && construction.hasKey(NBT_HAS_RED_CARD))
+            return construction.getBoolean(NBT_HAS_RED_CARD);
+        return hasPartInConstruction(construction, MiscUpgrades.RED_CARD.getPart());
     }
 
     /**
@@ -486,7 +507,10 @@ public final class GearData {
     }
 
     public static boolean isExampleGear(ItemStack stack) {
-        return getData(stack, NBT_ROOT_CONSTRUCTION).getBoolean(NBT_IS_EXAMPLE);
+        // Read-only fast path; checked on every tooltip build for gear items.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        return root != null && root.hasKey(NBT_ROOT_CONSTRUCTION, 10)
+                && root.getCompoundTag(NBT_ROOT_CONSTRUCTION).getBoolean(NBT_IS_EXAMPLE);
     }
 
     public static boolean isRandomGradingDone(ItemStack stack) {
@@ -502,7 +526,8 @@ public final class GearData {
     }
 
     public static void incrementBrokenCount(ItemStack stack) {
-        getData(stack, NBT_ROOT_CONSTRUCTION).setInteger(NBT_BROKEN_COUNT, getBrokenCount(stack) + 1);
+        NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
+        tags.setInteger(NBT_BROKEN_COUNT, tags.getInteger(NBT_BROKEN_COUNT) + 1);
     }
 
     public static int getRepairCount(ItemStack stack) {
@@ -510,7 +535,8 @@ public final class GearData {
     }
 
     public static void incrementRepairCount(ItemStack stack, int amount) {
-        getData(stack, NBT_ROOT_CONSTRUCTION).setInteger(NBT_REPAIR_COUNT, getRepairCount(stack) + amount);
+        NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
+        tags.setInteger(NBT_REPAIR_COUNT, tags.getInteger(NBT_REPAIR_COUNT) + amount);
     }
 
     public static class EventHandler {

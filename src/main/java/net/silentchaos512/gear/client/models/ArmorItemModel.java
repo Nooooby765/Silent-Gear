@@ -140,8 +140,9 @@ public class ArmorItemModel implements IModel {
 
         @Override
         public boolean accepts(ResourceLocation modelLocation) {
-            boolean matchesPath = ModItems.armorClasses.keySet().stream().anyMatch(s -> modelLocation.getPath().equals(s));
-            return modelLocation.getNamespace().equals(SilentGear.MOD_ID) && matchesPath;
+            // Key lookup instead of a Stream scan; same set of paths as armorClasses' keys.
+            return modelLocation.getNamespace().equals(SilentGear.MOD_ID)
+                    && ModItems.armorClasses.containsKey(modelLocation.getPath());
         }
 
         @Override
@@ -173,7 +174,10 @@ public class ArmorItemModel implements IModel {
             if (!GearClientHelper.modelCache.containsKey(key)) {
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
-                processTexture(stack, itemArmor.getGearClass(), PartPositions.ARMOR, itemArmor.getPrimaryPart(stack), GearHelper.isBroken(stack), builder);
+                // Resolve the primary part once: getPrimaryPart parses the construction NBT and
+                // copies the crafting stack, and the two call sites used to do it separately.
+                ItemPartData primaryPart = itemArmor.getPrimaryPart(stack);
+                processTexture(stack, itemArmor.getGearClass(), PartPositions.ARMOR, primaryPart, GearHelper.isBroken(stack), builder);
 
                 IModel parent = model.getParent().retexture(builder.build());
                 Function<ResourceLocation, TextureAtlasSprite> textureGetter = location ->
@@ -182,7 +186,7 @@ public class ArmorItemModel implements IModel {
                 GearClientHelper.modelCache.put(key, bakedModel);
 
                 // Color cache (must be populated together with the model, or the first frame is white)
-                ColorHandlers.gearColorCache.put(key, new Integer[] {itemArmor.getPrimaryPart(stack).getColor(stack, 0)});
+                ColorHandlers.gearColorCache.put(key, new Integer[] {primaryPart.getColor(stack, 0)});
                 return bakedModel;
             }
 

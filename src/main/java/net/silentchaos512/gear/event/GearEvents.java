@@ -148,8 +148,9 @@ public final class GearEvents {
             ItemStack stack = event.getDrops().get(i);
             ItemStack smelted = FurnaceRecipes.instance().getSmeltingResult(stack);
             if (!smelted.isEmpty()) {
-                event.getDrops().remove(i);
-                event.getDrops().add(i, smelted.copy());
+                // set() replaces in place. The previous remove(i)+add(i) produced the same list
+                // contents, but did two structural edits per drop.
+                event.getDrops().set(i, smelted.copy());
             }
         }
     }

@@ -18,6 +18,7 @@ import net.silentchaos512.gear.api.parts.PartDataList;
 import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.block.craftingstation.GuiCraftingStation;
 import net.silentchaos512.gear.config.Config;
+import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.lib.client.key.KeyTrackerSL;
 import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.util.Color;
@@ -93,7 +94,7 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
 
     @Override
     public int getMaterialCost(ItemStack blueprint) {
-        return this.gearItem.getConfig().getHeadCount();
+        return this.gearItem.getConfig().getCraftingPartCount(PartType.MAIN);
     }
 
     @Override
@@ -109,6 +110,7 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<String> list, ITooltipFlag flag) {
         I18nHelper i18n = SilentGear.i18n;
         String itemClass = this.gearItem.getGearClass();
+        ConfigOptionEquipment config = this.gearItem.getConfig();
 
         // Output item class
         String key = this.gearItem.getItem().getTranslationKey() + ".name";
@@ -118,7 +120,7 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
             list.add(TextFormatting.ITALIC + i18n.itemSubText(NAME, this.gearItem.getGearClass() + ".desc"));
 
         // Material required for crafting
-        int amount = this.gearItem.getConfig().getHeadCount();
+        int amount = config.getCraftingPartCount(PartType.MAIN);
         list.add(i18n.itemSubText(NAME, "materialAmount", amount));
 
         // Single use or multiple uses? Or disabled?
@@ -148,7 +150,7 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
 
                 for (PartType type : PartType.getValues()) {
                     if (type != PartType.MAIN) {
-                        final int required = this.gearItem.getConfig().getCraftingPartCount(type);
+                        final int required = config.getCraftingPartCount(type);
                         if (required > 0) {
                             String partName = i18n.translate("part", "type." + type.getName());
                             list.add("  " + i18n.itemSubText(NAME, "itemRecipe2", required, partName));

@@ -295,7 +295,7 @@ public class ToolHead extends Item implements IStatItem {
                     ItemStack result = getStack(toolClass, part, true);
                     NonNullList<Ingredient> ingredients = NonNullList.create();
                     ingredients.add(blueprint);
-                    for (int i = 0; i < item.getConfig().getHeadCount(); ++i) {
+                    for (int i = 0; i < item.getConfig().getCraftingPartCount(PartType.MAIN); ++i) {
                         ingredients.add(Ingredient.fromStacks(part.getCraftingStack()));
                     }
                     list.add(new ShapelessRecipes(SilentGear.MOD_ID, result, ingredients));
@@ -310,8 +310,10 @@ public class ToolHead extends Item implements IStatItem {
 
     @Override
     public float getStat(@Nonnull ItemStack stack, @Nonnull ItemStat stat) {
-        NBTTagCompound root = getData(stack);
-        if (!root.hasKey(NBT_STAT_CACHE))
+        // Read-only fast path: avoids creating ToolHeadData for unmodified stacks. A missing
+        // StatCache still falls back to the stat's default value, as before.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        if (root == null || !root.hasKey(NBT_STAT_CACHE))
             return stat.getDefaultValue();
 
         NBTTagCompound tags = root.getCompoundTag(NBT_STAT_CACHE);

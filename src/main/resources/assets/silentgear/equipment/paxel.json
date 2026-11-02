@@ -57,7 +57,7 @@
         "repair_efficiency": 0.75
     },
     "crafting": {
-        "main": 4,
+        "main": 5,
         "rod": 2
     }
 }

@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ConfigOptionEquipment {
     public final ICoreItem item;
@@ -30,6 +29,9 @@ public class ConfigOptionEquipment {
     private final Map<ItemStat, StatInstance> modifiers = new THashMap<>();
     private final Map<ItemStat, Float> baseModifiers = new THashMap<>();
     private final Map<String, Integer> recipe = new HashMap<>();
+    // Built once after the resource file (and any config override) has been read.
+    private final Map<PartType, Integer> craftingPartCounts = new THashMap<>();
+    private Set<PartType> requiredPartTypes = Collections.emptySet();
 
     public <T extends ICoreItem> ConfigOptionEquipment(T item) {
         this.item = item;
@@ -47,28 +49,27 @@ public class ConfigOptionEquipment {
 
     @Nonnull
     public StatInstance getBaseModifier(ItemStat stat) {
-        float value = this.baseModifiers.containsKey(stat) ? this.baseModifiers.get(stat) : 0;
-        return new StatInstance(this.item.getGearClass() + "_basemod", value, Operation.ADD);
+        Float value = this.baseModifiers.get(stat);
+        return new StatInstance(this.item.getGearClass() + "_basemod", value != null ? value : 0, Operation.ADD);
     }
 
     @Nonnull
     public StatInstance getStatModifier(ItemStat stat) {
-        if (this.modifiers.containsKey(stat))
-            return this.modifiers.get(stat);
-        return StatInstance.ZERO;
+        StatInstance instance = this.modifiers.get(stat);
+        return instance != null ? instance : StatInstance.ZERO;
     }
 
     public Set<PartType> getRequiredPartTypes() {
-        return recipe.keySet().stream().map(PartType::get).collect(Collectors.toSet());
+        return this.requiredPartTypes;
     }
 
     public int getCraftingPartCount(PartType type) {
-        return this.recipe.getOrDefault(type.getName(), 0);
+        return this.craftingPartCounts.getOrDefault(type, 0);
     }
 
     @Deprecated
     public int getHeadCount() {
-        return this.recipe.getOrDefault("main", 0);
+        return getCraftingPartCount(PartType.MAIN);
     }
 
     @Deprecated
@@ -105,14 +106,31 @@ public class ConfigOptionEquipment {
 
         // Override in config folder (optional)
         File overrideFile = new File(Config.INSTANCE.getDirectory(), "equipment/" + item.getGearClass() + ".json");
-        if (!overrideFile.isFile())
-            return;
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(overrideFile), StandardCharsets.UTF_8))) {
-            readResourceFile(reader);
-        } catch (Exception e) {
-            SilentGear.LOGGER.error("Error reading equipment override '{}'", overrideFile.getAbsolutePath(), e);
+        if (overrideFile.isFile()) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(overrideFile), StandardCharsets.UTF_8))) {
+                readResourceFile(reader);
+            } catch (Exception e) {
+                SilentGear.LOGGER.error("Error reading equipment override '{}'", overrideFile.getAbsolutePath(), e);
+            }
         }
+
+        rebuildCraftingIndex();
+    }
+
+    /**
+     * Builds the PartType lookup from the raw name-keyed recipe map once, after all sources
+     * (JAR resource plus optional config override) have been read.
+     */
+    private void rebuildCraftingIndex() {
+        Map<PartType, Integer> counts = new THashMap<>();
+        for (PartType type : PartType.getValues()) {
+            int amount = this.recipe.getOrDefault(type.getName(), 0);
+            if (amount > 0)
+                counts.put(type, amount);
+        }
+        this.craftingPartCounts.clear();
+        this.craftingPartCounts.putAll(counts);
+        this.requiredPartTypes = Collections.unmodifiableSet(new HashSet<>(counts.keySet()));
     }
 
     private void readResourceFile(BufferedReader reader) {

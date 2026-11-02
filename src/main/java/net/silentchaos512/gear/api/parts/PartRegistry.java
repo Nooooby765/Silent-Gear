@@ -62,8 +62,11 @@ public final class PartRegistry {
             return null;
 
         String key = stack.getItem().getRegistryName() + "@" + stack.getItemDamage();
-        if (STACK_TO_PART.containsKey(key))
-            return STACK_TO_PART.get(key);
+        // Single map lookup instead of containsKey + get. Values are never null, so a null
+        // result here is indistinguishable from a miss.
+        ItemPart cached = STACK_TO_PART.get(key);
+        if (cached != null)
+            return cached;
         if (STACK_TO_PART_MISSES.contains(key))
             return null;
 
