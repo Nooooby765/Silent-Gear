@@ -69,6 +69,15 @@ public class ModularTipItem extends Item implements IColoredItem {
     }
 
     @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        ItemPart source = ModularTipPart.getSource(stack);
+        // 与工具 tooltip/JEI 使用同一“材料 + 尖端”拼接，避免物品栏再显示固定名“模块化尖端”
+        return source == null
+                ? super.getItemStackDisplayName(stack)
+                : ModularTipPart.getDisplayNameForMaterial(source, stack).getUnformattedText();
+    }
+
+    @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         ItemPart source = ModularTipPart.getSource(stack);
         if (source == null) {

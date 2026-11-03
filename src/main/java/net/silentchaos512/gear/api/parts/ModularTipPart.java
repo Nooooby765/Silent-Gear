@@ -197,7 +197,16 @@ public class ModularTipPart extends PartTip {
     public ITextComponent getDisplayName(@Nullable ItemPartData part, ItemStack gear) {
         ItemPart source = part == null ? null : getSource(part);
         if (source == null) return super.getDisplayName(part, gear);
-        String materialName = source.getDisplayName(ItemPartData.instance(source), gear).getUnformattedComponentText();
+        return getDisplayNameForMaterial(source, gear);
+    }
+
+    /**
+     * 材料名 + 类型后缀的统一拼接点。材料 lang 只提供裸材料名（如 Emerald / 绿宝石），
+     * 避免与这里的 Tip/尖端 后缀重复。
+     */
+    public static ITextComponent getDisplayNameForMaterial(ItemPart source, ItemStack gear) {
+        String materialName = source.getDisplayName(ItemPartData.instance(source), gear)
+                .getUnformattedComponentText();
         return new TextComponentTranslation("part.silentgear.modular_tip.name", materialName);
     }
 }

@@ -287,24 +287,13 @@ public final class GearData {
         NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
         PartDataList list = PartDataList.of();
-        int mainsFound = 0;
-        int rodsFound = 0;
-        int tipsFound = 0;
 
         for (NBTBase nbt : tagList) {
             if (nbt instanceof NBTTagCompound) {
                 NBTTagCompound partCompound = (NBTTagCompound) nbt;
                 ItemPartData data = ItemPartData.readFromNBT(partCompound);
-                if (data != null) {
-                    if (data.getPart() instanceof PartMain && ++mainsFound <= MAX_MAIN_PARTS)
-                        list.add(data);
-                    else if (data.getPart() instanceof PartRod && ++rodsFound <= MAX_ROD_PARTS)
-                        list.add(data);
-                    else if (data.getPart() instanceof PartTip && ++tipsFound <= MAX_TIP_PARTS)
-                        list.add(data);
-                    else
-                        list.add(data);
-                }
+                if (data != null)
+                    list.add(data);
             }
         }
         return list;
@@ -346,7 +335,7 @@ public final class GearData {
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
 
         NBTBase nbt = tagList.get(0);
-        if (nbt instanceof NBTTagEnd) return null;
+        if (!(nbt instanceof NBTTagCompound)) return null;
 
         ItemPart part = ItemPart.fromNBT((NBTTagCompound) nbt);
         if (part == null) return null;
@@ -361,11 +350,15 @@ public final class GearData {
      */
     @Nullable
     public static ItemPartData getPartByIndex(ItemStack stack, int index) {
-        NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
+        // Read-only fast path: this is reached from render/model paths. Do not create NBT here.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        if (root == null || !root.hasKey(NBT_ROOT_CONSTRUCTION, 10))
+            return null;
+        NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_CONSTRUCTION);
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
 
         NBTBase nbt = tagList.get(index);
-        if (nbt instanceof NBTTagEnd) return null;
+        if (!(nbt instanceof NBTTagCompound)) return null;
 
         ItemPartData data = ItemPartData.readFromNBT((NBTTagCompound) nbt);
         return data != null && data.getPart() instanceof PartMain ? data : null;
@@ -493,9 +486,16 @@ public final class GearData {
         if (stack.isEmpty())
             return new NBTTagCompound();
         NBTTagCompound rootTag = stack.getOrCreateSubCompound(NBT_ROOT);
-        if (!rootTag.hasKey(compoundKey))
-            rootTag.setTag(compoundKey, new NBTTagCompound());
-        return rootTag.getCompoundTag(compoundKey);
+        // Single lookup instead of hasKey + getCompoundTag. Preserve the old behavior for a
+        // wrong-typed tag: return an empty compound without overwriting it.
+        NBTBase tag = rootTag.getTag(compoundKey);
+        if (tag instanceof NBTTagCompound)
+            return (NBTTagCompound) tag;
+        if (tag != null)
+            return new NBTTagCompound();
+        NBTTagCompound data = new NBTTagCompound();
+        rootTag.setTag(compoundKey, data);
+        return data;
     }
 
     @Nullable

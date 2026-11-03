@@ -63,6 +63,15 @@ public class ModularCoatingItem extends Item implements IColoredItem {
     }
 
     @Override
+    public String getItemStackDisplayName(ItemStack stack) {
+        PartCoating source = ModularCoatingPart.getSource(stack);
+        // 与工具 tooltip/JEI 使用同一“材料 + 覆层”拼接，避免物品栏再显示固定名“模块化覆层”
+        return source == null
+                ? super.getItemStackDisplayName(stack)
+                : ModularCoatingPart.getDisplayNameForMaterial(source, stack).getUnformattedText();
+    }
+
+    @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<String> tooltip, ITooltipFlag flag) {
         PartCoating source = ModularCoatingPart.getSource(stack);
         if (source != null) {

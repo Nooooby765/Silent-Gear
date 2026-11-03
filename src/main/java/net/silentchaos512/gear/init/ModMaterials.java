@@ -97,8 +97,6 @@ public class ModMaterials implements IPhasedInitializer {
 
         for (ToolRods rod : ToolRods.values())
             PartRegistry.putPart(rod.getPart());
-        PartRegistry.putPart(new PartRod(getPath("rod_end_stone"), PartOrigins.BUILTIN_CORE));
-        PartRegistry.putPart(new PartRod(getPath("rod_sandstone"), PartOrigins.BUILTIN_CORE));
 
         modularTip = PartRegistry.putPart(new ModularTipPart(getPath("modular_tip"), PartOrigins.BUILTIN_CORE));
         modularCoating = PartRegistry.putPart(new ModularCoatingPart(getPath("modular_coating"), PartOrigins.BUILTIN_CORE));

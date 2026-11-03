@@ -129,7 +129,16 @@ public class ModularCoatingPart extends PartCoating {
     public ITextComponent getDisplayName(@Nullable ItemPartData part, ItemStack gear) {
         PartCoating source = part == null ? null : getSource(part);
         if (source == null) return super.getDisplayName(part, gear);
-        String materialName = source.getDisplayName(ItemPartData.instance(source), gear).getUnformattedComponentText();
+        return getDisplayNameForMaterial(source, gear);
+    }
+
+    /**
+     * 材料名 + 类型后缀的统一拼接点。coating 使用 Coating/覆层，与 tip 的 Tip/尖端区分；
+     * 材料 lang 只提供裸材料名。
+     */
+    public static ITextComponent getDisplayNameForMaterial(ItemPart source, ItemStack gear) {
+        String materialName = source.getDisplayName(ItemPartData.instance(source), gear)
+                .getUnformattedComponentText();
         return new TextComponentTranslation("part.silentgear.modular_coating.name", materialName);
     }
 }

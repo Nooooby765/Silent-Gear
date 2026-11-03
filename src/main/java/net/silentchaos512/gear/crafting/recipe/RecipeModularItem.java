@@ -24,14 +24,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.parts.ItemPartData;
-import net.silentchaos512.gear.api.parts.PartRegistry;
 import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.item.ToolHead;
 import net.silentchaos512.lib.recipe.RecipeBaseSL;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class RecipeModularItem extends RecipeBaseSL {
     private final ICoreItem item;
@@ -73,8 +71,7 @@ public class RecipeModularItem extends RecipeBaseSL {
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
-        Collection<ItemStack> parts = getComponents(inv);
-        return item.matchesRecipe(parts) && parts.size() == getNonEmptyStacks(inv).size();
+        return item.matchesRecipe(getComponents(inv));
     }
 
     @Nonnull
@@ -84,17 +81,18 @@ public class RecipeModularItem extends RecipeBaseSL {
     }
 
     private Collection<ItemStack> getComponents(InventoryCrafting inv) {
-        List<ItemStack> parts = new ArrayList<>();
-        parts.addAll(getComponents(inv, s -> s.getItem() instanceof ToolHead));
-        parts.addAll(getComponents(inv, s -> PartRegistry.get(s) != null));
-        return parts;
-    }
-
-    private Collection<ItemStack> getComponents(InventoryCrafting inv, Predicate<ItemStack> predicate) {
+        // Tool heads first, then every other non-empty stack. matchesRecipe rejects non-part
+        // stacks itself, so the old PartRegistry filter and the non-empty count check are
+        // redundant. One result list instead of three temporary lists.
         List<ItemStack> parts = new ArrayList<>();
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             ItemStack stack = inv.getStackInSlot(i);
-            if (!stack.isEmpty() && predicate.test(stack))
+            if (!stack.isEmpty() && stack.getItem() instanceof ToolHead)
+                parts.add(stack);
+        }
+        for (int i = 0; i < inv.getSizeInventory(); ++i) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && !(stack.getItem() instanceof ToolHead))
                 parts.add(stack);
         }
         return parts;

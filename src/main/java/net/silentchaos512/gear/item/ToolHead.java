@@ -163,8 +163,10 @@ public class ToolHead extends Item implements IStatItem {
         if (tags.hasKey(NBT_MATERIALS)) {
             NBTTagList tagList = tags.getTagList(NBT_MATERIALS, 10);
             for (NBTBase nbt : tagList) {
-                ItemPartData data = ItemPartData.readFromNBT((NBTTagCompound) nbt);
-                if (data != null) builder.add(data);
+                if (nbt instanceof NBTTagCompound) {
+                    ItemPartData data = ItemPartData.readFromNBT((NBTTagCompound) nbt);
+                    if (data != null) builder.add(data);
+                }
             }
         }
         return builder.build();
@@ -244,7 +246,13 @@ public class ToolHead extends Item implements IStatItem {
         Collection<ItemPartData> parts = getAllParts(stack);
 
         // Ungraded parts warning
-        boolean hasUngradedParts = parts.stream().anyMatch(p -> p.getGrade() == MaterialGrade.NONE);
+        boolean hasUngradedParts = false;
+        for (ItemPartData part : parts) {
+            if (part.getGrade() == MaterialGrade.NONE) {
+                hasUngradedParts = true;
+                break;
+            }
+        }
         if (hasUngradedParts) {
             list.add(TextFormatting.ITALIC + SilentGear.i18n.miscText("ungradedParts"));
         }
