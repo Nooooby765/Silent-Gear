@@ -153,7 +153,7 @@ public final class GearClientHelper {
 
     public static void tooltipListParts(ItemStack gear, List<String> tooltip, Collection<ItemPartData> parts) {
         for (ItemPartData part : parts) {
-            String str = "- " + part.getNameColor() + part.getTranslatedName(gear);
+            String str = "- " + part.getDisplayNameColor(gear) + part.getTranslatedName(gear);
             if (part.getPart() instanceof PartMain)
                 str += TextFormatting.RESET + " (" + part.getGrade().getTranslatedName() + ")";
             tooltip.add(str);

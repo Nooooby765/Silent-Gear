@@ -178,6 +178,14 @@ public final class ItemPartData {
         return part.getDisplayName(this, gear);
     }
 
+    /**
+     * Color that {@link #getDisplayName(ItemStack)} should be printed in. Defaults to the part's
+     * own name color; modular parts delegate to their material.
+     */
+    public TextFormatting getDisplayNameColor(ItemStack gear) {
+        return part.getDisplayNameColor(this, gear);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ItemPartData) {

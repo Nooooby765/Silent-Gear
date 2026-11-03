@@ -26,7 +26,8 @@ public final class ModularMaterialRegistry {
     private static final String CONFIG_DIR = "modular_materials";
     private static final Gson GSON = new Gson();
 
-    private static Map<String, Entry> byIdType = ImmutableMap.of();
+    private static Map<String, Entry> byIdTip = ImmutableMap.of();
+    private static Map<String, Entry> byIdCoating = ImmutableMap.of();
     private static Map<String, List<Entry>> byItem = ImmutableMap.of();
     private static Map<String, List<Entry>> byOre = ImmutableMap.of();
     private static Map<String, List<ItemPart>> byType = ImmutableMap.of();
@@ -47,14 +48,15 @@ public final class ModularMaterialRegistry {
         loadBuiltin(files);
         loadConfig(files);
 
-        Map<String, Entry> idMap = new LinkedHashMap<>();
+        Map<String, Entry> idTipMap = new LinkedHashMap<>();
+        Map<String, Entry> idCoatingMap = new LinkedHashMap<>();
         Map<String, List<Entry>> itemMap = new LinkedHashMap<>();
         Map<String, List<Entry>> oreMap = new LinkedHashMap<>();
         Map<String, List<ItemPart>> typeMap = new LinkedHashMap<>();
         Map<String, Alias> aliasMap = new LinkedHashMap<>();
 
         for (Map.Entry<String, JsonObject> file : files.entrySet()) {
-            buildEntry(file.getKey(), file.getValue(), idMap, itemMap, oreMap, typeMap, aliasMap);
+            buildEntry(file.getKey(), file.getValue(), idTipMap, idCoatingMap, itemMap, oreMap, typeMap, aliasMap);
         }
 
         Comparator<Entry> order = Comparator
@@ -63,9 +65,13 @@ public final class ModularMaterialRegistry {
         itemMap.values().forEach(list -> list.sort(order));
         oreMap.values().forEach(list -> list.sort(order));
 
-        ImmutableMap.Builder<String, Entry> idBuilder = ImmutableMap.builder();
-        idMap.forEach(idBuilder::put);
-        byIdType = idBuilder.build();
+        ImmutableMap.Builder<String, Entry> tipBuilder = ImmutableMap.builder();
+        idTipMap.forEach(tipBuilder::put);
+        byIdTip = tipBuilder.build();
+
+        ImmutableMap.Builder<String, Entry> coatingBuilder = ImmutableMap.builder();
+        idCoatingMap.forEach(coatingBuilder::put);
+        byIdCoating = coatingBuilder.build();
 
         ImmutableMap.Builder<String, List<Entry>> itemBuilder = ImmutableMap.builder();
         itemMap.forEach((key, list) -> itemBuilder.put(key, ImmutableList.copyOf(list)));
@@ -85,13 +91,15 @@ public final class ModularMaterialRegistry {
 
         loaded = true;
         SilentGear.LOGGER.info("Loaded {} modular material definitions ({} id/type entries, {} legacy aliases)",
-                files.size(), byIdType.size(), aliases.size());
+                files.size(), byIdTip.size() + byIdCoating.size(), aliases.size());
     }
 
     @Nullable
     public static ItemPart get(@Nullable String key, PartType type) {
         if (key == null || key.isEmpty()) return null;
-        Entry entry = byIdType.get(key + "|" + type.getName());
+        Map<String, Entry> map = type == PartType.TIP ? byIdTip
+                : type == PartType.COATING ? byIdCoating : null;
+        Entry entry = map == null ? null : map.get(key);
         return entry == null ? null : entry.part;
     }
 
@@ -213,9 +221,10 @@ public final class ModularMaterialRegistry {
         }
     }
 
-    private static void buildEntry(String fileName, JsonObject json, Map<String, Entry> idMap,
-                                   Map<String, List<Entry>> itemMap, Map<String, List<Entry>> oreMap,
-                                   Map<String, List<ItemPart>> typeMap, Map<String, Alias> aliasMap) {
+    private static void buildEntry(String fileName, JsonObject json, Map<String, Entry> idTipMap,
+                                   Map<String, Entry> idCoatingMap, Map<String, List<Entry>> itemMap,
+                                   Map<String, List<Entry>> oreMap, Map<String, List<ItemPart>> typeMap,
+                                   Map<String, Alias> aliasMap) {
         ResourceLocation id;
         try {
             id = new ResourceLocation(json.has("id")
@@ -275,7 +284,10 @@ public final class ModularMaterialRegistry {
             part.loadFromJson(json);
 
             Entry entry = new Entry(id, type, part, priority, itemId, itemMeta, oreDict);
-            idMap.put(id + "|" + type.getName(), entry);
+            if (type == PartType.TIP)
+                idTipMap.put(id.toString(), entry);
+            else
+                idCoatingMap.put(id.toString(), entry);
             typeMap.computeIfAbsent(type.getName(), k -> new ArrayList<>()).add(part);
 
             // 旧独立部件 key 与内置材料文件名一致（tip_iron、coating_gold 等）。加载期一次性

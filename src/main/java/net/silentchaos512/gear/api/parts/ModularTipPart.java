@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.silentchaos512.gear.api.event.GetStatModifierEvent;
 import net.silentchaos512.gear.api.item.GearType;
@@ -44,8 +45,10 @@ public class ModularTipPart extends PartTip {
      */
     @Nullable
     public static ItemPart getSource(ItemStack stack) {
-        if (stack.isEmpty() || !stack.hasTagCompound()) return null;
-        String key = stack.getTagCompound().getString(NBT_MATERIAL);
+        if (stack.isEmpty()) return null;
+        NBTTagCompound tags = stack.getTagCompound();
+        if (tags == null) return null;
+        String key = tags.getString(NBT_MATERIAL);
         if (key.isEmpty()) return null;
 
         // 数据驱动材料优先。旧存档的 main_* 仍走下方主材料回退。
@@ -198,6 +201,17 @@ public class ModularTipPart extends PartTip {
         ItemPart source = part == null ? null : getSource(part);
         if (source == null) return super.getDisplayName(part, gear);
         return getDisplayNameForMaterial(source, gear);
+    }
+
+    @Override
+    public TextFormatting getDisplayNameColor(@Nullable ItemPartData part, ItemStack gear) {
+        ItemPart source = part == null ? null : getSource(part);
+        return source != null ? source.getNameColor() : super.getDisplayNameColor(part, gear);
+    }
+
+    @Override
+    public String getTranslatedName(@Nullable ItemPartData part, ItemStack gear) {
+        return getDisplayName(part, gear).getUnformattedText();
     }
 
     /**

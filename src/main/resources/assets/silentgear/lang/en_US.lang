@@ -346,15 +346,10 @@ material.silentgear.rod_rough.name=Rough Rod
 material.silentgear.rod_stone.name=Stone Rod
 material.silentgear.rod_wood.name=Wood Rod
 
-material.silentgear.tip_diamond.name=Diamond
-material.silentgear.tip_emerald.name=Emerald
-material.silentgear.tip_glowstone.name=Glowstone
-material.silentgear.tip_gold.name=Gold
-material.silentgear.tip_iron.name=Iron
-material.silentgear.tip_lapis.name=Lapis
-material.silentgear.tip_quartz.name=Quartz
-material.silentgear.tip_redstone.name=Redstone
-material.silentgear.coating_gold.name=Gold
+material.silentgear.redstone.name=Redstone
+material.silentgear.glowstone.name=Glowstone
+material.silentgear.lapis.name=Lapis
+material.silentgear.quartz.name=Quartz
 
 part.silentgear.type.binding=Binding
 part.silentgear.type.bowstring=Bowstring

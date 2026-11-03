@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 import net.silentchaos512.gear.api.item.GearType;
 import net.silentchaos512.gear.api.stats.ItemStat;
 import net.silentchaos512.gear.api.stats.StatInstance;
@@ -38,8 +39,10 @@ public class ModularCoatingPart extends PartCoating {
      */
     @Nullable
     public static PartCoating getSource(ItemStack stack) {
-        if (stack.isEmpty() || !stack.hasTagCompound()) return null;
-        String key = stack.getTagCompound().getString(NBT_MATERIAL);
+        if (stack.isEmpty()) return null;
+        NBTTagCompound tags = stack.getTagCompound();
+        if (tags == null) return null;
+        String key = tags.getString(NBT_MATERIAL);
         if (key.isEmpty()) return null;
 
         // 数据驱动涂层材料；旧存档的 coating_gold key 命中 JSON 材料 id。
@@ -130,6 +133,17 @@ public class ModularCoatingPart extends PartCoating {
         PartCoating source = part == null ? null : getSource(part);
         if (source == null) return super.getDisplayName(part, gear);
         return getDisplayNameForMaterial(source, gear);
+    }
+
+    @Override
+    public TextFormatting getDisplayNameColor(@Nullable ItemPartData part, ItemStack gear) {
+        PartCoating source = part == null ? null : getSource(part);
+        return source != null ? source.getNameColor() : super.getDisplayNameColor(part, gear);
+    }
+
+    @Override
+    public String getTranslatedName(@Nullable ItemPartData part, ItemStack gear) {
+        return getDisplayName(part, gear).getUnformattedText();
     }
 
     /**

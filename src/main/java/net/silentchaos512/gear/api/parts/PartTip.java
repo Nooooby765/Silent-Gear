@@ -38,7 +38,7 @@ public class PartTip extends ItemPart implements IUpgradePart {
 
     @Override
     public void addInformation(ItemPartData data, ItemStack gear, World world, @Nonnull List<String> tooltip, boolean advanced) {
-        tooltip.add(1, getNameColor() + data.getDisplayName(gear).getFormattedText());
+        tooltip.add(1, data.getDisplayNameColor(gear) + data.getDisplayName(gear).getFormattedText());
     }
 
     @Override

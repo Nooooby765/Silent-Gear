@@ -1,6 +1,9 @@
 package net.silentchaos512.gear.api.parts;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 import javax.annotation.Nullable;
 
@@ -23,6 +26,16 @@ public class ModularCoatingMaterial extends PartCoating {
 
     @Override
     public String getTranslationKey(@Nullable ItemPartData part) {
-        return String.format("material.%s.%s.name", materialId.getNamespace(), materialId.getPath());
+        return ModularMaterialNames.genericKey(materialId);
+    }
+
+    @Override
+    public ITextComponent getDisplayName(@Nullable ItemPartData part, ItemStack gear) {
+        return new TextComponentString(ModularMaterialNames.resolve(materialId, getCraftingStack(), gear));
+    }
+
+    @Override
+    public String getTranslatedName(@Nullable ItemPartData part, ItemStack gear) {
+        return ModularMaterialNames.resolve(materialId, getCraftingStack(), gear);
     }
 }

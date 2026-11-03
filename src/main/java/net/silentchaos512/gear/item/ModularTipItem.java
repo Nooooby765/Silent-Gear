@@ -22,6 +22,7 @@ import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.util.Color;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -85,13 +86,16 @@ public class ModularTipItem extends Item implements IColoredItem {
         } else {
             String materialName = source.getDisplayName(ItemPartData.instance(source), ItemStack.EMPTY)
                     .getUnformattedComponentText();
-            tooltip.add(SilentGear.i18n.itemSubText("modular_tip", "material", materialName));
+            tooltip.add("" + source.getNameColor() + TextFormatting.ITALIC
+                    + SilentGear.i18n.itemSubText("modular_tip", "material", materialName));
             // 仅在悬停时解析，按名称排序展示材料 traits
             Map<Trait, Integer> traits = source.getTraits(ItemStack.EMPTY, ItemPartData.instance(source));
-            traits.entrySet().stream()
-                    .sorted(Comparator.comparing(entry -> entry.getKey().getName().toString()))
-                    .forEach(entry -> tooltip.add(entry.getKey().getNameColor()
-                            + entry.getKey().getTranslatedName(entry.getValue())));
+            List<Map.Entry<Trait, Integer>> entries = new ArrayList<>(traits.entrySet());
+            entries.sort(Comparator.comparing(entry -> entry.getKey().getName().toString()));
+            for (Map.Entry<Trait, Integer> entry : entries) {
+                tooltip.add(entry.getKey().getNameColor()
+                        + entry.getKey().getTranslatedName(entry.getValue()));
+            }
         }
     }
 }

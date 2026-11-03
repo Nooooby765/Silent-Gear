@@ -404,6 +404,15 @@ public abstract class ItemPart {
     }
 
     /**
+     * Color used when printing this part's display name. Material-carrying parts (modular tip/coating)
+     * override this so their name follows the resolved source material's name color instead of the
+     * modular part's own {@code name_color}.
+     */
+    public TextFormatting getDisplayNameColor(@Nullable ItemPartData part, ItemStack gear) {
+        return getNameColor();
+    }
+
+    /**
      * Gets a string that represents the type of part (main, rod, tip, etc.) Used for localization
      * of part type/class, not the individual part.
      *
