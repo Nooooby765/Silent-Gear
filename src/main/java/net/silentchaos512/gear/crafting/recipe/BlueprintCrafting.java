@@ -26,7 +26,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
-import net.silentchaos512.gear.api.parts.PartRegistry;
+import net.silentchaos512.gear.api.parts.ItemPart;
+import net.silentchaos512.gear.api.parts.ItemPartData;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.inventory.InventoryCraftingStation;
 import net.silentchaos512.gear.item.blueprint.IBlueprint;
@@ -35,7 +36,9 @@ import net.silentchaos512.lib.recipe.RecipeBaseSL;
 import net.silentchaos512.lib.util.StackHelper;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BlueprintCrafting implements IRecipeFactory {
     @Override
@@ -68,17 +71,29 @@ public class BlueprintCrafting implements IRecipeFactory {
                 return false;
             }
 
-            Collection<ItemStack> materials = list.allMatches(s -> PartRegistry.get(s) != null);
-            int materialCount = materials.size();
             IBlueprint blueprintItem = (IBlueprint) blueprint.getItem();
+            List<ItemPartData> materials = new ArrayList<>();
+            for (ItemStack stack : list) {
+                ItemPartData data = blueprintItem.getMaterial(stack);
+                if (data != null)
+                    materials.add(data);
+            }
+            int materialCount = materials.size();
 
             // Right number of materials and nothing else? FIXME: blueprint book support?
             if (materialCount + 1 != list.size() || materialCount != blueprintItem.getMaterialCost(blueprint)) {
                 return false;
             }
 
+            // Blueprint may restrict the accepted material types (legacy blueprints accept all)
+            for (ItemPartData data : materials) {
+                ItemPart part = data.getPart();
+                if (part == null || !blueprintItem.isValidMaterial(part))
+                    return false;
+            }
+
             // Inventory allows mixing?
-            return inventoryAllowsMixedMaterial(inv) || materials.stream().map(PartRegistry::get).distinct().count() == 1;
+            return inventoryAllowsMixedMaterial(inv) || materials.stream().map(ItemPartData::getPart).distinct().count() == 1;
         }
 
         @Nonnull

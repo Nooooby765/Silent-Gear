@@ -84,6 +84,15 @@ public abstract class ItemPart {
     @Getter(AccessLevel.NONE) protected Map<Trait, Integer> traits = new LinkedHashMap<>();
 
     public ItemPart(ResourceLocation registryName, PartOrigins origin) {
+        this(registryName, origin, true);
+    }
+
+    /**
+     * @param loadResources false for material parts built from the modular material data files,
+     *                      which are applied with {@link #loadFromJson(JsonObject)} instead of
+     *                      the standard {@code assets/<ns>/materials/<path>.json} lookup.
+     */
+    protected ItemPart(ResourceLocation registryName, PartOrigins origin, boolean loadResources) {
         this.registryName = registryName;
         String suffix = REGEX_TEXTURE_SUFFIX_REPLACE.matcher(registryName.getPath()).replaceFirst("");
         display.put("all", new PartDisplayProperties(registryName.getNamespace(), suffix));
@@ -91,7 +100,17 @@ public abstract class ItemPart {
         this.modelIndexString = Integer.toString(this.modelIndex);
         this.modelIndexStringFrame3 = this.modelIndexString + "_3";
         this.origin = origin;
-        loadJsonResources();
+        if (loadResources) {
+            loadJsonResources();
+        }
+    }
+
+    /**
+     * Applies material data (stats, traits, crafting items, display, availability) from a JSON
+     * object. Used by the modular material loader instead of the per-part resource lookup.
+     */
+    public void loadFromJson(JsonObject json) {
+        Loader.processJson(this, json);
     }
 
     // ===========================
@@ -301,7 +320,7 @@ public abstract class ItemPart {
      * (for example "hoe" -> "harvest_tool" -> "tool"), then the "all" fallback. Walking the parent
      * chain explicitly keeps the result deterministic, unlike iterating the display map.
      */
-    private PartDisplayProperties getDisplayProperties(@Nullable GearType gearType) {
+    public PartDisplayProperties getDisplayProperties(@Nullable GearType gearType) {
         for (GearType type = gearType; type != null; type = type.getParent()) {
             PartDisplayProperties props = display.get(type.getName());
             if (props != null)
@@ -460,7 +479,10 @@ public abstract class ItemPart {
     @Nullable
     public static ItemPart fromNBT(NBTTagCompound tags) {
         String key = tags.getString(NBT_KEY);
-        return PartRegistry.get(key);
+        // 旧固定尖端/覆层部件已删除，加载期 alias 表优先于注册表（避免旧 config 材料文件
+        // 重新注册同名 legacy 部件时绕过模块化材料）。
+        ItemPart aliased = ModularMaterialRegistry.getAliasedPart(key);
+        return aliased != null ? aliased : PartRegistry.get(key);
     }
 
     public void postInitChecks() {

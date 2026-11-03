@@ -1,0 +1,22 @@
+{
+    "types": ["coating"],
+    "priority": 100,
+    "crafting_items": {
+        "normal": {
+            "oredict": "ingotGold"
+        }
+    },
+    "stats": [
+        {"name": "durability", "value": -0.05, "op": "MUL2"},
+        {"name": "armor_durability", "value": -0.05, "op": "MUL2"},
+        {"name": "rarity", "value": 20}
+    ],
+    "traits": [
+        {"name": "silentgear:malleable", "level": 1},
+        {"name": "silentgear:soft", "level": 2}
+    ],
+    "display": {
+        "all": {"texture_suffix": "gold", "texture_color": "EAEE57"},
+        "name_color": "gold"
+    }
+}

@@ -43,7 +43,7 @@ advancements.silentgear.sickle.description=制作一把镰刀，一次收割大�
 advancements.silentgear.sword.title=更好的剑
 advancements.silentgear.sword.description=制作一把寂静装备剑
 advancements.silentgear.tip_upgrade.title=升级我的工具！
-advancements.silentgear.tip_upgrade.description=制作一个尖端升级件，然后和工具或武器合成。
+advancements.silentgear.tip_upgrade.description=制作一个模块化尖端，然后和工具或武器合成。
 advancements.silentgear.upgrade_base.title=升级底座
 advancements.silentgear.upgrade_base.description=你可能想多做几个……
 
@@ -102,6 +102,7 @@ item.silentgear.blueprint.shears.desc=剪叶、剪毛、剪网
 item.silentgear.blueprint.knife.desc=轻快的小刀
 item.silentgear.blueprint.mace.desc=缓慢沉重的钝器
 item.silentgear.blueprint.spear.desc=长柄尖头棍
+item.silentgear.blueprint.trident.desc=三叉所指，皆为归处
 item.silentgear.blueprint.sickle.desc=修剪草坪
 item.silentgear.blueprint.sword.desc=经典之选
 
@@ -125,14 +126,6 @@ item.silentgear.nether_banana.name=异界香蕉
 item.silentgear.guide_book.name=指南书（制作中）
 item.silentgear.guide_book.desc=寂静装备指南书
 
-item.silentgear.tip_upgrade_diamond.name=钻石尖端升级
-item.silentgear.tip_upgrade_emerald.name=绿宝石尖端升级
-item.silentgear.tip_upgrade_glowstone.name=荧石涂层升级
-item.silentgear.tip_upgrade_gold.name=金尖端升级
-item.silentgear.tip_upgrade_iron.name=铁尖端升级
-item.silentgear.tip_upgrade_lapis.name=青金石涂层升级
-item.silentgear.tip_upgrade_quartz.name=石英尖端升级
-item.silentgear.tip_upgrade_redstone.name=红石涂层升级
 
 # 杂项升级
 item.silentgear.red_card_upgrade.name=红色卡片
@@ -158,6 +151,7 @@ item.silentgear.tool_head.shears=剪刀刃
 item.silentgear.tool_head.knife=小刀刃
 item.silentgear.tool_head.mace=锤头
 item.silentgear.tool_head.spear=矛头
+item.silentgear.tool_head.trident=三叉戟头
 item.silentgear.tool_head.sickle=镰刀刃
 item.silentgear.tool_head.sword=剑刃与护手
 
@@ -229,6 +223,9 @@ item.silentgear.mace.name=钉头锤
 item.silentgear.mace.nameProper=%s钉头锤
 item.silentgear.spear.name=矛
 item.silentgear.spear.nameProper=%s矛
+
+item.silentgear.trident.name=三叉戟
+item.silentgear.trident.nameProper=%s三叉戟
 
 item.silentgear.sickle.name=镰刀
 item.silentgear.sickle.nameProper=%s镰刀
@@ -353,6 +350,7 @@ material.silentgear.tip_iron.name=铁尖端
 material.silentgear.tip_lapis.name=青金石涂层
 material.silentgear.tip_quartz.name=石英尖端
 material.silentgear.tip_redstone.name=红石涂层
+material.silentgear.coating_gold.name=金涂层
 
 part.silentgear.type.binding=绑带
 part.silentgear.type.bowstring=弓弦
@@ -361,6 +359,7 @@ part.silentgear.type.main=主要零件（阶层 %d）
 part.silentgear.type.misc_upgrade=杂项升级
 part.silentgear.type.rod=工具杆
 part.silentgear.type.tip=尖端升级
+part.silentgear.type.coating=涂层
 
 trait.silentgear.displayFormat=%1$s %2$s
 trait.silentgear.adamant=坚韧
@@ -424,7 +423,6 @@ jei.silentgear.part_analyzer.desc=鉴定盔甲/工具头材料的品质。不需
 jei.silentgear.red_card_upgrade.desc=带有红色卡片升级的工具和盔甲会像原版对应物一样损坏，而不是变成仍可修复的"破损"物品。
 jei.silentgear.spoon_upgrade.desc=让你的镐子能挖泥土之类的东西。没有理由。
 jei.silentgear.sword.desc=一把伤害与速度平衡的经典剑。护手采用合成时所用的第二种材料外观。
-jei.silentgear.tip_upgrade.desc=允许对已有工具/武器进一步升级。大多数尖端升级会给某些属性加上（或减去）固定值，但有些改为乘算。按住 Ctrl 键在提示中查看属性修正。
 jei.silentgear.tool_head.desc=工具头、刀刃、弓臂等等！这些是工具和武器的核心，用图纸/模板和若干主要工具材料合成。详情请查看图纸/模板提示。
 
 jei.silentgear.tooltip.sample1=示例配方
@@ -495,3 +493,26 @@ material.silentgear.main_skyroot.name=天根木
 material.silentgear.main_holystone.name=圣石
 material.silentgear.main_zanite.name=紫晶石
 material.silentgear.main_enchanted_gravitite.name=重力晶
+
+item.silentgear.modular_tip.name=模块化尖端
+item.silentgear.modular_tip.material=材料：%s
+item.silentgear.modular_tip.noMaterial=未知尖端材料（请与主材料或尖端材料合成）
+item.silentgear.blueprint_tip.name=尖端蓝图
+item.silentgear.template_tip.name=尖端模板
+item.silentgear.part_blueprint.materialAmount=所需材料：%d
+item.silentgear.part_blueprint.singleUse=单次使用
+item.silentgear.part_blueprint.multiUse=可重复使用
+item.silentgear.part_blueprint.disabled=已被配置禁用
+item.silentgear.part_blueprint.desc.tip=与 1 个尖端材料合成模块化尖端
+part.silentgear.modular_tip.name=%s 尖端
+jei.silentgear.part_blueprint.desc=模块化尖端的蓝图/模板。需要 1 个尖端材料，材料决定属性、特性与颜色。
+jei.silentgear.modular_tip.desc=模块化尖端可用尖端蓝图/模板与铁/金/钻石/绿宝石锭，或红石/萤石/青金石/石英合成。属性、traits 与颜色来自物品中记录的尖端材料。
+jei.silentgear.part_blueprint_coating.desc=模块化涂层的蓝图/模板。仅接受上游存在 coating 定义的主材料（当前为金）。
+jei.silentgear.modular_coating.desc=模块化涂层用涂层蓝图/模板合成，并作为升级安装。当前版本仅开放金材料。
+item.silentgear.modular_coating.name=模块化涂层
+item.silentgear.modular_coating.material=材料：%s
+item.silentgear.modular_coating.noMaterial=未知涂层材料（请与涂层材料合成）
+item.silentgear.blueprint_coating.name=涂层蓝图
+item.silentgear.template_coating.name=涂层模板
+item.silentgear.part_blueprint.desc.coating=与 1 个涂层材料合成模块化涂层
+part.silentgear.modular_coating.name=%s 涂层

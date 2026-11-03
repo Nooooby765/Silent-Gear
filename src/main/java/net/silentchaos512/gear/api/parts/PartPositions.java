@@ -27,6 +27,7 @@ public enum PartPositions implements IPartPosition {
     GUARD("guard", "guard", true),
     HIGHLIGHT("", "highlight", true),
     TIP("tip", "tip", true),
+    COATING("coating", "coating", false),
     BOWSTRING("bowstring", "bowstring", true),
     BINDING("binding", "binding", true);
 

@@ -1,0 +1,13 @@
+{
+    "materials": [
+        "tip_iron",
+        "tip_gold",
+        "tip_diamond",
+        "tip_emerald",
+        "tip_redstone",
+        "tip_glowstone",
+        "tip_lapis",
+        "tip_quartz",
+        "coating_gold"
+    ]
+}

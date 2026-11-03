@@ -25,6 +25,7 @@ import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.*;
 import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModMaterials;
+import net.silentchaos512.gear.item.ModularTipItem;
 import net.silentchaos512.gear.item.ToolRods;
 
 import javax.annotation.Nullable;
@@ -113,10 +114,16 @@ public final class GearGenerator {
         }
         ItemStack result = item.construct(item.getItem(), parts);
 
-        // Apply some random upgrades?
+        // 随机升级：旧固定 tip 已退场，从模块化材料表中挑选一个 tip 材料生成模块化尖端
         if (item instanceof ICoreTool && SilentGear.RANDOM.nextFloat() < 0.2f * tier + 0.1f) {
-            Optional<ItemPart> tip = selectRandom(PartTip.class);
-            tip.ifPresent(part -> GearData.addUpgradePart(result, ItemPartData.instance(part)));
+            List<ItemPart> tipMaterials = ModularMaterialRegistry.getMaterials(PartType.TIP);
+            if (!tipMaterials.isEmpty()) {
+                ItemPart material = tipMaterials.get(SilentGear.RANDOM.nextInt(tipMaterials.size()));
+                ItemStack tipStack = ModularTipItem.createStack(ItemPartData.instance(material));
+                ItemPartData tipData = ItemPartData.fromStack(tipStack);
+                if (tipData != null)
+                    GearData.addUpgradePart(result, tipData);
+            }
         }
 
         GearData.recalculateStats(result);

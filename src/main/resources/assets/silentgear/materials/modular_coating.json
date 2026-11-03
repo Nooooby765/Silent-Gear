@@ -1,0 +1,19 @@
+{
+    "type": "coating",
+    "crafting_items": {
+        "normal": {
+            "item": "silentgear:modular_coating"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "gold",
+            "texture_color": "EAEE57"
+        },
+        "name_color": "gold"
+    },
+    "availability": {
+        "enabled": true,
+        "tool_blacklist": []
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_coating"
+    },
+    "pattern": [
+        "p",
+        "g",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "item": "silentgear:blueprint_paper"
+        },
+        "g": {
+            "item": "minecraft:gold_nugget"
+        },
+        "s": {
+            "item": "minecraft:stone"
+        }
+    }
+}

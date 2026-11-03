@@ -31,6 +31,10 @@ public class PartUpgrade extends ItemPart implements IUpgradePart {
         super(registryName, origin);
     }
 
+    protected PartUpgrade(ResourceLocation registryName, PartOrigins origin, boolean loadResources) {
+        super(registryName, origin, loadResources);
+    }
+
     @Override
     public PartType getType() {
         return PartType.MISC_UPGRADE;

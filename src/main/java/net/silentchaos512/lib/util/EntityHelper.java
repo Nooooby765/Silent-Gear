@@ -90,7 +90,7 @@ public final class EntityHelper {
 
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.START && !entitiesToSpawn.isEmpty()) {
             handleSpawns();
         }
     }

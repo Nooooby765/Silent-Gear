@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_tip"
+    },
+    "pattern": [
+        "p",
+        "r",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "item": "silentgear:blueprint_paper"
+        },
+        "r": {
+            "item": "minecraft:paper"
+        },
+        "s": {
+            "item": "minecraft:stone"
+        }
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "silentgear:template_coating",
+        "count": 2
+    },
+    "pattern": [
+        "p",
+        "g",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        "g": {
+            "item": "minecraft:gold_nugget"
+        },
+        "s": {
+            "item": "minecraft:stone"
+        }
+    }
+}

@@ -10,9 +10,13 @@ import net.silentchaos512.gear.api.stats.StatInstance;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public final class PartTip extends ItemPart implements IUpgradePart {
+public class PartTip extends ItemPart implements IUpgradePart {
     public PartTip(ResourceLocation name, PartOrigins origin) {
         super(name, origin);
+    }
+
+    protected PartTip(ResourceLocation name, PartOrigins origin, boolean loadResources) {
+        super(name, origin, loadResources);
     }
 
     @Override

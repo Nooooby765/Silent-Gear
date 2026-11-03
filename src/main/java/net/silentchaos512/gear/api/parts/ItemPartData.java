@@ -82,9 +82,16 @@ public final class ItemPartData {
 
     @Nullable
     public static ItemPartData readFromNBT(NBTTagCompound tags) {
-        ItemPart part = ItemPart.fromNBT(tags);
-        if (part == null) return null;
+        String key = tags.getString(ItemPart.NBT_KEY);
         MaterialGrade grade = MaterialGrade.fromString(tags.getString("Grade"));
+
+        // 旧固定尖端/覆层部件：注册表中已不存在，改用 alias 重建模块化材料数据。旧物品的
+        // Item 子标签可能指向已删除的物品，因此不能直接反序列化。
+        ItemPartData aliased = ModularMaterialRegistry.getAliasedData(key, grade);
+        if (aliased != null) return aliased;
+
+        ItemPart part = PartRegistry.get(key);
+        if (part == null) return null;
         ItemStack craftingItem = new ItemStack(tags.getCompoundTag("Item"));
         return instance(part, grade, craftingItem);
     }

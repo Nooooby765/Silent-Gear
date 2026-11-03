@@ -272,7 +272,11 @@ public final class GearData {
     }
 
     public static boolean hasLockedStats(ItemStack stack) {
-        return getData(stack, NBT_ROOT_PROPERTIES).getBoolean(NBT_LOCK_STATS);
+        // Read-only fast path; queried on every tooltip build. getData would create empty
+        // compounds when the properties tag is absent.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        return root != null && root.hasKey(NBT_ROOT_PROPERTIES, 10)
+                && root.getCompoundTag(NBT_ROOT_PROPERTIES).getBoolean(NBT_LOCK_STATS);
     }
 
     public static void setLockedStats(ItemStack stack, boolean lock) {
@@ -494,8 +498,13 @@ public final class GearData {
         return rootTag.getCompoundTag(compoundKey);
     }
 
+    @Nullable
     static NBTTagCompound getPropertiesData(ItemStack stack) {
-        return getData(stack, NBT_ROOT_PROPERTIES);
+        // Read-only accessor. Trait lookups happen every tick and on every break-speed check;
+        // creating an empty "Properties" compound for stacks that never had one is pointless.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        return root != null && root.hasKey(NBT_ROOT_PROPERTIES, 10)
+                ? root.getCompoundTag(NBT_ROOT_PROPERTIES) : null;
     }
 
     static NBTTagCompound getStatisticsCompound(ItemStack stack) {

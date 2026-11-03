@@ -3,6 +3,7 @@ package net.silentchaos512.gear.init;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -10,8 +11,14 @@ import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreArmor;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
+import net.silentchaos512.gear.api.parts.ItemPartData;
+import net.silentchaos512.gear.api.parts.ModularCoatingPart;
+import net.silentchaos512.gear.api.parts.ModularTipPart;
+import net.silentchaos512.gear.api.parts.PartDataList;
+import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.item.*;
 import net.silentchaos512.gear.item.blueprint.Blueprint;
+import net.silentchaos512.gear.item.blueprint.PartBlueprint;
 import net.silentchaos512.gear.item.blueprint.book.BlueprintBook;
 import net.silentchaos512.gear.item.gear.*;
 import net.silentchaos512.lib.item.IEnumItems;
@@ -35,6 +42,18 @@ public final class ModItems {
     public static NetherBanana netherBanana = new NetherBanana();
 
     public static ToolHead toolHead = new ToolHead();
+
+    public static ModularTipItem modularTip = new ModularTipItem();
+    public static PartBlueprint blueprintTip = new PartBlueprint(false, PartType.TIP, 1,
+            ModularTipPart::isValidBlueprintMaterial, ModItems::createModularTip, ModularTipPart::getBlueprintMaterial);
+    public static PartBlueprint templateTip = new PartBlueprint(true, PartType.TIP, 1,
+            ModularTipPart::isValidBlueprintMaterial, ModItems::createModularTip, ModularTipPart::getBlueprintMaterial);
+
+    public static ModularCoatingItem modularCoating = new ModularCoatingItem();
+    public static PartBlueprint blueprintCoating = new PartBlueprint(false, PartType.COATING, 1,
+            ModularCoatingPart::hasCoating, ModItems::createModularCoating, ModularCoatingPart::getBlueprintMaterial);
+    public static PartBlueprint templateCoating = new PartBlueprint(true, PartType.COATING, 1,
+            ModularCoatingPart::hasCoating, ModItems::createModularCoating, ModularCoatingPart::getBlueprintMaterial);
 
     public static CoreSword sword = new CoreSword();
     public static CoreDagger dagger = new CoreDagger();
@@ -102,7 +121,14 @@ public final class ModItems {
         registerBlueprints(reg, "template", true);
         reg.registerItem(blueprintBook, "blueprint_book");
 
-        enumItems.registerItems(TipUpgrades.values());
+        reg.registerItem(modularTip, "modular_tip");
+        reg.registerItem(blueprintTip, "blueprint_tip");
+        reg.registerItem(templateTip, "template_tip");
+
+        reg.registerItem(modularCoating, "modular_coating");
+        reg.registerItem(blueprintCoating, "blueprint_coating");
+        reg.registerItem(templateCoating, "template_coating");
+
         enumItems.registerItems(MiscUpgrades.values());
         enumItems.registerItems(CraftingItems.values());
         reg.registerItem(flaxseeds, "flaxseeds");
@@ -120,6 +146,24 @@ public final class ModItems {
 
         registerOreDictEntries();
         addSmeltingRecipes();
+    }
+
+    private static ItemStack createModularTip(PartDataList parts) {
+        for (ItemPartData part : parts) {
+            ItemStack stack = ModularTipItem.createStack(part);
+            if (!stack.isEmpty())
+                return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private static ItemStack createModularCoating(PartDataList parts) {
+        for (ItemPartData part : parts) {
+            ItemStack stack = ModularCoatingItem.createStack(part);
+            if (!stack.isEmpty())
+                return stack;
+        }
+        return ItemStack.EMPTY;
     }
 
     private static void registerOreDictEntries() {

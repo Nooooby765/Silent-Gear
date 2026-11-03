@@ -43,7 +43,7 @@ advancements.silentgear.sickle.description=Craft a sickle to harvest many plants
 advancements.silentgear.sword.title=A Better Sword
 advancements.silentgear.sword.description=Craft a Silent Gear sword
 advancements.silentgear.tip_upgrade.title=Upgrade My Tool!
-advancements.silentgear.tip_upgrade.description=Craft a tip upgrade, then craft it with a tool or weapon.
+advancements.silentgear.tip_upgrade.description=Craft a modular tip, then craft it with a tool or weapon.
 advancements.silentgear.upgrade_base.title=Upgrade Base
 advancements.silentgear.upgrade_base.description=You might want to make a few...
 
@@ -103,6 +103,7 @@ item.silentgear.blueprint.dagger.desc=Spam clicker's ally
 item.silentgear.blueprint.knife.desc=Quick little blade
 item.silentgear.blueprint.mace.desc=Slow, heavy, blunt
 item.silentgear.blueprint.spear.desc=Long-reach pointy stick
+item.silentgear.blueprint.trident.desc=Three prongs, one purpose
 item.silentgear.blueprint.sickle.desc=Mowing the lawn
 item.silentgear.blueprint.sword.desc=The classic
 
@@ -126,14 +127,6 @@ item.silentgear.nether_banana.name=Nether Banana
 item.silentgear.guide_book.name=Guide Book (WIP)
 item.silentgear.guide_book.desc=Silent Gear guide book
 
-item.silentgear.tip_upgrade_diamond.name=Diamond-Tipped Upgrade
-item.silentgear.tip_upgrade_emerald.name=Emerald-Tipped Upgrade
-item.silentgear.tip_upgrade_glowstone.name=Glowstone-Coated Upgrade
-item.silentgear.tip_upgrade_gold.name=Gold-Tipped Upgrade
-item.silentgear.tip_upgrade_iron.name=Iron-Tipped Upgrade
-item.silentgear.tip_upgrade_lapis.name=Lapis-Coated Upgrade
-item.silentgear.tip_upgrade_quartz.name=Quartz-Tipped Upgrade
-item.silentgear.tip_upgrade_redstone.name=Redstone-Coated Upgrade
 
 # Misc upgrades
 item.silentgear.red_card_upgrade.name=Red Card
@@ -159,6 +152,7 @@ item.silentgear.tool_head.shears=Shears Blade
 item.silentgear.tool_head.knife=Knife Blade
 item.silentgear.tool_head.mace=Mace Head
 item.silentgear.tool_head.spear=Spear Head
+item.silentgear.tool_head.trident=Trident Head
 item.silentgear.tool_head.sickle=Sickle Blade
 item.silentgear.tool_head.sword=Sword Blade & Crossguard
 
@@ -233,6 +227,9 @@ item.silentgear.mace.name=Mace
 item.silentgear.mace.nameProper=%s Mace
 item.silentgear.spear.name=Spear
 item.silentgear.spear.nameProper=%s Spear
+
+item.silentgear.trident.name=Trident
+item.silentgear.trident.nameProper=%s Trident
 
 item.silentgear.sickle.name=Sickle
 item.silentgear.sickle.nameProper=%s Sickle
@@ -357,6 +354,7 @@ material.silentgear.tip_iron.name=Iron-Tipped
 material.silentgear.tip_lapis.name=Lapis-Coated
 material.silentgear.tip_quartz.name=Quartz-Tipped
 material.silentgear.tip_redstone.name=Redstone-Coated
+material.silentgear.coating_gold.name=Gold-Coated
 
 part.silentgear.type.binding=Binding
 part.silentgear.type.bowstring=Bowstring
@@ -365,6 +363,7 @@ part.silentgear.type.main=Main Part (Tier %d)
 part.silentgear.type.misc_upgrade=Misc Upgrade
 part.silentgear.type.rod=Tool Rod
 part.silentgear.type.tip=Tip Upgrade
+part.silentgear.type.coating=Coating
 
 trait.silentgear.displayFormat=%1$s %2$s
 trait.silentgear.adamant=Adamant
@@ -428,7 +427,6 @@ jei.silentgear.part_analyzer.desc=Determines the quality of armor/tool head mate
 jei.silentgear.red_card_upgrade.desc=Tools and armor with the red card upgrade can break like their vanilla counterparts, instead of becoming a "broken" item that can still be repaired.
 jei.silentgear.spoon_upgrade.desc=Let's your pickaxe mine dirt and such. Because reasons.
 jei.silentgear.sword.desc=A classic sword with balanced damage and speed. The guard takes the appearance of the second material used in crafting.
-jei.silentgear.tip_upgrade.desc=Allows an existing tool/weapon to be further upgraded. Most tip upgrades will add (or subtract) a fixed amount to certain stats, but some add will multipliers instead. Hold the Ctrl key to view stat modifiers in the tooltip.
 jei.silentgear.tool_head.desc=Tool heads, blades, bow limbs, and more! These are the core of tools and weapons, constructed with a blueprint/template and some number of main tool materials. Check the blueprint/template tooltip for more info.
 
 jei.silentgear.tooltip.sample1=Sample recipe
@@ -499,3 +497,26 @@ material.silentgear.main_skyroot.name=Skyroot
 material.silentgear.main_holystone.name=Holystone
 material.silentgear.main_zanite.name=Zanite
 material.silentgear.main_enchanted_gravitite.name=Enchanted Gravitite
+
+item.silentgear.modular_tip.name=Modular Tip
+item.silentgear.modular_tip.material=Material: %s
+item.silentgear.modular_tip.noMaterial=Unknown tip material (craft it with a main or tip material)
+item.silentgear.blueprint_tip.name=Tip Blueprint
+item.silentgear.template_tip.name=Tip Template
+item.silentgear.part_blueprint.materialAmount=Materials required: %d
+item.silentgear.part_blueprint.singleUse=Single use
+item.silentgear.part_blueprint.multiUse=Reusable
+item.silentgear.part_blueprint.disabled=Disabled in config
+item.silentgear.part_blueprint.desc.tip=Use with one tip material to craft a modular tip
+part.silentgear.modular_tip.name=%s Tip
+jei.silentgear.part_blueprint.desc=Blueprint/template for modular tips. One tip material is required; the material determines stats, traits and color.
+jei.silentgear.modular_tip.desc=Modular tips can be crafted with a tip blueprint/template and an iron/gold/diamond/emerald ingot or redstone/glowstone/lapis/quartz. Stats, traits and color come from the stored tip material.
+jei.silentgear.part_blueprint_coating.desc=Blueprint/template for modular coatings. Only materials with an upstream coating definition are accepted (currently gold).
+jei.silentgear.modular_coating.desc=Modular coatings are crafted with a coating blueprint/template and applied as an upgrade. Only gold is available in this version.
+item.silentgear.modular_coating.name=Modular Coating
+item.silentgear.modular_coating.material=Material: %s
+item.silentgear.modular_coating.noMaterial=Unknown coating material (craft it with a coating material)
+item.silentgear.blueprint_coating.name=Coating Blueprint
+item.silentgear.template_coating.name=Coating Template
+item.silentgear.part_blueprint.desc.coating=Use with one coating material to craft a modular coating
+part.silentgear.modular_coating.name=%s Coating

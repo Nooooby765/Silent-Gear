@@ -50,8 +50,9 @@ public final class ServerTicks {
 
     @SubscribeEvent
     public static void serverTicks(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START)
-            runScheduledActions();
+        if (event.phase != TickEvent.Phase.START || scheduledActions.isEmpty())
+            return;
+        runScheduledActions();
     }
 
     private static void runScheduledActions() {

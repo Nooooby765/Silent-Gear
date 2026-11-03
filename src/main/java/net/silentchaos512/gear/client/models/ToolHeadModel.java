@@ -182,6 +182,13 @@ public class ToolHeadModel implements IModel {
 
             ToolHeadModel.Baked model = (ToolHeadModel.Baked) originalModel;
 
+            String key = ToolHead.getModelKey(stack);
+            // Fast path: check the cache before parsing construction NBT or resolving textures.
+            // This runs for every visible tool head, every frame.
+            IBakedModel cached = GearClientHelper.modelCache.get(key);
+            if (cached != null)
+                return cached;
+
             String toolClass = ToolHead.getToolClass(stack);
             boolean hasGuard = "sword".equals(toolClass);
 
@@ -189,36 +196,30 @@ public class ToolHeadModel implements IModel {
             ItemPartData secondaryPart = hasGuard ? ToolHead.getSecondaryPart(stack) : null;
             ItemPartData highlightPart = getHighlightPart(primaryPart, stack);
 
-            String key = ToolHead.getModelKey(stack);
+            ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+            ResourceLocation textureHead = primaryPart == null ? null : primaryPart.getTexture(stack, toolClass, PartPositions.HEAD, 0);
+            ResourceLocation textureGuard = secondaryPart == null ? null : secondaryPart.getTexture(stack, toolClass, PartPositions.GUARD, 0);
+            ResourceLocation textureHighlight = highlightPart == null ? null : highlightPart.getTexture(stack, toolClass, PartPositions.HIGHLIGHT, 0);
 
-            if (!GearClientHelper.modelCache.containsKey(key)) {
-                ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-                ResourceLocation textureHead = primaryPart == null ? null : primaryPart.getTexture(stack, toolClass, PartPositions.HEAD, 0);
-                ResourceLocation textureGuard = secondaryPart == null ? null : secondaryPart.getTexture(stack, toolClass, PartPositions.GUARD, 0);
-                ResourceLocation textureHighlight = highlightPart == null ? null : highlightPart.getTexture(stack, toolClass, PartPositions.HIGHLIGHT, 0);
+            if (textureHead != null)
+                builder.put("head", textureHead.toString());
+            if (textureGuard != null)
+                builder.put("guard", textureGuard.toString());
+            if (textureHighlight != null)
+                builder.put("highlight", textureHighlight.toString());
 
-                if (textureHead != null)
-                    builder.put("head", textureHead.toString());
-                if (textureGuard != null)
-                    builder.put("guard", textureGuard.toString());
-                if (textureHighlight != null)
-                    builder.put("highlight", textureHighlight.toString());
+            IModel parent = model.getParent().retexture(builder.build());
+            Function<ResourceLocation, TextureAtlasSprite> textureGetter = location ->
+                    Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+            IBakedModel bakedModel = parent.bake(new SimpleModelState(model.transforms), model.getVertexFormat(), textureGetter);
+            GearClientHelper.modelCache.put(key, bakedModel);
 
-                IModel parent = model.getParent().retexture(builder.build());
-                Function<ResourceLocation, TextureAtlasSprite> textureGetter = location ->
-                        Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-                IBakedModel bakedModel = parent.bake(new SimpleModelState(model.transforms), model.getVertexFormat(), textureGetter);
-                GearClientHelper.modelCache.put(key, bakedModel);
+            // Color cache
+            ColorHandlers.gearColorCache.put(key, Stream.of(primaryPart, secondaryPart)
+                    .filter(Objects::nonNull)
+                    .map(part -> part.getColor(stack, 0)).toArray(Integer[]::new));
 
-                // Color cache
-                ColorHandlers.gearColorCache.put(key, Stream.of(primaryPart, secondaryPart)
-                        .filter(Objects::nonNull)
-                        .map(part -> part.getColor(stack, 0)).toArray(Integer[]::new));
-
-                return bakedModel;
-            }
-
-            return GearClientHelper.modelCache.get(key);
+            return bakedModel;
         }
     }
 

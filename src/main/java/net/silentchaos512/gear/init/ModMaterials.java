@@ -9,7 +9,6 @@ import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.parts.*;
 import net.silentchaos512.gear.config.Config;
 import net.silentchaos512.gear.item.MiscUpgrades;
-import net.silentchaos512.gear.item.TipUpgrades;
 import net.silentchaos512.gear.item.ToolRods;
 import net.silentchaos512.gear.util.GearHelper;
 import net.silentchaos512.lib.registry.IPhasedInitializer;
@@ -26,6 +25,8 @@ public class ModMaterials implements IPhasedInitializer {
     public static PartMain mainWood, mainStone, mainFlint, mainIron, mainGold, mainEmerald, mainDiamond, mainObsidian, mainNetherrack, mainTerracotta;
     public static PartBowstring bowstringString, bowstringSinew;
     public static PartHighlight highlight;
+    public static ModularTipPart modularTip;
+    public static ModularCoatingPart modularCoating;
 
     @Override
     public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
@@ -99,8 +100,8 @@ public class ModMaterials implements IPhasedInitializer {
         PartRegistry.putPart(new PartRod(getPath("rod_end_stone"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartRod(getPath("rod_sandstone"), PartOrigins.BUILTIN_CORE));
 
-        for (TipUpgrades tip : TipUpgrades.values())
-            PartRegistry.putPart(tip.getPart());
+        modularTip = PartRegistry.putPart(new ModularTipPart(getPath("modular_tip"), PartOrigins.BUILTIN_CORE));
+        modularCoating = PartRegistry.putPart(new ModularCoatingPart(getPath("modular_coating"), PartOrigins.BUILTIN_CORE));
 
         for (EnumDyeColor color : EnumDyeColor.values())
             PartRegistry.putPart(new PartGrip(getPath("grip_wool_" + color.name().toLowerCase(Locale.ROOT)), PartOrigins.BUILTIN_CORE));
@@ -117,6 +118,9 @@ public class ModMaterials implements IPhasedInitializer {
         highlight = PartRegistry.putPart(new PartHighlight(getPath("highlight"), PartOrigins.BUILTIN_CORE));
 
         UserDefined.loadUserParts();
+
+        // TIP/COATING 独立材料表：内置 JSON + config 覆盖/新增，加载后构建不可变索引。
+        ModularMaterialRegistry.load();
     }
 
     @Override

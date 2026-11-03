@@ -57,6 +57,26 @@ repositories {
 }
 
 // ---------------------------------------------------------------------------
+// Optional integration: Trident mod API stubs (compile only, never shipped)
+// The real mod is a soft dependency loaded at runtime via Loader.isModLoaded.
+// ---------------------------------------------------------------------------
+sourceSets {
+    tridentApi {
+        java.srcDir 'src/tridentApi/java'
+        // Reuse the main compile classpath (Minecraft, Forge, JEI), but never its output.
+        compileClasspath += sourceSets.main.compileClasspath
+    }
+}
+
+// Feed the stub classes to the main compilation only. Adding them at the task level (instead of
+// a dependency configuration) prevents a circular task graph. They are never on the runtime
+// classpath nor in the mod jar.
+tasks.named('compileJava').configure {
+    dependsOn tasks.named('tridentApiClasses')
+    classpath = classpath + sourceSets.tridentApi.output
+}
+
+// ---------------------------------------------------------------------------
 // Dependencies
 // ---------------------------------------------------------------------------
 dependencies {

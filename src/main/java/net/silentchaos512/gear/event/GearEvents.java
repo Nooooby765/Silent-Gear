@@ -49,7 +49,8 @@ public final class GearEvents {
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent events) {
-        entityAttackedThisTick.clear();
+        if (!entityAttackedThisTick.isEmpty())
+            entityAttackedThisTick.clear();
     }
 
     //region Damaging traits

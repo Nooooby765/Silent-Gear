@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "silentgear:template_tip",
+        "count": 2
+    },
+    "pattern": [
+        "p",
+        "r",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        "r": {
+            "item": "minecraft:paper"
+        },
+        "s": {
+            "item": "minecraft:stone"
+        }
+    }
+}

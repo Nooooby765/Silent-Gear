@@ -1,0 +1,54 @@
+{
+    "type": "tip",
+    "crafting_items": {
+        "normal": {
+            "item": "silentgear:modular_tip"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "iron",
+            "texture_color": "ffffff"
+        },
+        "name_color": "white",
+        "hoe": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "paxel": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "saw": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "shears": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "mace": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "spear": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        },
+        "knife": {
+            "texture_suffix": "sharp",
+            "texture_color": "9E9E9E",
+            "broken_color": "9E9E9E"
+        }
+    },
+    "availability": {
+        "enabled": true,
+        "tool_blacklist": []
+    }
+}

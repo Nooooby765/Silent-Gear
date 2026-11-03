@@ -5,6 +5,7 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagList;
@@ -14,7 +15,11 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
+import net.silentchaos512.gear.api.parts.ItemPart;
 import net.silentchaos512.gear.api.parts.ItemPartData;
+import net.silentchaos512.gear.api.parts.ModularCoatingPart;
+import net.silentchaos512.gear.api.parts.ModularMaterialRegistry;
+import net.silentchaos512.gear.api.parts.ModularTipPart;
 import net.silentchaos512.gear.api.parts.PartDataList;
 import net.silentchaos512.gear.api.parts.PartMain;
 import net.silentchaos512.gear.api.parts.PartRegistry;
@@ -26,7 +31,8 @@ import net.silentchaos512.gear.init.ModBlocks;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.init.ModMaterials;
 import net.silentchaos512.gear.item.MiscUpgrades;
-import net.silentchaos512.gear.item.TipUpgrades;
+import net.silentchaos512.gear.item.ModularCoatingItem;
+import net.silentchaos512.gear.item.ModularTipItem;
 import net.silentchaos512.gear.item.ToolHead;
 import net.silentchaos512.gear.item.ToolRods;
 import net.silentchaos512.gear.item.gear.CoreArmor;
@@ -82,15 +88,31 @@ public class JeiPlugin implements IModPlugin {
         List<IRecipe> builtRecipes = new ArrayList<>();
         for (ICoreItem item : ModItems.gearClasses.values()) {
             ItemStack gear = getSampleStack(item);
-            // Tipped upgrades
+            // 旧固定 tip 仅作 legacy 部件保留，JEI 中不再展示其用途示例
             if (item instanceof ICoreTool) {
-                for (TipUpgrades tip : TipUpgrades.values()) {
-                    if (tip.getPart().isValidFor(item)) {
-                        ItemStack gearWithTips = gear.copy();
-                        GearData.addUpgradePart(gearWithTips, ItemPartData.instance(tip.getPart()));
-                        GearData.recalculateStats(gearWithTips);
-                        builtRecipes.add(recipeMaker.makeShapeless(gearWithTips, gear, tip.getItem()));
+                // Modular tip example (iron)
+                ItemPart ironTip = ModularMaterialRegistry.get("silentgear:tip_iron", PartType.TIP);
+                if (ModMaterials.modularTip.isValidFor(item) && ironTip != null) {
+                    ItemStack modularIronTip = ModularTipItem.createStack(ItemPartData.instance(ironTip));
+                    ItemPartData ironTipData = ItemPartData.fromStack(modularIronTip);
+                    if (ironTipData != null) {
+                        ItemStack gearWithModularTip = gear.copy();
+                        GearData.addUpgradePart(gearWithModularTip, ironTipData);
+                        GearData.recalculateStats(gearWithModularTip);
+                        builtRecipes.add(recipeMaker.makeShapeless(gearWithModularTip, gear, ModItems.modularTip));
                     }
+                }
+            }
+            // Modular coating example (gold)
+            if (ModMaterials.modularCoating.isValidFor(item)) {
+                ItemPartData goldCoatingData = ModularCoatingPart.getBlueprintMaterial(ModMaterials.mainGold.getCraftingStack());
+                ItemStack modularGoldCoating = ModularCoatingItem.createStack(goldCoatingData);
+                ItemStack gearWithCoating = gear.copy();
+                ItemPartData coatingData = ItemPartData.fromStack(modularGoldCoating);
+                if (coatingData != null) {
+                    GearData.addUpgradePart(gearWithCoating, coatingData);
+                    GearData.recalculateStats(gearWithCoating);
+                    builtRecipes.add(recipeMaker.makeShapeless(gearWithCoating, gear, ModItems.modularCoating));
                 }
             }
             // Misc upgrades
@@ -103,6 +125,36 @@ public class JeiPlugin implements IModPlugin {
                 }
             }
         }
+        // Modular tip blueprint examples (main materials + independent tip-only materials)
+        ItemStack blueprintTipStack = new ItemStack(ModItems.blueprintTip);
+        ItemStack templateTipStack = new ItemStack(ModItems.templateTip);
+        List<ItemStack> tipIngredients = new ArrayList<>();
+        for (PartMain main : Arrays.asList(ModMaterials.mainIron, ModMaterials.mainDiamond, ModMaterials.mainEmerald))
+            tipIngredients.add(main.getCraftingStack());
+        tipIngredients.add(new ItemStack(Items.REDSTONE));
+        tipIngredients.add(new ItemStack(Items.GLOWSTONE_DUST));
+        tipIngredients.add(new ItemStack(Items.DYE, 1, 4));
+        tipIngredients.add(new ItemStack(Items.QUARTZ));
+        for (ItemStack ingredient : tipIngredients) {
+            if (ingredient.isEmpty()) continue;
+            ItemPartData data = ModularTipPart.getBlueprintMaterial(ingredient);
+            if (data == null) continue;
+            ItemStack result = ModularTipItem.createStack(data);
+            if (result.isEmpty()) continue;
+            builtRecipes.add(recipeMaker.makeShapeless(result, blueprintTipStack, ingredient));
+            builtRecipes.add(recipeMaker.makeShapeless(result, templateTipStack, ingredient));
+        }
+
+        // Modular coating blueprint examples
+        ItemStack blueprintCoatingStack = new ItemStack(ModItems.blueprintCoating);
+        ItemStack templateCoatingStack = new ItemStack(ModItems.templateCoating);
+        ItemStack goldIngredient = ModMaterials.mainGold.getCraftingStack();
+        ItemStack coatingResult = ModularCoatingItem.createStack(ModularCoatingPart.getBlueprintMaterial(goldIngredient));
+        if (!goldIngredient.isEmpty() && !coatingResult.isEmpty()) {
+            builtRecipes.add(recipeMaker.makeShapeless(coatingResult, blueprintCoatingStack, goldIngredient));
+            builtRecipes.add(recipeMaker.makeShapeless(coatingResult, templateCoatingStack, goldIngredient));
+        }
+
         registry.addRecipes(builtRecipes, VanillaRecipeCategoryUid.CRAFTING);
 
         // Ingredient Info Pages
@@ -111,9 +163,16 @@ public class JeiPlugin implements IModPlugin {
         // Blueprints and templates (all in one)
         registry.addIngredientInfo(ModItems.blueprints.stream().map(ItemStack::new).collect(Collectors.toList()),
                 ItemStack.class, getDescKey("blueprint"));
-        // Tipped upgrades
-        registry.addIngredientInfo(Arrays.stream(TipUpgrades.values()).map(TipUpgrades::getStack).collect(Collectors.toList()),
-                ItemStack.class, getDescKey("tip_upgrade"));
+        // Part blueprints (modular tips)
+        registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintTip), new ItemStack(ModItems.templateTip)),
+                ItemStack.class, getDescKey("part_blueprint"));
+        // Modular tip
+        registry.addIngredientInfo(new ItemStack(ModItems.modularTip), ItemStack.class, getDescKey("modular_tip"));
+        // Part blueprints (modular coatings)
+        registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintCoating), new ItemStack(ModItems.templateCoating)),
+                ItemStack.class, getDescKey("part_blueprint_coating"));
+        // Modular coating
+        registry.addIngredientInfo(new ItemStack(ModItems.modularCoating), ItemStack.class, getDescKey("modular_coating"));
         // Tool Heads
         for (String toolClass : ModItems.toolClasses.keySet()) {
             List<ItemStack> list = new ArrayList<>();

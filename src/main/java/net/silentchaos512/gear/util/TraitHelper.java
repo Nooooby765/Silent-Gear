@@ -62,7 +62,7 @@ public final class TraitHelper {
     @Nullable
     private static NBTTagList getTraitList(ItemStack gear) {
         NBTTagCompound properties = GearData.getPropertiesData(gear);
-        return properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
+        return properties != null && properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
     }
 
     public static float activateTraits(ItemStack gear, final float inputValue, TraitFunction action) {
