@@ -1,0 +1,24 @@
+{
+    "result": {
+        "item": "silentgear:template_modular_rod",
+        "count": 2
+    },
+    "pattern": [
+        "p ",
+        "rs"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        "r": {
+            "item": "minecraft:paper"
+        },
+        "s": {
+            "item": "minecraft:stone",
+            "data": 0
+        }
+    }
+}

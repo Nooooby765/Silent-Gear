@@ -1,0 +1,15 @@
+{
+    "type": "durability",
+    "max_level": 5,
+    "name_color": "yellow",
+    "effect_scale": -1,
+    "activation_chance": 0.075,
+    "name": {
+        "translate": true,
+        "name": "trait.silentgear.flexible"
+    },
+    "description": {
+        "translate": true,
+        "name": "trait.silentgear.flexible.desc"
+    }
+}

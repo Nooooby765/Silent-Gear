@@ -28,6 +28,9 @@ public final class ModularMaterialRegistry {
 
     private static Map<String, Entry> byIdTip = ImmutableMap.of();
     private static Map<String, Entry> byIdCoating = ImmutableMap.of();
+    private static Map<String, Entry> byIdRod = ImmutableMap.of();
+    private static Map<String, Entry> byIdFletching = ImmutableMap.of();
+    private static Map<String, Entry> byIdLining = ImmutableMap.of();
     private static Map<String, List<Entry>> byItem = ImmutableMap.of();
     private static Map<String, List<Entry>> byOre = ImmutableMap.of();
     private static Map<String, List<ItemPart>> byType = ImmutableMap.of();
@@ -50,14 +53,19 @@ public final class ModularMaterialRegistry {
 
         Map<String, Entry> idTipMap = new LinkedHashMap<>();
         Map<String, Entry> idCoatingMap = new LinkedHashMap<>();
+        Map<String, Entry> idRodMap = new LinkedHashMap<>();
+        Map<String, Entry> idFletchingMap = new LinkedHashMap<>();
+        Map<String, Entry> idLiningMap = new LinkedHashMap<>();
         Map<String, List<Entry>> itemMap = new LinkedHashMap<>();
         Map<String, List<Entry>> oreMap = new LinkedHashMap<>();
         Map<String, List<ItemPart>> typeMap = new LinkedHashMap<>();
         Map<String, Alias> aliasMap = new LinkedHashMap<>();
 
         for (Map.Entry<String, JsonObject> file : files.entrySet()) {
-            buildEntry(file.getKey(), file.getValue(), idTipMap, idCoatingMap, itemMap, oreMap, typeMap, aliasMap);
+            buildEntry(file.getKey(), file.getValue(), idTipMap, idCoatingMap, idRodMap, idFletchingMap, idLiningMap,
+                    itemMap, oreMap, typeMap, aliasMap);
         }
+        addLegacyRodAliases(aliasMap);
 
         Comparator<Entry> order = Comparator
                 .comparingInt((Entry e) -> e.priority).reversed()
@@ -72,6 +80,18 @@ public final class ModularMaterialRegistry {
         ImmutableMap.Builder<String, Entry> coatingBuilder = ImmutableMap.builder();
         idCoatingMap.forEach(coatingBuilder::put);
         byIdCoating = coatingBuilder.build();
+
+        ImmutableMap.Builder<String, Entry> rodBuilder = ImmutableMap.builder();
+        idRodMap.forEach(rodBuilder::put);
+        byIdRod = rodBuilder.build();
+
+        ImmutableMap.Builder<String, Entry> fletchingBuilder = ImmutableMap.builder();
+        idFletchingMap.forEach(fletchingBuilder::put);
+        byIdFletching = fletchingBuilder.build();
+
+        ImmutableMap.Builder<String, Entry> liningBuilder = ImmutableMap.builder();
+        idLiningMap.forEach(liningBuilder::put);
+        byIdLining = liningBuilder.build();
 
         ImmutableMap.Builder<String, List<Entry>> itemBuilder = ImmutableMap.builder();
         itemMap.forEach((key, list) -> itemBuilder.put(key, ImmutableList.copyOf(list)));
@@ -91,14 +111,18 @@ public final class ModularMaterialRegistry {
 
         loaded = true;
         SilentGear.LOGGER.info("Loaded {} modular material definitions ({} id/type entries, {} legacy aliases)",
-                files.size(), byIdTip.size() + byIdCoating.size(), aliases.size());
+                files.size(), byIdTip.size() + byIdCoating.size() + byIdRod.size() + byIdFletching.size() + byIdLining.size(),
+                aliases.size());
     }
 
     @Nullable
     public static ItemPart get(@Nullable String key, PartType type) {
         if (key == null || key.isEmpty()) return null;
         Map<String, Entry> map = type == PartType.TIP ? byIdTip
-                : type == PartType.COATING ? byIdCoating : null;
+                : type == PartType.COATING ? byIdCoating
+                : type == PartType.ROD ? byIdRod
+                : type == PartType.FLETCHING ? byIdFletching
+                : type == PartType.LINING ? byIdLining : null;
         Entry entry = map == null ? null : map.get(key);
         return entry == null ? null : entry.part;
     }
@@ -138,6 +162,12 @@ public final class ModularMaterialRegistry {
         ItemStack craftingItem = modularPart.getCraftingStack().copy();
         if (craftingItem.isEmpty()) return null;
         craftingItem.setCount(1);
+
+        if (alias.materialId == null) {
+            // Removed legacy rods fall back to the plain wood rod part. No Material tag is added,
+            // so the fallback stays indistinguishable from a tool that always used rod_wood.
+            return ItemPartData.instance(modularPart, grade, craftingItem);
+        }
 
         NBTTagCompound tags = craftingItem.getTagCompound();
         tags = tags == null ? new NBTTagCompound() : tags.copy();
@@ -221,8 +251,22 @@ public final class ModularMaterialRegistry {
         }
     }
 
+    /**
+     * Removed mod rods degrade to the vanilla wood rod. This table is built at load time and is
+     * independent of the JSON files, so old tools keep resolving even if config is missing.
+     */
+    private static void addLegacyRodAliases(Map<String, Alias> aliasMap) {
+        for (String name : new String[]{"rod_rough", "rod_stone", "rod_iron", "rod_netherwood",
+                "rod_end_stone", "rod_sandstone"}) {
+            aliasMap.put(SilentGear.MOD_ID + ":" + name,
+                    new Alias(null, new ResourceLocation(SilentGear.MOD_ID, "rod_wood")));
+        }
+    }
+
     private static void buildEntry(String fileName, JsonObject json, Map<String, Entry> idTipMap,
-                                   Map<String, Entry> idCoatingMap, Map<String, List<Entry>> itemMap,
+                                   Map<String, Entry> idCoatingMap, Map<String, Entry> idRodMap,
+                                   Map<String, Entry> idFletchingMap, Map<String, Entry> idLiningMap,
+                                   Map<String, List<Entry>> itemMap,
                                    Map<String, List<Entry>> oreMap, Map<String, List<ItemPart>> typeMap,
                                    Map<String, Alias> aliasMap) {
         ResourceLocation id;
@@ -273,21 +317,37 @@ public final class ModularMaterialRegistry {
         for (JsonElement element : json.getAsJsonArray("types")) {
             if (!element.isJsonPrimitive()) continue;
             PartType type = PartType.get(element.getAsString().replaceAll("^.*:", ""));
-            if (type != PartType.TIP && type != PartType.COATING) {
+            if (type != PartType.TIP && type != PartType.COATING && type != PartType.ROD
+                    && type != PartType.FLETCHING && type != PartType.LINING) {
                 SilentGear.LOGGER.warn("Modular material '{}' has unsupported type '{}'", id, element.getAsString());
                 continue;
             }
 
-            ItemPart part = type == PartType.TIP
-                    ? new ModularTipMaterial(id)
-                    : new ModularCoatingMaterial(id);
+            ItemPart part;
+            if (type == PartType.TIP) {
+                part = new ModularTipMaterial(id);
+            } else if (type == PartType.COATING) {
+                part = new ModularCoatingMaterial(id);
+            } else if (type == PartType.FLETCHING) {
+                part = new ModularFletchingMaterial(id);
+            } else if (type == PartType.LINING) {
+                part = new ModularLiningMaterial(id);
+            } else {
+                part = new ModularRodMaterial(id);
+            }
             part.loadFromJson(json);
 
             Entry entry = new Entry(id, type, part, priority, itemId, itemMeta, oreDict);
             if (type == PartType.TIP)
                 idTipMap.put(id.toString(), entry);
-            else
+            else if (type == PartType.COATING)
                 idCoatingMap.put(id.toString(), entry);
+            else if (type == PartType.FLETCHING)
+                idFletchingMap.put(id.toString(), entry);
+            else if (type == PartType.LINING)
+                idLiningMap.put(id.toString(), entry);
+            else
+                idRodMap.put(id.toString(), entry);
             typeMap.computeIfAbsent(type.getName(), k -> new ArrayList<>()).add(part);
 
             // 旧独立部件 key 与内置材料文件名一致（tip_iron、coating_gold 等）。加载期一次性
@@ -370,10 +430,10 @@ public final class ModularMaterialRegistry {
      * 旧部件 key → 模块化部件 + 材料 id 的只读映射。加载期构建，运行期只读。
      */
     private static final class Alias {
-        final ResourceLocation materialId;
+        @Nullable final ResourceLocation materialId;
         final ResourceLocation modularPartKey;
 
-        Alias(ResourceLocation materialId, ResourceLocation modularPartKey) {
+        Alias(@Nullable ResourceLocation materialId, ResourceLocation modularPartKey) {
             this.materialId = materialId;
             this.modularPartKey = modularPartKey;
         }

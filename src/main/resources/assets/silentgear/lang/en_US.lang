@@ -22,8 +22,6 @@ advancements.silentgear.hammer.title=Hammer Time!
 advancements.silentgear.hammer.description=Craft a hammah!
 advancements.silentgear.high_durability.title=Almost Unbreakable!
 advancements.silentgear.high_durability.description=Construct a tool with at least 16,000 durability.
-advancements.silentgear.iron_rods.title=Durable Tool Rods
-advancements.silentgear.iron_rods.description=Craft some iron rods. Sticks aren't the only type of tool rod...
 advancements.silentgear.kachink1.title=Ka-chink! 1
 advancements.silentgear.kachink1.description=Damage a gear item past a certain point (stats get recalculated)
 advancements.silentgear.kachink2.title=Ka-chink! 2
@@ -106,9 +104,9 @@ item.silentgear.blueprint.spear.desc=Long-reach pointy stick
 item.silentgear.blueprint.trident.desc=Three prongs, one purpose
 item.silentgear.blueprint.sickle.desc=Mowing the lawn
 item.silentgear.blueprint.sword.desc=The classic
-
-item.silentgear.blueprint_rod.name=Blueprint (Rod)
-item.silentgear.template_rod.name=Template (Rod)
+item.silentgear.blueprint.shield.desc=Blocks incoming attacks
+item.silentgear.blueprint.arrow.desc=Points in the right direction
+item.silentgear.template.arrow.desc=Points in the right direction
 
 item.silentgear.template.name=Template
 
@@ -124,8 +122,6 @@ item.silentgear.blueprint_package.desc2=Right-click to open
 item.silentgear.flaxseeds.name=Flaxseeds
 item.silentgear.nether_banana.name=Nether Banana
 
-item.silentgear.guide_book.name=Guide Book (WIP)
-item.silentgear.guide_book.desc=Silent Gear guide book
 
 
 # Misc upgrades
@@ -155,6 +151,8 @@ item.silentgear.tool_head.spear=Spear Head
 item.silentgear.tool_head.trident=Trident Head
 item.silentgear.tool_head.sickle=Sickle Blade
 item.silentgear.tool_head.sword=Sword Blade & Crossguard
+item.silentgear.tool_head.shield=Shield Plating
+item.silentgear.tool_head.arrow=Arrowhead
 
 # Crafting Item
 item.silentgear.advanced_upgrade_base.name=Advanced Upgrade Base
@@ -169,14 +167,9 @@ item.silentgear.dried_sinew.desc=<temporary recipe>
 item.silentgear.emerald_shard.name=Emerald Shard
 item.silentgear.flax_fiber.name=Flax Fiber
 item.silentgear.flax_string.name=Flax String
-item.silentgear.iron_rod.name=Iron Rod
 item.silentgear.leather_scrap.name=Leather Scrap
-item.silentgear.netherwood_stick.name=Netherwood Stick
-item.silentgear.rough_rod.name=Rough Rod
-item.silentgear.rough_rod.desc=Can be used to craft tools like in vanilla, but has some negative effects. Good for emergencies.
 item.silentgear.sinew.name=Sinew
 item.silentgear.sinew_fiber.name=Sinew Fiber
-item.silentgear.stone_rod.name=Stone Rod
 item.silentgear.upgrade_base.name=Upgrade Base
 
 #Tools
@@ -186,6 +179,9 @@ item.silentgear.axe.nameProper=%s Axe
 
 item.silentgear.bow.name=Bow
 item.silentgear.bow.nameProper=%s Bow
+
+item.silentgear.shield.name=Shield
+item.silentgear.shield.nameProper=%s Shield
 
 item.silentgear.dagger.name=Dagger
 item.silentgear.dagger.nameProper=%s Dagger
@@ -269,7 +265,7 @@ stat.silentgear.durability=Durability
 stat.silentgear.enchantability=Enchantability
 stat.silentgear.harvest_level=Harvest Level
 stat.silentgear.harvest_speed=Harvest Speed
-stat.silentgear.magic_armor=Magic Armor
+stat.silentgear.knockback_resistance=Knockback Resistance
 stat.silentgear.magic_damage=Magic Damage
 stat.silentgear.melee_damage=Attack Damage
 stat.silentgear.ranged_damage=Ranged Damage
@@ -332,7 +328,6 @@ material.silentgear.main_obsidian.name=Obsidian
 material.silentgear.main_stone.name=Stone
 material.silentgear.main_wood.name=Wood
 material.silentgear.main_terracotta.name=Terracotta
-material.silentgear.main_test.name=Test Material (Please Remove)
 
 material.silentgear.misc_red_card.name=Red Card
 material.silentgear.misc_spoon.name=Spoon
@@ -340,10 +335,6 @@ material.silentgear.misc_spoon.name=Spoon
 material.silentgear.rod_blaze.name=Blaze Rod
 material.silentgear.rod_bone.name=Bone Rod
 material.silentgear.rod_end.name=End Rod
-material.silentgear.rod_iron.name=Iron Rod
-material.silentgear.rod_netherwood.name=Netherwood Rod
-material.silentgear.rod_rough.name=Rough Rod
-material.silentgear.rod_stone.name=Stone Rod
 material.silentgear.rod_wood.name=Wood Rod
 
 material.silentgear.redstone.name=Redstone
@@ -359,6 +350,9 @@ part.silentgear.type.misc_upgrade=Misc Upgrade
 part.silentgear.type.rod=Tool Rod
 part.silentgear.type.tip=Tip
 part.silentgear.type.coating=Coating
+part.silentgear.type.fletching=Fletching
+part.silentgear.type.lining=Lining
+part.silentgear.type.highlight=Highlight
 
 trait.silentgear.displayFormat=%1$s %2$s
 trait.silentgear.adamant=Adamant
@@ -422,6 +416,7 @@ jei.silentgear.part_analyzer.desc=Determines the quality of armor/tool head mate
 jei.silentgear.red_card_upgrade.desc=Tools and armor with the red card upgrade can break like their vanilla counterparts, instead of becoming a "broken" item that can still be repaired.
 jei.silentgear.spoon_upgrade.desc=Let's your pickaxe mine dirt and such. Because reasons.
 jei.silentgear.sword.desc=A classic sword with balanced damage and speed. The guard takes the appearance of the second material used in crafting.
+jei.silentgear.shield.desc=Shields are assembled from a tool head (2 main materials) and a rod. Max durability scales with the main material's armor durability. Blocking and durability loss are the vanilla shield behavior.
 jei.silentgear.tool_head.desc=Tool heads, blades, bow limbs, and more! These are the core of tools and weapons, constructed with a blueprint/template and some number of main tool materials. Check the blueprint/template tooltip for more info.
 
 jei.silentgear.tooltip.sample1=Sample recipe
@@ -513,3 +508,61 @@ item.silentgear.blueprint_coating.name=Coating Blueprint
 item.silentgear.template_coating.name=Coating Template
 item.silentgear.part_blueprint.desc.coating=Use with one coating material to craft a modular coating
 part.silentgear.modular_coating.name=%s Coating
+item.silentgear.modular_rod.name=Modular Rod
+item.silentgear.modular_rod.material=Material: %s
+item.silentgear.modular_rod.noMaterial=Unknown rod material (craft it with a main material)
+item.silentgear.blueprint_modular_rod.name=Rod Blueprint
+item.silentgear.template_modular_rod.name=Rod Template
+item.silentgear.part_blueprint.desc.rod=Use with one main material to craft a modular rod
+part.silentgear.modular_rod.name=%s Rod
+jei.silentgear.part_blueprint_modular_rod.desc=Blueprint/template for modular rods. Use one main material that is listed as a valid rod material.
+jei.silentgear.modular_rod.desc=Modular rods are crafted with a rod blueprint/template and one valid main material. The stored rod material determines stats, traits and color. The assembled rod must use the same material as the tool's main part.
+item.silentgear.arrow.name=Arrow
+item.silentgear.arrow.nameProper=%s Arrow
+item.silentgear.arrow.damage=Bonus damage: %s
+item.silentgear.arrow.speed=Flight speed: %s
+item.silentgear.arrow.accuracy=Accuracy: %s
+item.silentgear.blueprint_arrow.name=Arrow Blueprint
+item.silentgear.template_arrow.name=Arrow Template
+item.silentgear.modular_fletching.name=Modular Fletching
+item.silentgear.modular_fletching.material=Material: %s
+item.silentgear.modular_fletching.noMaterial=Unknown fletching material (craft it with feather, leaves or paper)
+item.silentgear.blueprint_modular_fletching.name=Fletching Blueprint
+item.silentgear.template_modular_fletching.name=Fletching Template
+item.silentgear.part_blueprint.desc.fletching=Use with one fletching material to craft a modular fletching
+part.silentgear.modular_fletching.name=%s Fletching
+jei.silentgear.part_blueprint_modular_fletching.desc=Blueprint/template for modular fletchings. Use feathers, leaves or paper.
+jei.silentgear.modular_fletching.desc=Modular fletchings are crafted with a fletching blueprint/template and feather, leaves or paper. Accuracy and flight speed are decided by the fletching material; arrows are crafted once and stack up to 64.
+item.silentgear.modular_lining.name=Modular Lining
+item.silentgear.modular_lining.material=Material: %s
+item.silentgear.modular_lining.noMaterial=Unknown lining material (craft it with leather, wool or flax string)
+item.silentgear.blueprint_lining.name=Lining Blueprint
+item.silentgear.template_lining.name=Lining Template
+item.silentgear.part_blueprint.desc.lining=Use with one lining material to craft a modular lining
+part.silentgear.modular_lining.name=%s Lining
+jei.silentgear.part_blueprint_lining.desc=Blueprint/template for modular linings. Use leather, wool or flax string.
+jei.silentgear.modular_lining.desc=Modular linings are crafted with a lining blueprint/template and leather, wool or flax string. A lining is an optional armor part that adds knockback resistance and traits.
+material.silentgear.leather.name=Leather
+material.silentgear.wool.name=Wool
+material.silentgear.fine_silk_cloth.name=Fine Silk Cloth
+trait.silentgear.flexible=Flexible
+trait.silentgear.flexible.desc=Gear sometimes takes less damage from use
+item.silentgear.fishing_rod.name=Fishing Rod
+item.silentgear.fishing_rod.nameProper=%s Fishing Rod
+item.silentgear.blueprint_fishing_rod.name=Fishing Rod Blueprint
+item.silentgear.template_fishing_rod.name=Fishing Rod Template
+jei.silentgear.blueprint_fishing_rod.desc=Fishing rod blueprint. Use two main materials and optionally one rod.
+jei.silentgear.template_fishing_rod.desc=Single-use fishing rod template. Use two main materials and optionally one rod.
+jei.silentgear.fishing_rod.desc=Modular fishing rod. The main material decides durability, enchantability, rarity and traits; the optional rod part adds its own stats and color. Vanilla casting, bobber and loot logic is reused.
+material.silentgear.main_lapis_lazuli.name=Lapis Lazuli
+material.silentgear.main_quartz.name=Quartz
+material.silentgear.main_bone.name=Bone
+trait.silentgear.crushing=Crushing
+trait.silentgear.crushing.desc=Increases armor or decreases attack damage as gear is damaged
+tile.silentgear.phantom_light.name=Phantom Light
+material.silentgear.highlight.name=Highlight
+material.silentgear.modular_tip.name=Modular Tip
+material.silentgear.modular_coating.name=Modular Coating
+material.silentgear.modular_rod.name=Modular Rod
+material.silentgear.modular_fletching.name=Modular Fletching
+material.silentgear.modular_lining.name=Modular Lining

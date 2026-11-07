@@ -1,0 +1,42 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":  330},
+        {"name": "armor_durability", "value":   13},
+        {"name": "enchantability",   "value":   10},
+        {"name": "harvest_level",    "value":    2},
+        {"name": "harvest_speed",    "value":    7},
+        {"name": "melee_damage",     "value":    2},
+        {"name": "magic_damage",     "value":    0},
+        {"name": "attack_speed",     "value":  0.1},
+        {"name": "armor",            "value":   14},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "ranged_damage",    "value":    0},
+        {"name": "ranged_speed",     "value":  0.1},
+        {"name": "rarity",           "value":   40}
+    ],
+    "traits": [
+        {"name": "silentgear:crushing", "level": 3},
+        {"name": "silentgear:jagged",   "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "minecraft:quartz",
+            "data": 0,
+            "oredict": "gemQuartz"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_hc",
+            "texture_color": "D4CABA",
+            "broken_color": "D4CABA"
+        },
+        "name_color": "white"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 2,
+        "tool_blacklist": []
+    }
+}

@@ -27,6 +27,9 @@ public class ModMaterials implements IPhasedInitializer {
     public static PartHighlight highlight;
     public static ModularTipPart modularTip;
     public static ModularCoatingPart modularCoating;
+    public static ModularRodPart modularRod;
+    public static ModularFletchingPart modularFletching;
+    public static ModularLiningPart modularLining;
 
     @Override
     public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
@@ -47,6 +50,9 @@ public class ModMaterials implements IPhasedInitializer {
         PartRegistry.putPart(new PartMain(getPath("main_crimson_steel"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_end_stone"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_sandstone"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartMain(getPath("main_lapis_lazuli"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartMain(getPath("main_quartz"), PartOrigins.BUILTIN_CORE));
+        PartRegistry.putPart(new PartMain(getPath("main_bone"), PartOrigins.BUILTIN_CORE));
 
         // Thermal Foundation add-on: register these metal materials only when thermalfoundation is present.
         // Material data lives in assets/silentgear/materials/main_*.json; crafting uses ore dictionary
@@ -100,6 +106,9 @@ public class ModMaterials implements IPhasedInitializer {
 
         modularTip = PartRegistry.putPart(new ModularTipPart(getPath("modular_tip"), PartOrigins.BUILTIN_CORE));
         modularCoating = PartRegistry.putPart(new ModularCoatingPart(getPath("modular_coating"), PartOrigins.BUILTIN_CORE));
+        modularRod = PartRegistry.putPart(new ModularRodPart(getPath("modular_rod"), PartOrigins.BUILTIN_CORE));
+        modularFletching = PartRegistry.putPart(new ModularFletchingPart(getPath("modular_fletching"), PartOrigins.BUILTIN_CORE));
+        modularLining = PartRegistry.putPart(new ModularLiningPart(getPath("modular_lining"), PartOrigins.BUILTIN_CORE));
 
         for (EnumDyeColor color : EnumDyeColor.values())
             PartRegistry.putPart(new PartGrip(getPath("grip_wool_" + color.name().toLowerCase(Locale.ROOT)), PartOrigins.BUILTIN_CORE));
@@ -117,7 +126,7 @@ public class ModMaterials implements IPhasedInitializer {
 
         UserDefined.loadUserParts();
 
-        // TIP/COATING 独立材料表：内置 JSON + config 覆盖/新增，加载后构建不可变索引。
+        // TIP/COATING/ROD 独立材料表：内置 JSON + config 覆盖/新增，加载后构建不可变索引。
         ModularMaterialRegistry.load();
     }
 

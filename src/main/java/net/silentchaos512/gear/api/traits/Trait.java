@@ -52,7 +52,7 @@ public class Trait {
     @Getter private ResourceLocation name;
     @Getter private TextFormatting nameColor = TextFormatting.GRAY;
     @Getter private ResourceOrigin origin = ResourceOrigin.BUILTIN_CORE;
-    private final Set<String> cancelsWith = new HashSet<>();
+    private final Set<ResourceLocation> cancelsWith = new HashSet<>();
     private String displayName;
     private boolean translateName = true;
 
@@ -76,8 +76,8 @@ public class Trait {
 
     public static void setCancelsWith(Trait t1, Trait t2) {
         SilentGear.log.debug("Set trait cancels with: '{}' and '{}'", t1.name, t2.name);
-        t1.cancelsWith.add(t2.name.toString());
-        t2.cancelsWith.add(t1.name.toString());
+        t1.cancelsWith.add(t2.name);
+        t2.cancelsWith.add(t1.name);
     }
 
     public final int getCanceledLevel(int level, Trait other, int otherLevel) {
@@ -96,7 +96,7 @@ public class Trait {
     }
 
     public final boolean willCancelWith(Trait other) {
-        return cancelsWith.contains(other.name.toString());
+        return cancelsWith.contains(other.name);
     }
 
     public String getTranslatedName(int level) {
@@ -227,7 +227,11 @@ public class Trait {
                             if (!str.contains(":")) {
                                 str = SilentGear.RESOURCE_PREFIX + str;
                             }
-                            trait.cancelsWith.add(str);
+                            try {
+                                trait.cancelsWith.add(new ResourceLocation(str));
+                            } catch (IllegalArgumentException e) {
+                                SilentGear.log.warn("Invalid trait name in cancels_with: '{}'", str);
+                            }
                         }
                     }
                 }

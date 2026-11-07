@@ -85,6 +85,11 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
         return ABSORPTION_RATIO_BY_SLOT[armorType.getIndex()] * GearData.getStat(stack, CommonItemStats.ARMOR);
     }
 
+    public double getArmorKnockbackResistance(ItemStack stack) {
+        if (GearHelper.isBroken(stack)) return 0;
+        return MathHelper.clamp(GearData.getStat(stack, CommonItemStats.KNOCKBACK_RESISTANCE), 0f, 1f);
+    }
+
     public double getArmorToughness(ItemStack stack) {
         if (GearHelper.isBroken(stack)) return 0;
         return GearData.getStat(stack, CommonItemStats.ARMOR_TOUGHNESS) / 4;
@@ -117,6 +122,8 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
                     uuid, "Armor modifier", getArmorProtection(stack), 0));
             multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(
                     uuid, "Armor toughness", getArmorToughness(stack), 0));
+            multimap.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(
+                    uuid, "Armor knockback resistance", getArmorKnockbackResistance(stack), 0));
         }
         return multimap;
     }

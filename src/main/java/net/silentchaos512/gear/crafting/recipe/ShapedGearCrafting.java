@@ -37,6 +37,8 @@ public class ShapedGearCrafting extends ShapedRecipes {
                     list.add(new GearPartIngredient(PartType.ROD));
                 } else if (c == '~') {
                     list.add(new GearPartIngredient(PartType.BOWSTRING));
+                } else if (c == '@') {
+                    list.add(new GearPartIngredient(PartType.FLETCHING));
                 } else {
                     list.add(Ingredient.EMPTY);
                 }
@@ -65,6 +67,15 @@ public class ShapedGearCrafting extends ShapedRecipes {
                 }
             }
         }
+        // Make sure fletchings match (if there are any)
+        ItemStack fletching = stackList.firstMatch(s -> typeOf(s) == PartType.FLETCHING);
+        if (!fletching.isEmpty()) {
+            for (ItemStack stack : stackList.allMatches(s -> typeOf(s) == PartType.FLETCHING)) {
+                if (!fletching.isItemEqual(stack)) {
+                    return false;
+                }
+            }
+        }
 
         return super.matches(inv, worldIn);
     }
@@ -78,6 +89,10 @@ public class ShapedGearCrafting extends ShapedRecipes {
         ItemStack bowstring = stackList.firstMatch(s -> typeOf(s) == PartType.BOWSTRING);
         if (!bowstring.isEmpty()) {
             items.add(bowstring);
+        }
+        ItemStack fletching = stackList.firstMatch(s -> typeOf(s) == PartType.FLETCHING);
+        if (!fletching.isEmpty()) {
+            items.add(fletching);
         }
 
         List<ItemPartData> parts = items.stream()

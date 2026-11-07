@@ -1,0 +1,11 @@
+{
+    "types": ["lining"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:leather", "data": 0}},
+    "stats": [],
+    "traits": [
+        {"name": "silentgear:flexible", "level": 4}
+    ],
+    "display": {"all": {"texture_suffix": "lining", "texture_color": "805133", "broken_color": "805133"}, "name_color": "gold"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

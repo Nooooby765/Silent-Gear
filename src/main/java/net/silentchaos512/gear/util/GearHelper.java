@@ -32,6 +32,7 @@ import net.silentchaos512.gear.config.Config;
 import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.init.ModMaterials;
+import net.silentchaos512.gear.item.ModularFletchingItem;
 import net.silentchaos512.gear.item.ToolRods;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.registry.RecipeMaker;
@@ -316,6 +317,24 @@ public final class GearHelper {
         return false;
     }
 
+    /**
+     * Resolves the representative color of a part for items that bake the color into NBT at
+     * construction time. Many materials use pre-colored textures and leave textureColor white,
+     * storing the display color in brokenColor or fallbackColor instead.
+     */
+    public static int getPartDisplayColor(@Nullable ItemPartData part, GearType gearType) {
+        if (part == null) return 0xFFFFFF;
+
+        PartDisplayProperties props = part.getPart().getDisplayProperties(gearType);
+        int color = props.getTextureColor();
+        if (color != 0xFFFFFF) return color;
+
+        color = props.getBrokenColor();
+        if (color != 0xFFFFFF) return color;
+
+        return props.getFallbackColor();
+    }
+
     public static EnumRarity getRarity(ItemStack stack) {
         int rarity = GearData.getStatInt(stack, CommonItemStats.RARITY);
         if (stack.isItemEnchanted())
@@ -381,19 +400,38 @@ public final class GearHelper {
         Collection<IRecipe> list = new ArrayList<>();
 
         for (PartMain part : PartRegistry.getVisibleMains()) {
-            ItemStack result = "sword".equals(item.getGearClass())
-                    ? item.construct(item.getItem(), part.getCraftingStack(), part.getCraftingStack())
-                    : item.construct(item.getItem(), part.getCraftingStack());
-            GearData.setExampleTag(result, true);
-
             ConfigOptionEquipment config = item.getConfig();
+            int mainCount = Math.max(1, config.getCraftingPartCount(PartType.MAIN));
+
+            PartDataList parts = PartDataList.of();
             List<Object> inputs = new ArrayList<>();
             inputs.add(ModItems.toolHead.getStack(item.getGearClass(), part, false));
-            for (int i = 0; i < config.getRodCount(); ++i)
-                inputs.add(ToolRods.WOOD.getPart().getCraftingStack());
-            for (int i = 0; i < config.getBowstringCount(); ++i)
-                inputs.add(ModMaterials.bowstringString.getCraftingStack());
 
+            for (int i = 0; i < mainCount; ++i)
+                parts.addPart(part);
+            for (int i = 0; i < config.getRodCount(); ++i) {
+                parts.addPart(ToolRods.WOOD.getPart());
+                inputs.add(ToolRods.WOOD.getPart().getCraftingStack());
+            }
+            for (int i = 0; i < config.getBowstringCount(); ++i) {
+                parts.addPart(ModMaterials.bowstringString);
+                inputs.add(ModMaterials.bowstringString.getCraftingStack());
+            }
+            if (config.getCraftingPartCount(PartType.FLETCHING) > 0) {
+                List<ItemPart> fletchingMaterials = ModularMaterialRegistry.getMaterials(PartType.FLETCHING);
+                if (!fletchingMaterials.isEmpty()) {
+                    ItemStack fletching = ModularFletchingItem.createStack(
+                            ItemPartData.instance(fletchingMaterials.get(0)));
+                    ItemPartData fletchingData = ItemPartData.fromStack(fletching);
+                    if (fletchingData != null) {
+                        parts.add(fletchingData);
+                        inputs.add(fletching);
+                    }
+                }
+            }
+
+            ItemStack result = item.construct(item.getItem(), parts);
+            GearData.setExampleTag(result, true);
             list.add(recipes.makeShapeless(result, inputs.toArray()));
         }
 

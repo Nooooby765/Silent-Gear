@@ -8,6 +8,27 @@
         "tip_glowstone",
         "tip_lapis",
         "tip_quartz",
-        "coating_gold"
+        "coating_gold",
+        "rod_wood",
+        "rod_stone",
+        "rod_flint",
+        "rod_iron",
+        "rod_gold",
+        "rod_diamond",
+        "rod_emerald",
+        "rod_obsidian",
+        "rod_netherrack",
+        "rod_end_stone",
+        "rod_sandstone",
+        "rod_terracotta",
+        "rod_netherwood",
+        "rod_crimson_iron",
+        "rod_crimson_steel",
+        "fletching_feather",
+        "fletching_leaves",
+        "fletching_paper",
+        "lining_leather",
+        "lining_wool",
+        "lining_fine_silk_cloth"
     ]
 }

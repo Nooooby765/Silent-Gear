@@ -1,0 +1,22 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_modular_rod"
+    },
+    "pattern": [
+        "pr",
+        "s "
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "item": "silentgear:blueprint_paper"
+        },
+        "r": {
+            "item": "minecraft:paper"
+        },
+        "s": {
+            "item": "minecraft:stone",
+            "data": 0
+        }
+    }
+}

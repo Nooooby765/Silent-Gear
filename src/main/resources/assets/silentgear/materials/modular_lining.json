@@ -1,0 +1,21 @@
+{
+    "type": "lining",
+    "crafting_items": {
+        "normal": {
+            "item": "silentgear:modular_lining"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_domain": "silentgear",
+            "texture_suffix": "lining_cloth",
+            "texture_color": "FFFFFF",
+            "broken_color": "FFFFFF"
+        },
+        "name_color": "white"
+    },
+    "availability": {
+        "enabled": true,
+        "tool_blacklist": []
+    }
+}

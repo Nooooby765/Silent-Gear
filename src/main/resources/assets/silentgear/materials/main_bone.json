@@ -1,0 +1,40 @@
+{
+    "type": "main",
+    "stats": [
+        {"name": "durability",       "value":  108},
+        {"name": "armor_durability", "value":    4},
+        {"name": "enchantability",   "value":    5},
+        {"name": "harvest_level",    "value":    1},
+        {"name": "harvest_speed",    "value":    4},
+        {"name": "melee_damage",     "value":    2},
+        {"name": "magic_damage",     "value":    1},
+        {"name": "attack_speed",     "value":  0.1},
+        {"name": "armor",            "value":    5},
+        {"name": "armor_toughness",  "value":    0},
+        {"name": "ranged_damage",    "value":    1},
+        {"name": "ranged_speed",     "value":    0},
+        {"name": "rarity",           "value":    8}
+    ],
+    "traits": [
+        {"name": "silentgear:chipping", "level": 2}
+    ],
+    "crafting_items": {
+        "normal": {
+            "item": "minecraft:bone_block",
+            "data": 0
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_lc",
+            "texture_color": "FCFBED",
+            "broken_color": "FCFBED"
+        },
+        "name_color": "white"
+    },
+    "availability": {
+        "enabled": true,
+        "tier": 1,
+        "tool_blacklist": []
+    }
+}

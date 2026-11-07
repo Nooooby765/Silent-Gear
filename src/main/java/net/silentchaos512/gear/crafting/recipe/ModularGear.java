@@ -30,6 +30,7 @@ import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.parts.ItemPartData;
+import net.silentchaos512.gear.api.parts.ModularRodPart;
 import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.item.ToolHead;
 import net.silentchaos512.lib.recipe.RecipeBaseSL;
@@ -84,6 +85,9 @@ public class ModularGear implements IRecipeFactory {
             }
 
             data.addAll(partsByType.values());
+            // Modular rods must use the same material as the first main part. Legacy rods and
+            // assemblies without a main part are intentionally exempt.
+            if (!ModularRodPart.hasMatchingMainMaterial(data)) return ItemStack.EMPTY;
             return this.item.construct((Item) this.item, data);
         }
 

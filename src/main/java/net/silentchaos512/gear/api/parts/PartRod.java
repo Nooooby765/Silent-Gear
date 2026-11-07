@@ -10,9 +10,13 @@ import net.silentchaos512.gear.api.stats.StatInstance;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public final class PartRod extends ItemPart {
+public class PartRod extends ItemPart {
     public PartRod(ResourceLocation name, PartOrigins origin) {
         super(name, origin);
+    }
+
+    protected PartRod(ResourceLocation name, PartOrigins origin, boolean loadResources) {
+        super(name, origin, loadResources);
     }
 
     @Override

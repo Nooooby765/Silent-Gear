@@ -74,6 +74,12 @@ public final class ToolModel implements IModel {
             ICoreTool item = ModItems.toolClasses.get(toolClass);
 
             for (ItemPart part : PartRegistry.getValues()) {
+                // Non-rendered positions (coating, fletching, armor, any) contribute no tool
+                // layers, so requesting their texture variants would only add missing sprites.
+                IPartPosition position = part.getPartPosition();
+                if (!IPartPosition.RENDER_LAYERS.contains(position))
+                    continue;
+
                 // Do not skip disabled parts: gear made before a material was disabled still
                 // renders with it, and unstitched sprites would silently become missingno.
                 ItemPartData partData = ItemPartData.instance(part);
@@ -81,7 +87,7 @@ public final class ToolModel implements IModel {
                 // Every display variant the part can select at runtime (gear type overrides such
                 // as "hoe": { "texture_suffix": "generic_hc" } included), for every animation frame
                 for (int frame = 0; frame < item.getAnimationFrames(); ++frame) {
-                    builder.addAll(partData.getTextureVariants(toolClass, part.getPartPosition(), frame));
+                    builder.addAll(partData.getTextureVariants(toolClass, position, frame));
 
                     // Guard texture for swords
                     if (hasGuard && part instanceof PartMain)
@@ -89,7 +95,7 @@ public final class ToolModel implements IModel {
                 }
 
                 // Broken texture (does not depend on the animation frame)
-                ResourceLocation texBroken = partData.getBrokenTexture(ItemStack.EMPTY, toolClass, part.getPartPosition());
+                ResourceLocation texBroken = partData.getBrokenTexture(ItemStack.EMPTY, toolClass, position);
                 if (texBroken != null)
                     builder.add(texBroken);
             }

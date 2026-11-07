@@ -21,6 +21,7 @@ import net.silentchaos512.gear.api.stats.CommonItemStats;
 import net.silentchaos512.gear.api.stats.ItemStat;
 import net.silentchaos512.gear.api.stats.StatInstance;
 import net.silentchaos512.gear.item.gear.CoreArmor;
+import net.silentchaos512.gear.item.gear.CoreArrow;
 import net.silentchaos512.gear.util.GearData;
 import net.silentchaos512.gear.util.GearHelper;
 import net.silentchaos512.gear.util.TraitHelper;
@@ -58,7 +59,7 @@ public final class GearClientHelper {
                 tooltip.add(1, TextFormatting.RED + SilentGear.i18n.translate("misc", "broken"));
             }
 
-            if (GearData.isExampleGear(stack)) {
+            if (GearData.isExampleGear(stack) && !(stack.getItem() instanceof CoreArrow)) {
                 tooltip.add(1, TextFormatting.YELLOW + SilentGear.i18n.translate("misc", "exampleOutput1"));
                 tooltip.add(2, TextFormatting.YELLOW + SilentGear.i18n.translate("misc", "exampleOutput2"));
             }

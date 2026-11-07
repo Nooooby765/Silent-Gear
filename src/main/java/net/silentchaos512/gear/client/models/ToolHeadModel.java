@@ -115,6 +115,10 @@ public class ToolHeadModel implements IModel {
             final ItemPartData highlight = ItemPartData.instance(ModMaterials.highlight);
             builder.addAll(highlight.getTextureVariants(toolClass, PartPositions.HIGHLIGHT, 0));
         }
+
+        // Shield/arrow tool heads are not in toolClasses; they share one generic material-tinted icon.
+        builder.add(new ResourceLocation(SilentGear.MOD_ID, "items/shield/head"));
+        builder.add(new ResourceLocation(SilentGear.MOD_ID, "items/arrow/arrow_head"));
         return builder.build();
     }
 
@@ -197,7 +201,12 @@ public class ToolHeadModel implements IModel {
             ItemPartData highlightPart = getHighlightPart(primaryPart, stack);
 
             ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-            ResourceLocation textureHead = primaryPart == null ? null : primaryPart.getTexture(stack, toolClass, PartPositions.HEAD, 0);
+            ResourceLocation textureHead = primaryPart == null ? null
+                    : "shield".equals(toolClass)
+                    ? new ResourceLocation(SilentGear.MOD_ID, "items/shield/head")
+                    : "arrow".equals(toolClass)
+                    ? new ResourceLocation(SilentGear.MOD_ID, "items/arrow/arrow_head")
+                    : primaryPart.getTexture(stack, toolClass, PartPositions.HEAD, 0);
             ResourceLocation textureGuard = secondaryPart == null ? null : secondaryPart.getTexture(stack, toolClass, PartPositions.GUARD, 0);
             ResourceLocation textureHighlight = highlightPart == null ? null : highlightPart.getTexture(stack, toolClass, PartPositions.HIGHLIGHT, 0);
 

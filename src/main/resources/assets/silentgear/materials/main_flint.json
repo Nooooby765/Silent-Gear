@@ -1,4 +1,4 @@
-{
+﻿{
     "type": "main",
     "stats": [
         {
@@ -42,10 +42,6 @@
             "value": 0
         },
         {
-            "name": "magic_armor",
-            "value": 0
-        },
-        {
             "name": "ranged_damage",
             "value": 1
         },
@@ -56,10 +52,6 @@
         {
             "name": "rarity",
             "value": 6
-        },
-        {
-            "name": "chargeability",
-            "value": 0.8
         }
     ],
     "traits": [

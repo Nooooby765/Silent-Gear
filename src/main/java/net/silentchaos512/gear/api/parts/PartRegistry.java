@@ -2,6 +2,7 @@ package net.silentchaos512.gear.api.parts;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -20,8 +21,10 @@ public final class PartRegistry {
     private static ImmutableList<PartRod> rods = null;
     private static ImmutableList<PartMain> visibleMains = null;
     private static ImmutableList<PartRod> visibleRods = null;
-    private static Map<String, ItemPart> STACK_TO_PART = new HashMap<>();
-    private static final Set<String> STACK_TO_PART_MISSES = new HashSet<>();
+    // Keyed by item + metadata instead of a concatenated string, so tooltip/model lookups do not
+    // allocate a new key every call.
+    private static final Map<Item, Map<Integer, ItemPart>> STACK_TO_PART = new HashMap<>();
+    private static final Map<Item, Set<Integer>> STACK_TO_PART_MISSES = new HashMap<>();
     @Getter private static int highestMainPartTier = 0;
 
     private PartRegistry() {
@@ -61,29 +64,32 @@ public final class PartRegistry {
         if (stack.isEmpty())
             return null;
 
-        String key = stack.getItem().getRegistryName() + "@" + stack.getItemDamage();
-        // Single map lookup instead of containsKey + get. Values are never null, so a null
-        // result here is indistinguishable from a miss.
-        ItemPart cached = STACK_TO_PART.get(key);
+        final Item item = stack.getItem();
+        final int damage = stack.getItemDamage();
+        Map<Integer, ItemPart> byDamage = STACK_TO_PART.get(item);
+        // Values are never null, so a null result here is indistinguishable from a miss.
+        ItemPart cached = byDamage != null ? byDamage.get(damage) : null;
         if (cached != null)
             return cached;
-        if (STACK_TO_PART_MISSES.contains(key))
+        Set<Integer> misses = STACK_TO_PART_MISSES.get(item);
+        if (misses != null && misses.contains(damage))
             return null;
 
         // Match exact item first, then ore dictionary
-        ItemPart part = getPart(key, stack, false);
+        ItemPart part = getPart(stack, false);
         if (part == null)
-            part = getPart(key, stack, true);
+            part = getPart(stack, true);
         if (part == null)
-            STACK_TO_PART_MISSES.add(key);
+            STACK_TO_PART_MISSES.computeIfAbsent(item, k -> new HashSet<>()).add(damage);
         return part;
     }
 
     @Nullable
-    private static ItemPart getPart(String key, ItemStack stack, boolean matchOreDict) {
+    private static ItemPart getPart(ItemStack stack, boolean matchOreDict) {
         for (ItemPart part : map.values()) {
             if (part.matchesForCrafting(stack, matchOreDict)) {
-                STACK_TO_PART.put(key, part);
+                STACK_TO_PART.computeIfAbsent(stack.getItem(), k -> new HashMap<>())
+                        .put(stack.getItemDamage(), part);
                 return part;
             }
         }
@@ -184,6 +190,7 @@ public final class PartRegistry {
 
     public static void getDebugLines(List<String> list) {
         list.add("PartRegistry.map=" + map.size());
-        list.add("PartRegistry.STACK_TO_PART=" + STACK_TO_PART.size());
+        int cachedStacks = STACK_TO_PART.values().stream().mapToInt(Map::size).sum();
+        list.add("PartRegistry.STACK_TO_PART=" + cachedStacks);
     }
 }

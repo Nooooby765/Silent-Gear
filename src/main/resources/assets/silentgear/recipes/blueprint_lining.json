@@ -1,0 +1,33 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_lining"
+    },
+    "ingredients": [
+        {
+            "item": "silentgear:blueprint_paper"
+        },
+        {
+            "item": "silentgear:blueprint_paper"
+        },
+        {
+            "item": "silentgear:blueprint_paper"
+        },
+        {
+            "ore": "wool",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "wool",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "string",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "string",
+            "type": "forge:ore_dict"
+        }
+    ],
+    "type": "forge:ore_shapeless"
+}

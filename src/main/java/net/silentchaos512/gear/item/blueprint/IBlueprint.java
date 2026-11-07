@@ -3,6 +3,7 @@ package net.silentchaos512.gear.item.blueprint;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.gear.api.parts.ItemPart;
 import net.silentchaos512.gear.api.parts.ItemPartData;
+import net.silentchaos512.gear.api.parts.PartType;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -23,6 +24,14 @@ public interface IBlueprint {
      */
     default boolean isValidMaterial(ItemPart part) {
         return true;
+    }
+
+    /**
+     * Number of optional parts of the given type this blueprint accepts, in addition to the
+     * required main material count. Legacy blueprints accept none.
+     */
+    default int getOptionalPartCount(PartType type) {
+        return 0;
     }
 
     /**

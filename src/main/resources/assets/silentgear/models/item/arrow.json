@@ -1,0 +1,9 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "silentgear:items/arrow/arrow_shaft",
+    "layer1": "silentgear:items/arrow/arrow_head",
+    "layer2": "silentgear:items/arrow/arrow_highlight",
+    "layer3": "silentgear:items/arrow/arrow_fletching"
+  }
+}

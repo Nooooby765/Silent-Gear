@@ -1,0 +1,10 @@
+{
+    "types": ["lining"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "silentgear:flax_string", "data": 0}},
+    "traits": [
+        {"name": "silentgear:flexible", "level": 4}
+    ],
+    "display": {"all": {"texture_suffix": "lining", "texture_color": "C3B9A1", "broken_color": "C3B9A1"}, "name_color": "gray"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

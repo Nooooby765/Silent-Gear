@@ -28,6 +28,8 @@ public enum PartPositions implements IPartPosition {
     HIGHLIGHT("", "highlight", true),
     TIP("tip", "tip", true),
     COATING("coating", "coating", false),
+    FLETCHING("fletching", "fletching", false),
+    LINING("lining", "lining", false),
     BOWSTRING("bowstring", "bowstring", true),
     BINDING("binding", "binding", true);
 

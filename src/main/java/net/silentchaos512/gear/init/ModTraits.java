@@ -55,6 +55,7 @@ public final class ModTraits implements IPhasedInitializer {
     public static Trait aquatic;
     public static Trait chilled;
     public static Trait crude;
+    public static Trait flexible;
     public static Trait holy;
     public static Trait magmatic;
     public static Trait multiBreak;
@@ -75,6 +76,7 @@ public final class ModTraits implements IPhasedInitializer {
     public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
         TraitRegistry.register(new DurabilityTrait(path("malleable"), ResourceOrigin.BUILTIN_CORE));
         TraitRegistry.register(new DurabilityTrait(path("brittle"), ResourceOrigin.BUILTIN_CORE));
+        flexible = TraitRegistry.register(new DurabilityTrait(path("flexible"), ResourceOrigin.BUILTIN_CORE));
 
         multiBreak = TraitRegistry.register(new Trait(path("multi_break"), ResourceOrigin.BUILTIN_CORE));
         speedBoostLight = TraitRegistry.register(new Trait(path("speed_boost_light"), ResourceOrigin.BUILTIN_CORE));
@@ -110,6 +112,7 @@ public final class ModTraits implements IPhasedInitializer {
         TraitRegistry.register(new StatModifierTrait(path("eroded"), ResourceOrigin.BUILTIN_CORE));
         TraitRegistry.register(new StatModifierTrait(path("jagged"), ResourceOrigin.BUILTIN_CORE));
         TraitRegistry.register(new StatModifierTrait(path("soft"), ResourceOrigin.BUILTIN_CORE));
+        TraitRegistry.register(new StatModifierTrait(path("crushing"), ResourceOrigin.BUILTIN_CORE));
 
         adamant = TraitRegistry.register(new PotionEffectTrait(path("adamant"), ResourceOrigin.BUILTIN_CORE) {
             @Override

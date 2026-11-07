@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_arrow"
+    },
+    "pattern": [
+        "p",
+        "s",
+        "f"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "item": "silentgear:blueprint_paper"
+        },
+        "s": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        },
+        "f": {
+            "item": "minecraft:feather"
+        }
+    }
+}

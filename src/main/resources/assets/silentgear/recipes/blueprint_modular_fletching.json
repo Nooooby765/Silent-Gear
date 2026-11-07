@@ -1,0 +1,23 @@
+{
+    "result": {
+        "item": "silentgear:blueprint_modular_fletching"
+    },
+    "pattern": [
+        "p",
+        "f",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "item": "silentgear:blueprint_paper"
+        },
+        "f": {
+            "item": "minecraft:feather"
+        },
+        "s": {
+            "item": "minecraft:stone",
+            "data": 0
+        }
+    }
+}

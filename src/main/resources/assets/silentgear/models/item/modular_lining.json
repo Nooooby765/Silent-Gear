@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "silentgear:items/part/lining_cloth",
+    "layer1": "silentgear:items/part_marker"
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "types": ["rod"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:end_stone", "data": 0, "oredict": "endstone"}},
+    "stats": [
+        {"name": "durability", "value": 0.0, "op": "MUL2"},
+        {"name": "enchantability", "value": -0.10, "op": "MUL2"},
+        {"name": "harvest_level", "value": 0, "op": "ADD"},
+        {"name": "harvest_speed", "value": 0.0, "op": "MUL2"},
+        {"name": "melee_damage", "value": 1.0, "op": "ADD"},
+        {"name": "magic_damage", "value": 0, "op": "MUL2"},
+        {"name": "attack_speed", "value": 0, "op": "ADD"},
+        {"name": "ranged_damage", "value": 0, "op": "MUL2"},
+        {"name": "ranged_speed", "value": 0, "op": "MUL2"},
+        {"name": "rarity", "value": 25}
+    ],
+    "traits": [{"name": "silentgear:malleable", "level": 1}, {"name": "silentgear:ancient", "level": 4}],
+    "display": {"all": {"texture_suffix": "generic_lc", "texture_color": "FFFFCC", "broken_color": "FFFFCC"}, "name_color": "light_purple"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

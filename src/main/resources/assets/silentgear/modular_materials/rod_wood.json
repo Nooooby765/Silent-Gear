@@ -1,0 +1,20 @@
+{
+    "types": ["rod"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:planks", "data": 0, "oredict": "plankWood"}},
+    "stats": [
+        {"name": "durability", "value": 0.0, "op": "MUL2"},
+        {"name": "enchantability", "value": 0.1, "op": "MUL2"},
+        {"name": "harvest_level", "value": 0, "op": "ADD"},
+        {"name": "harvest_speed", "value": 0.0, "op": "MUL2"},
+        {"name": "melee_damage", "value": 0.0, "op": "MUL2"},
+        {"name": "magic_damage", "value": 0, "op": "MUL2"},
+        {"name": "attack_speed", "value": 0, "op": "ADD"},
+        {"name": "ranged_damage", "value": 0, "op": "MUL2"},
+        {"name": "ranged_speed", "value": 0.1, "op": "MUL2"},
+        {"name": "rarity", "value": 0}
+    ],
+    "traits": [],
+    "display": {"all": {"texture_suffix": "generic_lc", "texture_color": "896727", "broken_color": "896727"}, "name_color": "gold"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

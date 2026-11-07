@@ -1,0 +1,20 @@
+{
+    "type": "rod",
+    "crafting_items": {
+        "normal": {
+            "item": "silentgear:modular_rod"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic_lc",
+            "texture_color": "FFFFFF",
+            "broken_color": "FFFFFF"
+        },
+        "name_color": "white"
+    },
+    "availability": {
+        "enabled": true,
+        "tool_blacklist": []
+    }
+}

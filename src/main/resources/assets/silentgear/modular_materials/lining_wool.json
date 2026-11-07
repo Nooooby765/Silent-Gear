@@ -1,0 +1,13 @@
+{
+    "types": ["lining"],
+    "priority": 100,
+    "crafting_items": {"normal": {"oredict": "wool"}},
+    "stats": [
+        {"name": "knockback_resistance", "value": 0.1, "op": "ADD"}
+    ],
+    "traits": [
+        {"name": "silentgear:flexible", "level": 2}
+    ],
+    "display": {"all": {"texture_suffix": "lining", "texture_color": "FFFFFF", "broken_color": "FFFFFF"}, "name_color": "white"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

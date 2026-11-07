@@ -28,6 +28,7 @@ import net.silentchaos512.lib.util.PlayerHelper;
 import net.silentchaos512.lib.util.StackHelper;
 
 import javax.annotation.Nullable;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public final class GearData {
@@ -96,9 +97,11 @@ public final class GearData {
             // Calculate and write stats
             int maxDamage = stack.getMaxDamage();
             final float damageRatio = maxDamage > 0 ? (float) stack.getItemDamage() / (float) maxDamage : 0f;
+            // 同一轮聚合中 traits NBT 不会被修改（只在循环结束后重写），解析一次即可复用。
+            NBTTagList traitTags = TraitHelper.getTraitList(stack);
             for (ItemStat stat : stats.keySet()) {
                 final float initialValue = stat.compute(0f, stats.get(stat));
-                final float value = TraitHelper.activateTraits(stack, initialValue, (trait, level, val) ->
+                final float value = TraitHelper.activateTraits(traitTags, initialValue, (trait, level, val) ->
                         trait.onGetStat(null, stat, level, stack, val, damageRatio));
                 // SilentGear.log.debug(stat, value);
                 propertiesCompound.setFloat(stat.getName().getPath(), value);
@@ -158,13 +161,15 @@ public final class GearData {
         if (!(stack.getItem() instanceof ICoreItem))
             return "Invalid item!";
 
-        String key = Integer.toString(animationFrame);
+        // Animation frame 0 是所有渲染着色路径使用的值，避免每帧 Integer.toString 分配。
+        String key = animationFrame == 0 ? "0" : Integer.toString(animationFrame);
 
         // Fast read-only path. getData/getOrCreateSubCompound would create NBT compounds, and
         // this method is called for every tint index of every visible gear stack.
         NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
-        if (root != null) {
-            NBTTagCompound modelKeys = root.getCompoundTag(NBT_ROOT_MODEL_KEYS);
+        NBTBase modelKeysTag = root != null ? root.getTag(NBT_ROOT_MODEL_KEYS) : null;
+        if (modelKeysTag instanceof NBTTagCompound) {
+            NBTTagCompound modelKeys = (NBTTagCompound) modelKeysTag;
             if (modelKeys.hasKey(key))
                 return modelKeys.getString(key);
         }
@@ -256,8 +261,9 @@ public final class GearData {
         // Reading through getSubCompound has no side effects and yields the same result.
         if (!stack.isEmpty()) {
             NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
-            if (root != null && root.hasKey(NBT_ROOT_PROPERTIES, 10)) {
-                NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_PROPERTIES);
+            NBTBase propertiesTag = root != null ? root.getTag(NBT_ROOT_PROPERTIES) : null;
+            if (propertiesTag instanceof NBTTagCompound) {
+                NBTTagCompound tags = (NBTTagCompound) propertiesTag;
                 String key = stat.getName().getPath();
                 if (tags.hasKey(key)) {
                     return tags.getFloat(key);
@@ -275,8 +281,9 @@ public final class GearData {
         // Read-only fast path; queried on every tooltip build. getData would create empty
         // compounds when the properties tag is absent.
         NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
-        return root != null && root.hasKey(NBT_ROOT_PROPERTIES, 10)
-                && root.getCompoundTag(NBT_ROOT_PROPERTIES).getBoolean(NBT_LOCK_STATS);
+        NBTBase propertiesTag = root != null ? root.getTag(NBT_ROOT_PROPERTIES) : null;
+        return propertiesTag instanceof NBTTagCompound
+                && ((NBTTagCompound) propertiesTag).getBoolean(NBT_LOCK_STATS);
     }
 
     public static void setLockedStats(ItemStack stack, boolean lock) {
@@ -284,7 +291,14 @@ public final class GearData {
     }
 
     public static PartDataList getConstructionParts(ItemStack stack) {
-        NBTTagCompound tags = getData(stack, NBT_ROOT_CONSTRUCTION);
+        // Read-only path: called from tooltips and rendering. Do not create NBT here.
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        NBTBase constructionTag = root != null ? root.getTag(NBT_ROOT_CONSTRUCTION) : null;
+        if (!(constructionTag instanceof NBTTagCompound))
+            return PartDataList.of();
+        NBTTagCompound tags = (NBTTagCompound) constructionTag;
+        if (!tags.hasKey(NBT_CONSTRUCTION_PARTS, 9))
+            return PartDataList.of();
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
         PartDataList list = PartDataList.of();
 
@@ -303,9 +317,10 @@ public final class GearData {
         // Read-only fast path; the value is only read on tooltips. Avoid creating an empty
         // Properties compound for stacks that have not been recalculated.
         NBTTagCompound root = equipment.getSubCompound(NBT_ROOT);
-        if (root == null || !root.hasKey(NBT_ROOT_PROPERTIES, 10))
+        NBTBase propertiesTag = root != null ? root.getTag(NBT_ROOT_PROPERTIES) : null;
+        if (!(propertiesTag instanceof NBTTagCompound))
             return 0f;
-        return root.getCompoundTag(NBT_ROOT_PROPERTIES).getFloat(NBT_SYNERGY_DISPLAY);
+        return ((NBTTagCompound) propertiesTag).getFloat(NBT_SYNERGY_DISPLAY);
     }
 
     @Nullable
@@ -329,9 +344,12 @@ public final class GearData {
     public static ItemPartData getPrimaryRenderPartFast(ItemStack stack) {
         // Read-only fast path: called for every armor piece every frame. Do not create NBT here.
         NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
-        if (root == null || !root.hasKey(NBT_ROOT_CONSTRUCTION, 10))
+        NBTBase constructionTag = root != null ? root.getTag(NBT_ROOT_CONSTRUCTION) : null;
+        if (!(constructionTag instanceof NBTTagCompound))
             return null;
-        NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_CONSTRUCTION);
+        NBTTagCompound tags = (NBTTagCompound) constructionTag;
+        if (!tags.hasKey(NBT_CONSTRUCTION_PARTS, 9))
+            return null;
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
 
         NBTBase nbt = tagList.get(0);
@@ -352,10 +370,15 @@ public final class GearData {
     public static ItemPartData getPartByIndex(ItemStack stack, int index) {
         // Read-only fast path: this is reached from render/model paths. Do not create NBT here.
         NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
-        if (root == null || !root.hasKey(NBT_ROOT_CONSTRUCTION, 10))
+        NBTBase constructionTag = root != null ? root.getTag(NBT_ROOT_CONSTRUCTION) : null;
+        if (!(constructionTag instanceof NBTTagCompound))
             return null;
-        NBTTagCompound tags = root.getCompoundTag(NBT_ROOT_CONSTRUCTION);
+        NBTTagCompound tags = (NBTTagCompound) constructionTag;
+        if (!tags.hasKey(NBT_CONSTRUCTION_PARTS, 9))
+            return null;
         NBTTagList tagList = tags.getTagList(NBT_CONSTRUCTION_PARTS, 10);
+        if (index < 0 || index >= tagList.tagCount())
+            return null;
 
         NBTBase nbt = tagList.get(index);
         if (!(nbt instanceof NBTTagCompound)) return null;
@@ -374,6 +397,9 @@ public final class GearData {
             SilentGear.log.error("Tried to add upgrade part to non-gear item {}", gear);
             throw new IllegalArgumentException("Invalid Item type");
         }
+
+        if (!((ICoreItem) gear.getItem()).canReceiveUpgrades())
+            return;
 
         PartDataList parts = getConstructionParts(gear);
 
@@ -471,6 +497,15 @@ public final class GearData {
         if (!(gear.getItem() instanceof ICoreItem))
             return null;
 
+        if (!((ICoreItem) gear.getItem()).usesUniqueId()) {
+            // Consumables such as arrows must stack, so no random id is written. The id is
+            // derived deterministically from the existing item+NBT, which keeps it stable across
+            // recalculation while leaving identical stacks byte-identical.
+            NBTTagCompound tags = gear.getTagCompound();
+            String data = gear.getItem().getRegistryName() + "|" + (tags == null ? "" : tags.toString());
+            return UUID.nameUUIDFromBytes(data.getBytes(StandardCharsets.UTF_8));
+        }
+
         NBTTagCompound tags = StackHelper.getTagCompound(gear, true);
         if (!tags.hasUniqueId(NBT_UUID)) {
             UUID uuid = UUID.randomUUID();
@@ -523,7 +558,12 @@ public final class GearData {
     }
 
     public static boolean isRandomGradingDone(ItemStack stack) {
-        return getData(stack, NBT_ROOT_CONSTRUCTION).getBoolean(NBT_RANDOM_GRADING_DONE);
+        // 每 20 tick 会为所有装备查询一次，保持只读，避免为无构造数据的物品创建 NBT。
+        // 注意：Construction 是 ToolCore_Data 的子 compound，必须从 NBT_ROOT 下读取，
+        // 与 setRandomGradingDone 的写入路径一致。
+        NBTTagCompound root = stack.getSubCompound(NBT_ROOT);
+        return root != null && root.hasKey(NBT_ROOT_CONSTRUCTION, 10)
+                && root.getCompoundTag(NBT_ROOT_CONSTRUCTION).getBoolean(NBT_RANDOM_GRADING_DONE);
     }
 
     public static void setRandomGradingDone(ItemStack stack, boolean value) {

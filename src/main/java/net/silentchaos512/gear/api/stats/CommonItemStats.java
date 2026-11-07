@@ -80,10 +80,13 @@ public class CommonItemStats {
             0f, 0f, 40f, false, TextFormatting.LIGHT_PURPLE)
             .setAffectedByGrades(true)
             .setSynergyApplies(true);
-    public static final ItemStat MAGIC_ARMOR = new ItemStat(new ResourceLocation(SilentGear.MOD_ID, "magic_armor"),
-            0f, 0f, 40f, false, TextFormatting.LIGHT_PURPLE)
+    /**
+     * 击退抗性。与上游衬里数值一致，范围 0..1；受 grades 加成、不参与协同。
+     */
+    public static final ItemStat KNOCKBACK_RESISTANCE = new ItemStat(new ResourceLocation(SilentGear.MOD_ID, "knockback_resistance"),
+            0f, 0f, 1f, false, TextFormatting.LIGHT_PURPLE)
             .setAffectedByGrades(true)
-            .setSynergyApplies(true);
+            .setSynergyApplies(false);
 
     public static void init() {
         // NO-OP

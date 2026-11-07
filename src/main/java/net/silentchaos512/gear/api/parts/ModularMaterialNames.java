@@ -7,12 +7,15 @@ import net.silentchaos512.gear.SilentGear;
 /**
  * Resolves the localized name shown for modular tip/coating materials. Names are no longer
  * maintained per material file ({@code material.silentgear.tip_*}). Instead, the matching
- * {@link PartMain} is used when it exists (iron/gold/diamond/emerald), otherwise the generic
- * {@code material.<namespace>.<base id>.name} key, then the vanilla item name.
+ * {@link PartMain} is used when it exists (iron/gold/diamond/emerald and rod materials), otherwise
+ * the generic {@code material.<namespace>.<base id>.name} key, then the vanilla item name.
  */
 final class ModularMaterialNames {
     private static final String TIP_PREFIX = "tip_";
     private static final String COATING_PREFIX = "coating_";
+    private static final String ROD_PREFIX = "rod_";
+    private static final String FLETCHING_PREFIX = "fletching_";
+    private static final String LINING_PREFIX = "lining_";
 
     private ModularMaterialNames() {
     }
@@ -21,6 +24,9 @@ final class ModularMaterialNames {
         String path = materialId.getPath();
         if (path.startsWith(TIP_PREFIX)) return path.substring(TIP_PREFIX.length());
         if (path.startsWith(COATING_PREFIX)) return path.substring(COATING_PREFIX.length());
+        if (path.startsWith(ROD_PREFIX)) return path.substring(ROD_PREFIX.length());
+        if (path.startsWith(FLETCHING_PREFIX)) return path.substring(FLETCHING_PREFIX.length());
+        if (path.startsWith(LINING_PREFIX)) return path.substring(LINING_PREFIX.length());
         return path;
     }
 

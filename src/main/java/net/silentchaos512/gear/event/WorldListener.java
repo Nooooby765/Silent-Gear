@@ -89,7 +89,7 @@ public class WorldListener implements IWorldEventListener {
                 final List<BlockPos> positions = iaoeTool.getExtraBlocks(world, rt, player, heldItem);
                 final TargetPoint point = new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 32D);
                 SilentGear.network.wrapper.sendToAllAround(new MessageExtraBlockBreak(
-                        player.getEntityId(), progress - 1, positions.toArray(new BlockPos[0])), point);
+                        player.getEntityId(), progress - 1, positions.toArray(new BlockPos[positions.size()])), point);
             }
         }
     }

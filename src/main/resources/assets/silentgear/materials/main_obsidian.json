@@ -1,4 +1,4 @@
-{
+﻿{
     "type": "main",
     "stats": [
         {"name": "durability",      "value": 4096},
@@ -11,11 +11,9 @@
         {"name": "attack_speed",    "value": -0.4},
         {"name": "armor",           "value":   20},
         {"name": "armor_toughness", "value":    6},
-        {"name": "magic_armor",     "value":    6},
         {"name": "ranged_damage",   "value":    0},
         {"name": "ranged_speed",    "value": -0.4},
-        {"name": "rarity",          "value":   30},
-        {"name": "chargeability",   "value":  0.8}
+        {"name": "rarity",          "value":   30}
     ],
     "traits": [
         {"name": "silentgear:jagged", "level": 4},

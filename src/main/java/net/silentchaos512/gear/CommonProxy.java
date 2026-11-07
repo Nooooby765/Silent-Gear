@@ -11,11 +11,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.silentchaos512.gear.api.parts.ItemPart;
 import net.silentchaos512.gear.api.parts.PartRegistry;
 import net.silentchaos512.gear.client.gui.GuiHandlerSilentGear;
 import net.silentchaos512.gear.config.Config;
+import net.silentchaos512.gear.entity.EntitySilentArrow;
 import net.silentchaos512.gear.event.*;
 import net.silentchaos512.gear.init.*;
 import net.silentchaos512.gear.util.GearData;
@@ -43,6 +45,10 @@ public class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(SilentGear.instance, new GuiHandlerSilentGear());
 
         GameRegistry.registerWorldGenerator(new ModWorldGenerator(), 0);
+
+        // Projectile for modular arrows. Registered once, no tick handler is attached.
+        EntityRegistry.registerModEntity(new ResourceLocation(SilentGear.MOD_ID, "silent_arrow"),
+                EntitySilentArrow.class, "silent_arrow", 0, SilentGear.instance, 64, 1, true);
 
         // Event Handlers
         MinecraftForge.EVENT_BUS.register(DropsHandler.INSTANCE);

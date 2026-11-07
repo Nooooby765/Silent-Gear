@@ -60,13 +60,20 @@ public final class TraitHelper {
      * NBTTagList (NBTTagCompound#getTagList creates one when the key is absent).
      */
     @Nullable
-    private static NBTTagList getTraitList(ItemStack gear) {
+    static NBTTagList getTraitList(ItemStack gear) {
         NBTTagCompound properties = GearData.getPropertiesData(gear);
         return properties != null && properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
     }
 
     public static float activateTraits(ItemStack gear, final float inputValue, TraitFunction action) {
-        NBTTagList tagList = getTraitList(gear);
+        return activateTraits(getTraitList(gear), inputValue, action);
+    }
+
+    /**
+     * 与 {@link #activateTraits(ItemStack, float, TraitFunction)} 等价，但允许同一轮属性聚合
+     * 复用已解析的 traits NBT 列表，避免每个统计项都重新查一次 properties。
+     */
+    static float activateTraits(@Nullable NBTTagList tagList, float inputValue, TraitFunction action) {
         if (tagList == null)
             return inputValue;
 

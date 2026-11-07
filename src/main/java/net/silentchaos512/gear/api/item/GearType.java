@@ -42,6 +42,13 @@ public final class GearType {
     // Ranged weapons (bows)
     public static final GearType RANGED_WEAPON = getOrCreate("ranged_weapon", TOOL);
     public static final GearType BOW = getOrCreate("bow", RANGED_WEAPON);
+    // Fishing rods
+    public static final GearType FISHING_ROD = getOrCreate("fishing_rod", TOOL);
+    // Projectiles (arrows)
+    public static final GearType PROJECTILE = getOrCreate("projectile", TOOL);
+    public static final GearType ARROW = getOrCreate("arrow", PROJECTILE);
+    // Shields
+    public static final GearType SHIELD = getOrCreate("shield");
     // Armor
     public static final GearType ARMOR = getOrCreate("armor");
     public static final GearType BOOTS = getOrCreate("boots", ARMOR);

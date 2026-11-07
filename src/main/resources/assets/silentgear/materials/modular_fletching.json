@@ -1,0 +1,20 @@
+{
+    "type": "fletching",
+    "crafting_items": {
+        "normal": {
+            "item": "silentgear:modular_fletching"
+        }
+    },
+    "display": {
+        "all": {
+            "texture_suffix": "generic",
+            "texture_color": "FFFFFF",
+            "broken_color": "FFFFFF"
+        },
+        "name_color": "white"
+    },
+    "availability": {
+        "enabled": true,
+        "tool_blacklist": []
+    }
+}

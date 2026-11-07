@@ -12,6 +12,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.silentchaos512.gear.SilentGear;
 import net.silentchaos512.gear.api.item.ICoreItem;
+import net.silentchaos512.gear.api.item.ICoreArmor;
 import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.ItemPartData;
 import net.silentchaos512.gear.api.parts.PartDataList;
@@ -82,7 +83,11 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
         if (isDisabled())
             return ItemStack.EMPTY;
 
-        final PartDataList partList = PartDataList.from(parts);
+        final PartDataList partList = PartDataList.of();
+        for (ItemStack stack : parts) {
+            ItemPartData data = getMaterial(stack);
+            if (data != null) partList.add(data);
+        }
         for (ItemPartData part : partList) {
             // Block blacklisted parts
             if (part.getPart().isBlacklisted())
@@ -95,6 +100,14 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
     @Override
     public int getMaterialCost(ItemStack blueprint) {
         return this.gearItem.getConfig().getCraftingPartCount(PartType.MAIN);
+    }
+
+    @Override
+    public int getOptionalPartCount(PartType type) {
+        // 护甲衬里与钓鱼竿的杆是可选件：不影响必需主材料数量。
+        if (type == PartType.LINING && this.gearItem instanceof ICoreArmor) return 1;
+        if (type == PartType.ROD && "fishing_rod".equals(this.gearItem.getGearClass())) return 1;
+        return 0;
     }
 
     @Override

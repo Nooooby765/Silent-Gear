@@ -1,0 +1,20 @@
+{
+    "types": ["rod"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:obsidian", "data": 0, "oredict": "obsidian"}},
+    "stats": [
+        {"name": "durability", "value": 0.40, "op": "MUL2"},
+        {"name": "enchantability", "value": -0.30, "op": "MUL2"},
+        {"name": "harvest_level", "value": 0, "op": "ADD"},
+        {"name": "harvest_speed", "value": -0.10, "op": "MUL2"},
+        {"name": "melee_damage", "value": 0.10, "op": "MUL2"},
+        {"name": "magic_damage", "value": 0, "op": "MUL2"},
+        {"name": "attack_speed", "value": 0, "op": "ADD"},
+        {"name": "ranged_damage", "value": 0, "op": "MUL2"},
+        {"name": "ranged_speed", "value": 0, "op": "MUL2"},
+        {"name": "rarity", "value": 20}
+    ],
+    "traits": [{"name": "silentgear:brittle", "level": 2}, {"name": "silentgear:chipping", "level": 3}],
+    "display": {"all": {"texture_suffix": "generic_lc", "texture_color": "443464", "broken_color": "443464"}, "name_color": "dark_purple"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

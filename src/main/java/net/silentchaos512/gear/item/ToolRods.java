@@ -27,7 +27,7 @@ import net.silentchaos512.gear.api.parts.PartRod;
 import java.util.Locale;
 
 public enum ToolRods {
-    WOOD, BONE, STONE, IRON, BLAZE, END, ROUGH, NETHERWOOD;
+    WOOD, BONE, BLAZE, END;
 
     @Getter
     private final PartRod part;

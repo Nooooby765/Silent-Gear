@@ -6,6 +6,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.silentchaos512.gear.client.ColorHandlers;
 import net.silentchaos512.gear.client.DebugOverlay;
+import net.silentchaos512.gear.client.RenderSilentArrow;
 import net.silentchaos512.gear.client.KeyTracker;
 import net.silentchaos512.gear.client.event.ExtraBlockBreakHandler;
 import net.silentchaos512.gear.client.models.ArmorItemModel;
@@ -21,6 +23,7 @@ import net.silentchaos512.gear.client.models.ToolHeadModel;
 import net.silentchaos512.gear.client.models.ToolModel;
 import net.silentchaos512.gear.client.util.GearClientHelper;
 import net.silentchaos512.gear.compat.jei.JeiPlugin;
+import net.silentchaos512.gear.entity.EntitySilentArrow;
 import net.silentchaos512.gear.init.ModBlocks;
 import net.silentchaos512.lib.registry.SRegistry;
 
@@ -36,6 +39,8 @@ public class ClientProxy extends CommonProxy {
         ModelLoaderRegistry.registerLoader(ToolHeadModel.Loader.INSTANCE);
         ModelLoaderRegistry.registerLoader(ToolModel.Loader.INSTANCE);
         ModelLoaderRegistry.registerLoader(ArmorItemModel.Loader.INSTANCE);
+
+        RenderingRegistry.registerEntityRenderingHandler(EntitySilentArrow.class, RenderSilentArrow::new);
 
         if (SilentGear.isDevBuild()) {
             MinecraftForge.EVENT_BUS.register(new DebugOverlay());

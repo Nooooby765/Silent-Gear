@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "silentgear:template_arrow",
+        "count": 2
+    },
+    "pattern": [
+        "p",
+        "s",
+        "f"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "type": "forge:ore_dict",
+            "ore": "slabWood"
+        },
+        "s": {
+            "type": "forge:ore_dict",
+            "ore": "stickWood"
+        },
+        "f": {
+            "item": "minecraft:feather"
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "types": ["rod"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:gold_ingot", "data": 0, "oredict": "ingotGold"}},
+    "stats": [
+        {"name": "durability", "value": -0.10, "op": "MUL2"},
+        {"name": "enchantability", "value": 0.10, "op": "MUL2"},
+        {"name": "harvest_level", "value": 0, "op": "ADD"},
+        {"name": "harvest_speed", "value": 3.0, "op": "ADD"},
+        {"name": "melee_damage", "value": 0, "op": "MUL2"},
+        {"name": "magic_damage", "value": 0, "op": "MUL2"},
+        {"name": "attack_speed", "value": 0, "op": "ADD"},
+        {"name": "ranged_damage", "value": 0, "op": "MUL2"},
+        {"name": "ranged_speed", "value": 0, "op": "MUL2"},
+        {"name": "rarity", "value": 15}
+    ],
+    "traits": [{"name": "silentgear:malleable", "level": 1}, {"name": "silentgear:soft", "level": 3}],
+    "display": {"all": {"texture_suffix": "generic_lc", "texture_color": "EAEE57", "broken_color": "EAEE57"}, "name_color": "gold"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

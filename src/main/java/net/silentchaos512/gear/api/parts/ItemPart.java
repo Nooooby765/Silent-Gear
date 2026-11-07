@@ -81,7 +81,7 @@ public abstract class ItemPart {
     @Getter(AccessLevel.NONE) private final String modelIndexStringFrame3;
 
     @Getter(AccessLevel.NONE) protected Multimap<ItemStat, StatInstance> stats = new StatModifierMap();
-    @Getter(AccessLevel.NONE) protected Map<Trait, Integer> traits = new LinkedHashMap<>();
+    @Getter(AccessLevel.NONE) protected Map<Trait, Integer> traits = ImmutableMap.of();
 
     public ItemPart(ResourceLocation registryName, PartOrigins origin) {
         this(registryName, origin, true);
@@ -145,7 +145,8 @@ public abstract class ItemPart {
     }
 
     public Map<Trait, Integer> getTraits(ItemStack gear, ItemPartData part) {
-        return ImmutableMap.copyOf(traits);
+        // 读操作非常频繁（tooltip、属性聚合），traits 在加载期即为不可变结构，无需每次复制。
+        return traits;
     }
 
     /**
@@ -596,8 +597,7 @@ public abstract class ItemPart {
                 }
 
                 if (!traitsMap.isEmpty()) {
-                    part.traits.clear();
-                    part.traits.putAll(traitsMap);
+                    part.traits = ImmutableMap.copyOf(traitsMap);
                 }
             }
         }

@@ -1,0 +1,37 @@
+{
+    "result": {
+        "item": "silentgear:template_lining",
+        "count": 2
+    },
+    "ingredients": [
+        {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "slabWood",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "wool",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "wool",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "string",
+            "type": "forge:ore_dict"
+        },
+        {
+            "ore": "string",
+            "type": "forge:ore_dict"
+        }
+    ],
+    "type": "forge:ore_shapeless"
+}

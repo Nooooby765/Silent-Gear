@@ -48,10 +48,13 @@ public final class TooltipHandler {
             return;
         }
 
-        // Nerfed gear?
-        ResourceLocation name = stack.getItem().getRegistryName();
-        if (name != null && Config.nerfedGear.contains(name.toString())) {
-            event.getToolTip().add(1, TextFormatting.RED + SilentGear.i18n.translate("misc", "poorlyMade"));
+        // Nerfed gear? The default list is empty, so avoid allocating the registry name string
+        // on every tooltip frame for every non-part item.
+        if (!Config.nerfedGear.isEmpty()) {
+            ResourceLocation name = stack.getItem().getRegistryName();
+            if (name != null && Config.nerfedGear.contains(name.toString())) {
+                event.getToolTip().add(1, TextFormatting.RED + SilentGear.i18n.translate("misc", "poorlyMade"));
+            }
         }
     }
 

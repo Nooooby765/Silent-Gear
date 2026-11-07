@@ -19,6 +19,7 @@
 package net.silentchaos512.gear.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -35,10 +36,6 @@ public enum CraftingItems implements IEnumItems<CraftingItems, Item> {
     BLUEPRINT_PAPER,
     UPGRADE_BASE,
     ADVANCED_UPGRADE_BASE,
-    ROUGH_ROD,
-    STONE_ROD,
-    IRON_ROD,
-    NETHERWOOD_STICK,
     CRIMSON_IRON_INGOT,
     CRIMSON_STEEL_INGOT,
     DIAMOND_SHARD,
@@ -77,11 +74,8 @@ public enum CraftingItems implements IEnumItems<CraftingItems, Item> {
         OreDictionary.registerOre("ingotCrimsonSteel", CRIMSON_STEEL_INGOT.item);
         OreDictionary.registerOre("nuggetDiamond", DIAMOND_SHARD.item);
         OreDictionary.registerOre("nuggetEmerald", EMERALD_SHARD.item);
-        OreDictionary.registerOre("rodIron", IRON_ROD.item);
-        OreDictionary.registerOre("rodStone", STONE_ROD.item);
-        OreDictionary.registerOre("stickIron", IRON_ROD.item);
-        OreDictionary.registerOre("stickStone", STONE_ROD.item);
-        OreDictionary.registerOre("stickWood", NETHERWOOD_STICK.item);
+        // Vanilla sticks must keep the stickWood entry now that the netherwood stick is gone.
+        OreDictionary.registerOre("stickWood", Items.STICK);
         OreDictionary.registerOre("string", FLAX_STRING.item);
     }
 

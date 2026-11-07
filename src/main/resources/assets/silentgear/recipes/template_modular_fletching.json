@@ -1,0 +1,25 @@
+{
+    "result": {
+        "item": "silentgear:template_modular_fletching",
+        "count": 2
+    },
+    "pattern": [
+        "p",
+        "f",
+        "s"
+    ],
+    "type": "forge:ore_shaped",
+    "key": {
+        "p": {
+            "type": "forge:ore_dict",
+            "ore": "slabWood"
+        },
+        "f": {
+            "item": "minecraft:feather"
+        },
+        "s": {
+            "item": "minecraft:stone",
+            "data": 0
+        }
+    }
+}

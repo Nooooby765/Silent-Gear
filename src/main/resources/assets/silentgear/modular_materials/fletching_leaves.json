@@ -1,0 +1,12 @@
+{
+    "types": ["fletching"],
+    "priority": 100,
+    "crafting_items": {"normal": {"item": "minecraft:leaves", "data": 0, "oredict": "treeLeaves"}},
+    "stats": [
+        {"name": "ranged_speed", "value": 0.1, "op": "ADD"},
+        {"name": "rarity", "value": 0, "op": "ADD"}
+    ],
+    "fletching": {"accuracy": 0.9},
+    "display": {"all": {"texture_suffix": "generic", "texture_color": "4A8F28", "broken_color": "4A8F28"}, "name_color": "green"},
+    "availability": {"enabled": true, "tool_blacklist": []}
+}

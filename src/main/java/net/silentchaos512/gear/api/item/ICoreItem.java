@@ -44,11 +44,34 @@ public interface ICoreItem extends IStatItem, ICustomEnchantColor {
             trait.onGearCrafted(player, level, result);
             return 0;
         });
+        onConstructed(result);
         return result;
+    }
+
+    /**
+     * Called once after a new gear stack has been built and its stats recalculated. Items that
+     * need cached render data (such as colors) should write it here, never during rendering.
+     */
+    default void onConstructed(ItemStack stack) {
     }
 
     default Item getItem() {
         return (Item) this;
+    }
+
+    /**
+     * Whether each stack needs a random UUID written to NBT. Consumables that must stack (arrows)
+     * return false so identical stacks keep identical NBT.
+     */
+    default boolean usesUniqueId() {
+        return true;
+    }
+
+    /**
+     * Whether upgrade parts (tips, coatings, etc.) may be added to this gear.
+     */
+    default boolean canReceiveUpgrades() {
+        return true;
     }
 
     @Deprecated

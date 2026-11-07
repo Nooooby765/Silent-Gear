@@ -22,8 +22,6 @@ advancements.silentgear.hammer.title=锤子时间！
 advancements.silentgear.hammer.description=做一把大锤！
 advancements.silentgear.high_durability.title=几乎打不坏！
 advancements.silentgear.high_durability.description=制作一件耐久至少 16000 的工具。
-advancements.silentgear.iron_rods.title=耐用的工具杆
-advancements.silentgear.iron_rods.description=制作一些铁杆。木棍不是唯一的工具杆……
 advancements.silentgear.kachink1.title=咔嚓！一
 advancements.silentgear.kachink1.description=将装备物品使用到某个程度后（属性会重新计算）
 advancements.silentgear.kachink2.title=咔嚓！二
@@ -105,9 +103,9 @@ item.silentgear.blueprint.spear.desc=长柄尖头棍
 item.silentgear.blueprint.trident.desc=三叉所指，皆为归处
 item.silentgear.blueprint.sickle.desc=修剪草坪
 item.silentgear.blueprint.sword.desc=经典之选
-
-item.silentgear.blueprint_rod.name=图纸（工具杆）
-item.silentgear.template_rod.name=模板（工具杆）
+item.silentgear.blueprint.shield.desc=格挡来袭攻击
+item.silentgear.blueprint.arrow.desc=指向正确的方向
+item.silentgear.template.arrow.desc=指向正确的方向
 
 item.silentgear.template.name=模板
 
@@ -123,8 +121,6 @@ item.silentgear.blueprint_package.desc2=右键打开
 item.silentgear.flaxseeds.name=亚麻种子
 item.silentgear.nether_banana.name=异界香蕉
 
-item.silentgear.guide_book.name=指南书（制作中）
-item.silentgear.guide_book.desc=寂静装备指南书
 
 
 # 杂项升级
@@ -154,6 +150,8 @@ item.silentgear.tool_head.spear=矛头
 item.silentgear.tool_head.trident=三叉戟头
 item.silentgear.tool_head.sickle=镰刀刃
 item.silentgear.tool_head.sword=剑刃与护手
+item.silentgear.tool_head.shield=盾板
+item.silentgear.tool_head.arrow=箭头
 
 # 合成物品
 item.silentgear.advanced_upgrade_base.name=高级升级底座
@@ -168,14 +166,9 @@ item.silentgear.dried_sinew.desc=<临时配方>
 item.silentgear.emerald_shard.name=绿宝石碎片
 item.silentgear.flax_fiber.name=亚麻纤维
 item.silentgear.flax_string.name=亚麻线
-item.silentgear.iron_rod.name=铁杆
 item.silentgear.leather_scrap.name=皮革碎片
-item.silentgear.netherwood_stick.name=异界木棍
-item.silentgear.rough_rod.name=粗糙杆
-item.silentgear.rough_rod.desc=可以像原版那样用来做工具，但有一些负面效果。应急用不错。
 item.silentgear.sinew.name=腱
 item.silentgear.sinew_fiber.name=腱纤维
-item.silentgear.stone_rod.name=石杆
 item.silentgear.upgrade_base.name=升级底座
 
 #工具
@@ -185,6 +178,9 @@ item.silentgear.axe.nameProper=%s斧
 
 item.silentgear.bow.name=弓
 item.silentgear.bow.nameProper=%s弓
+
+item.silentgear.shield.name=盾牌
+item.silentgear.shield.nameProper=%s盾牌
 
 item.silentgear.dagger.name=匕首
 item.silentgear.dagger.nameProper=%s匕首
@@ -265,7 +261,7 @@ stat.silentgear.durability=耐久
 stat.silentgear.enchantability=附魔能力
 stat.silentgear.harvest_level=挖掘等级
 stat.silentgear.harvest_speed=挖掘速度
-stat.silentgear.magic_armor=魔法护甲
+stat.silentgear.knockback_resistance=击退抗性
 stat.silentgear.magic_damage=魔法伤害
 stat.silentgear.melee_damage=攻击伤害
 stat.silentgear.ranged_damage=远程伤害
@@ -328,7 +324,6 @@ material.silentgear.main_obsidian.name=黑曜石
 material.silentgear.main_stone.name=石头
 material.silentgear.main_wood.name=木头
 material.silentgear.main_terracotta.name=陶瓦
-material.silentgear.main_test.name=测试材料（请移除）
 
 material.silentgear.misc_red_card.name=红色卡片
 material.silentgear.misc_spoon.name=勺子
@@ -336,10 +331,6 @@ material.silentgear.misc_spoon.name=勺子
 material.silentgear.rod_blaze.name=烈焰棒
 material.silentgear.rod_bone.name=骨杆
 material.silentgear.rod_end.name=末地杆
-material.silentgear.rod_iron.name=铁杆
-material.silentgear.rod_netherwood.name=异界木杆
-material.silentgear.rod_rough.name=粗糙杆
-material.silentgear.rod_stone.name=石杆
 material.silentgear.rod_wood.name=木杆
 
 material.silentgear.redstone.name=红石
@@ -355,6 +346,9 @@ part.silentgear.type.misc_upgrade=杂项升级
 part.silentgear.type.rod=工具杆
 part.silentgear.type.tip=尖端
 part.silentgear.type.coating=覆层
+part.silentgear.type.fletching=尾羽
+part.silentgear.type.lining=衬里
+part.silentgear.type.highlight=高亮
 
 trait.silentgear.displayFormat=%1$s %2$s
 trait.silentgear.adamant=坚韧
@@ -418,6 +412,7 @@ jei.silentgear.part_analyzer.desc=鉴定盔甲/工具头材料的品质。不需
 jei.silentgear.red_card_upgrade.desc=带有红色卡片升级的工具和盔甲会像原版对应物一样损坏，而不是变成仍可修复的"破损"物品。
 jei.silentgear.spoon_upgrade.desc=让你的镐子能挖泥土之类的东西。没有理由。
 jei.silentgear.sword.desc=一把伤害与速度平衡的经典剑。护手采用合成时所用的第二种材料外观。
+jei.silentgear.shield.desc=盾牌由工具头（2 个主材料）与杆组装而成。最大耐久取决于主材料的护甲耐久。格挡与耐久消耗沿用原版盾牌机制。
 jei.silentgear.tool_head.desc=工具头、刀刃、弓臂等等！这些是工具和武器的核心，用图纸/模板和若干主要工具材料合成。详情请查看图纸/模板提示。
 
 jei.silentgear.tooltip.sample1=示例配方
@@ -509,3 +504,61 @@ item.silentgear.blueprint_coating.name=覆层蓝图
 item.silentgear.template_coating.name=覆层模板
 item.silentgear.part_blueprint.desc.coating=与 1 个覆层材料合成模块化覆层
 part.silentgear.modular_coating.name=%s覆层
+item.silentgear.modular_rod.name=模块化杆
+item.silentgear.modular_rod.material=材料：%s
+item.silentgear.modular_rod.noMaterial=未知杆材料（请与主材料合成）
+item.silentgear.blueprint_modular_rod.name=杆蓝图
+item.silentgear.template_modular_rod.name=杆模板
+item.silentgear.part_blueprint.desc.rod=与 1 个主材料合成模块化杆
+part.silentgear.modular_rod.name=%s杆
+jei.silentgear.part_blueprint_modular_rod.desc=模块化杆的蓝图/模板。使用 1 个被列为可用杆材料的主材料。
+jei.silentgear.modular_rod.desc=模块化杆用杆蓝图/模板与 1 个可用主材料合成。物品中记录的杆材料决定属性、特性与颜色；组装时杆材料必须与工具主材料相同。
+item.silentgear.arrow.name=箭
+item.silentgear.arrow.nameProper=%s箭
+item.silentgear.arrow.damage=附加伤害：%s
+item.silentgear.arrow.speed=飞行速度：%s
+item.silentgear.arrow.accuracy=精度：%s
+item.silentgear.blueprint_arrow.name=箭蓝图
+item.silentgear.template_arrow.name=箭模板
+item.silentgear.modular_fletching.name=模块化尾羽
+item.silentgear.modular_fletching.material=材料：%s
+item.silentgear.modular_fletching.noMaterial=未知尾羽材料（请与羽毛、树叶或纸合成）
+item.silentgear.blueprint_modular_fletching.name=尾羽蓝图
+item.silentgear.template_modular_fletching.name=尾羽模板
+item.silentgear.part_blueprint.desc.fletching=与 1 个尾羽材料合成模块化尾羽
+part.silentgear.modular_fletching.name=%s尾羽
+jei.silentgear.part_blueprint_modular_fletching.desc=模块化尾羽的蓝图/模板。使用羽毛、树叶或纸。
+jei.silentgear.modular_fletching.desc=模块化尾羽用尾羽蓝图/模板与羽毛、树叶或纸合成。精度与飞行速度由尾羽材料决定；箭一次组装多支，最多堆叠 64。
+item.silentgear.modular_lining.name=模块化衬里
+item.silentgear.modular_lining.material=材料：%s
+item.silentgear.modular_lining.noMaterial=未知衬里材料（请与皮革、羊毛或亚麻线合成）
+item.silentgear.blueprint_lining.name=衬里蓝图
+item.silentgear.template_lining.name=衬里模板
+item.silentgear.part_blueprint.desc.lining=与 1 个衬里材料合成模块化衬里
+part.silentgear.modular_lining.name=%s衬里
+jei.silentgear.part_blueprint_lining.desc=模块化衬里的蓝图/模板。使用皮革、羊毛或亚麻线。
+jei.silentgear.modular_lining.desc=模块化衬里用衬里蓝图/模板与皮革、羊毛或亚麻线合成。衬里是护甲的可选部件，提供击退抗性与特性。
+material.silentgear.leather.name=皮革
+material.silentgear.wool.name=羊毛
+material.silentgear.fine_silk_cloth.name=细丝布
+trait.silentgear.flexible=柔韧
+trait.silentgear.flexible.desc=装备有时会受到更少的耐久损耗
+item.silentgear.fishing_rod.name=钓鱼竿
+item.silentgear.fishing_rod.nameProper=%s钓鱼竿
+item.silentgear.blueprint_fishing_rod.name=钓鱼竿蓝图
+item.silentgear.template_fishing_rod.name=钓鱼竿模板
+jei.silentgear.blueprint_fishing_rod.desc=钓鱼竿蓝图。使用 2 个主材料，可选 1 个杆。
+jei.silentgear.template_fishing_rod.desc=一次性钓鱼竿模板。使用 2 个主材料，可选 1 个杆。
+jei.silentgear.fishing_rod.desc=模块化钓鱼竿。主材料决定耐久、附魔能力、稀有度与特性；可选杆部件提供额外属性与颜色。抛竿、浮标与战利品逻辑复用原版。
+material.silentgear.main_lapis_lazuli.name=青金石
+material.silentgear.main_quartz.name=石英
+material.silentgear.main_bone.name=骨
+trait.silentgear.crushing=粉碎
+trait.silentgear.crushing.desc=装备损坏时增加护甲或降低攻击伤害
+tile.silentgear.phantom_light.name=幻影光源
+material.silentgear.highlight.name=高亮
+material.silentgear.modular_tip.name=模块化尖端
+material.silentgear.modular_coating.name=模块化覆层
+material.silentgear.modular_rod.name=模块化杆
+material.silentgear.modular_fletching.name=模块化尾羽
+material.silentgear.modular_lining.name=模块化衬里

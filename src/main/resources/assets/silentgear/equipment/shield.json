@@ -1,0 +1,16 @@
+{
+    "modifiers": [
+        {"name": "durability",          "value": 0.0, "op": "MUL1"},
+        {"name": "armor_durability",    "value": 0.0, "op": "MUL1"},
+        {"name": "repair_efficiency",   "value": 0.0, "op": "MUL1"},
+        {"name": "enchantability",      "value": 0.0, "op": "MUL1"},
+        {"name": "rarity",              "value": 0.0, "op": "MUL1"}
+    ],
+    "base_modifiers": {
+        "repair_efficiency": 1.0
+    },
+    "crafting": {
+        "main": 2,
+        "rod": 1
+    }
+}

@@ -28,6 +28,7 @@ import net.minecraftforge.common.crafting.IRecipeFactory;
 import net.minecraftforge.common.crafting.JsonContext;
 import net.silentchaos512.gear.api.parts.ItemPart;
 import net.silentchaos512.gear.api.parts.ItemPartData;
+import net.silentchaos512.gear.api.parts.PartType;
 import net.silentchaos512.gear.init.ModItems;
 import net.silentchaos512.gear.inventory.InventoryCraftingStation;
 import net.silentchaos512.gear.item.blueprint.IBlueprint;
@@ -38,7 +39,9 @@ import net.silentchaos512.lib.util.StackHelper;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlueprintCrafting implements IRecipeFactory {
     @Override
@@ -80,8 +83,24 @@ public class BlueprintCrafting implements IRecipeFactory {
             }
             int materialCount = materials.size();
 
+            // Optional parts (lining/rod) do not count against the required main material cost,
+            // but each optional type is capped independently.
+            int requiredCount = 0;
+            Map<PartType, Integer> optionalCounts = new HashMap<>();
+            for (ItemPartData data : materials) {
+                PartType type = data.getPart().getType();
+                int optionalLimit = type == null ? 0 : blueprintItem.getOptionalPartCount(type);
+                if (optionalLimit > 0) {
+                    int used = optionalCounts.getOrDefault(type, 0) + 1;
+                    if (used > optionalLimit) return false;
+                    optionalCounts.put(type, used);
+                } else {
+                    ++requiredCount;
+                }
+            }
+
             // Right number of materials and nothing else? FIXME: blueprint book support?
-            if (materialCount + 1 != list.size() || materialCount != blueprintItem.getMaterialCost(blueprint)) {
+            if (materialCount + 1 != list.size() || requiredCount != blueprintItem.getMaterialCost(blueprint)) {
                 return false;
             }
 
@@ -92,8 +111,30 @@ public class BlueprintCrafting implements IRecipeFactory {
                     return false;
             }
 
-            // Inventory allows mixing?
-            return inventoryAllowsMixedMaterial(inv) || materials.stream().map(ItemPartData::getPart).distinct().count() == 1;
+            // Inventory allows mixing? Otherwise main materials must be uniform. Only blueprints
+            // that accept optional parts may mix an optional part (lining/rod) with the mains;
+            // legacy blueprints keep the stricter all-parts-uniform rule.
+            if (inventoryAllowsMixedMaterial(inv)) return true;
+            return optionalCounts.isEmpty() ? allPartsUniform(materials) : mainsAreUniform(materials);
+        }
+
+        private static boolean allPartsUniform(List<ItemPartData> materials) {
+            ItemPart first = materials.isEmpty() ? null : materials.get(0).getPart();
+            for (ItemPartData data : materials) {
+                if (data.getPart() != first) return false;
+            }
+            return true;
+        }
+
+        private static boolean mainsAreUniform(List<ItemPartData> materials) {
+            ItemPart main = null;
+            for (ItemPartData data : materials) {
+                if (data.getPart().getType() == PartType.MAIN) {
+                    if (main == null) main = data.getPart();
+                    else if (main != data.getPart()) return false;
+                }
+            }
+            return true;
         }
 
         @Nonnull

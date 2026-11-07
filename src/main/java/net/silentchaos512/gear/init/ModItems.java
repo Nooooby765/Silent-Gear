@@ -13,6 +13,9 @@ import net.silentchaos512.gear.api.item.ICoreItem;
 import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.ItemPartData;
 import net.silentchaos512.gear.api.parts.ModularCoatingPart;
+import net.silentchaos512.gear.api.parts.ModularFletchingPart;
+import net.silentchaos512.gear.api.parts.ModularLiningPart;
+import net.silentchaos512.gear.api.parts.ModularRodPart;
 import net.silentchaos512.gear.api.parts.ModularTipPart;
 import net.silentchaos512.gear.api.parts.PartDataList;
 import net.silentchaos512.gear.api.parts.PartType;
@@ -55,6 +58,28 @@ public final class ModItems {
     public static PartBlueprint templateCoating = new PartBlueprint(true, PartType.COATING, 1,
             ModularCoatingPart::hasCoating, ModItems::createModularCoating, ModularCoatingPart::getBlueprintMaterial);
 
+    public static ModularRodItem modularRod = new ModularRodItem();
+    public static PartBlueprint blueprintModularRod = new PartBlueprint(false, PartType.ROD, 1,
+            ModularRodPart::isValidBlueprintMaterial, ModItems::createModularRod, ModularRodPart::getBlueprintMaterial);
+    public static PartBlueprint templateModularRod = new PartBlueprint(true, PartType.ROD, 1,
+            ModularRodPart::isValidBlueprintMaterial, ModItems::createModularRod, ModularRodPart::getBlueprintMaterial);
+
+    public static ModularFletchingItem modularFletching = new ModularFletchingItem();
+    public static PartBlueprint blueprintModularFletching = new PartBlueprint(false, PartType.FLETCHING, 1,
+            ModularFletchingPart::isValidBlueprintMaterial, ModItems::createModularFletching,
+            ModularFletchingPart::getBlueprintMaterial);
+    public static PartBlueprint templateModularFletching = new PartBlueprint(true, PartType.FLETCHING, 1,
+            ModularFletchingPart::isValidBlueprintMaterial, ModItems::createModularFletching,
+            ModularFletchingPart::getBlueprintMaterial);
+
+    public static ModularLiningItem modularLining = new ModularLiningItem();
+    public static PartBlueprint blueprintLining = new PartBlueprint(false, PartType.LINING, 1,
+            ModularLiningPart::isValidBlueprintMaterial, ModItems::createModularLining,
+            ModularLiningPart::getBlueprintMaterial);
+    public static PartBlueprint templateLining = new PartBlueprint(true, PartType.LINING, 1,
+            ModularLiningPart::isValidBlueprintMaterial, ModItems::createModularLining,
+            ModularLiningPart::getBlueprintMaterial);
+
     public static CoreSword sword = new CoreSword();
     public static CoreDagger dagger = new CoreDagger();
     public static CoreKnife knife = new CoreKnife();
@@ -74,6 +99,26 @@ public final class ModItems {
     public static CoreMattock mattock = new CoreMattock();
     public static CoreSickle sickle = new CoreSickle();
     public static CoreBow bow = new CoreBow();
+    public static CoreShield shield = new CoreShield();
+    public static CoreArrow arrow = new CoreArrow();
+    public static CoreFishingRod fishingRod = new CoreFishingRod();
+
+    // Declared after shield: static initializers run in declaration order and Blueprint reads
+    // the gear item's class in its constructor.
+    public static Blueprint blueprintShield = new Blueprint(false, shield,
+            partList -> toolHead.getStack("shield", partList));
+    public static Blueprint templateShield = new Blueprint(true, shield,
+            partList -> toolHead.getStack("shield", partList));
+
+    public static Blueprint blueprintFishingRod = new Blueprint(false, fishingRod,
+            partList -> fishingRod.construct(fishingRod.getItem(), partList));
+    public static Blueprint templateFishingRod = new Blueprint(true, fishingRod,
+            partList -> fishingRod.construct(fishingRod.getItem(), partList));
+
+    public static Blueprint blueprintArrow = new Blueprint(false, arrow,
+            partList -> toolHead.getStack("arrow", partList));
+    public static Blueprint templateArrow = new Blueprint(true, arrow,
+            partList -> toolHead.getStack("arrow", partList));
 
     public static CoreArmor helmet = new CoreArmor(EntityEquipmentSlot.HEAD, "helmet");
     public static CoreArmor chestplate = new CoreArmor(EntityEquipmentSlot.CHEST, "chestplate");
@@ -111,6 +156,9 @@ public final class ModItems {
 
         gearClasses.putAll(toolClasses);
         gearClasses.putAll(armorClasses);
+        gearClasses.put("shield", shield);
+        gearClasses.put("arrow", arrow);
+        gearClasses.put("fishing_rod", fishingRod);
 
         IEnumItems.RegistrationHelper enumItems = new IEnumItems.RegistrationHelper(reg);
 
@@ -128,6 +176,36 @@ public final class ModItems {
         reg.registerItem(modularCoating, "modular_coating");
         reg.registerItem(blueprintCoating, "blueprint_coating");
         reg.registerItem(templateCoating, "template_coating");
+
+        reg.registerItem(modularRod, "modular_rod");
+        reg.registerItem(blueprintModularRod, "blueprint_modular_rod");
+        reg.registerItem(templateModularRod, "template_modular_rod");
+
+        reg.registerItem(modularFletching, "modular_fletching");
+        reg.registerItem(blueprintModularFletching, "blueprint_modular_fletching");
+        reg.registerItem(templateModularFletching, "template_modular_fletching");
+
+        reg.registerItem(modularLining, "modular_lining");
+        reg.registerItem(blueprintLining, "blueprint_lining");
+        reg.registerItem(templateLining, "template_lining");
+
+        reg.registerItem(fishingRod, "fishing_rod");
+        reg.registerItem(blueprintFishingRod, "blueprint_fishing_rod");
+        reg.registerItem(templateFishingRod, "template_fishing_rod");
+        blueprints.add(blueprintFishingRod);
+        blueprints.add(templateFishingRod);
+
+        reg.registerItem(shield, "shield");
+        reg.registerItem(blueprintShield, "blueprint_shield");
+        reg.registerItem(templateShield, "template_shield");
+        blueprints.add(blueprintShield);
+        blueprints.add(templateShield);
+
+        reg.registerItem(arrow, "arrow");
+        reg.registerItem(blueprintArrow, "blueprint_arrow");
+        reg.registerItem(templateArrow, "template_arrow");
+        blueprints.add(blueprintArrow);
+        blueprints.add(templateArrow);
 
         enumItems.registerItems(MiscUpgrades.values());
         enumItems.registerItems(CraftingItems.values());
@@ -166,6 +244,33 @@ public final class ModItems {
         return ItemStack.EMPTY;
     }
 
+    private static ItemStack createModularRod(PartDataList parts) {
+        for (ItemPartData part : parts) {
+            ItemStack stack = ModularRodItem.createStack(part);
+            if (!stack.isEmpty())
+                return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private static ItemStack createModularFletching(PartDataList parts) {
+        for (ItemPartData part : parts) {
+            ItemStack stack = ModularFletchingItem.createStack(part);
+            if (!stack.isEmpty())
+                return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private static ItemStack createModularLining(PartDataList parts) {
+        for (ItemPartData part : parts) {
+            ItemStack stack = ModularLiningItem.createStack(part);
+            if (!stack.isEmpty())
+                return stack;
+        }
+        return ItemStack.EMPTY;
+    }
+
     private static void registerOreDictEntries() {
         OreDictionary.registerOre("flint", Items.FLINT);
         CraftingItems.registerOreDict();
@@ -188,13 +293,5 @@ public final class ModItems {
             blueprints.add(blueprint);
             reg.registerItem(blueprint, name + "_" + key);
         });
-
-        // Part blueprints (just rods right now, are any others needed?)
-        Item item = new Item();
-        if (!singleUse) {
-            item.setContainerItem(item);
-        }
-        reg.registerItem(item, name + "_rod");
-        OreDictionary.registerOre("blueprintRod", item);
     }
 }

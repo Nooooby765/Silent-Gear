@@ -248,7 +248,7 @@ public interface IAOETool {
         private static ItemStack cachedStack = ItemStack.EMPTY;
         private static boolean cachedSneaking;
         private static int cachedPlayerId = -1;
-        private static List<BlockPos> cachedBlocks = Collections.emptyList();
+        private static List<RayTraceResult> cachedBlocks = Collections.emptyList();
 
         @SubscribeEvent
         public static void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
@@ -276,11 +276,15 @@ public interface IAOETool {
                         cachedStack = stack;
                         cachedSide = target.sideHit;
                         cachedPos = target.getBlockPos();
-                        cachedBlocks = item.getExtraBlocks(world, target, player, stack);
+                        List<BlockPos> blocks = item.getExtraBlocks(world, target, player, stack);
+                        cachedBlocks = new ArrayList<>(blocks.size());
+                        for (BlockPos pos : blocks) {
+                            cachedBlocks.add(new RayTraceResult(Vec3d.ZERO, EnumFacing.UP, pos));
+                        }
                     }
 
-                    for (BlockPos pos : cachedBlocks) {
-                        event.getContext().drawSelectionBox(player, new RayTraceResult(Vec3d.ZERO, EnumFacing.UP, pos), 0, event.getPartialTicks());
+                    for (RayTraceResult hit : cachedBlocks) {
+                        event.getContext().drawSelectionBox(player, hit, 0, event.getPartialTicks());
                     }
                 }
             }

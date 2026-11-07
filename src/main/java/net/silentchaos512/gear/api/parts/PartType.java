@@ -39,6 +39,8 @@ public final class PartType {
     public static final PartType ROD = create("rod", "R", PartRod::new);
     public static final PartType TIP = create("tip", "T", PartTip::new);
     public static final PartType COATING = create("coating", "C", PartCoating::new);
+    public static final PartType FLETCHING = create("fletching", "F", PartFletching::new);
+    public static final PartType LINING = create("lining", "L", PartLining::new);
 
     public static PartType create(String name, String debugSymbol, BiFunction<ResourceLocation, PartOrigins, ItemPart> partConstructor) {
         if (VALUES.containsKey(name))

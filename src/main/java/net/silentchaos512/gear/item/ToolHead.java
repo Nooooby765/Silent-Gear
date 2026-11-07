@@ -104,7 +104,8 @@ public class ToolHead extends Item implements IStatItem {
     }
 
     private static void writeStatCache(ItemStack stack, PartDataList parts) {
-        ICoreItem item = ModItems.toolClasses.get(getToolClass(stack));
+        ICoreItem item = ModItems.gearClasses.get(getToolClass(stack));
+        if (item == null) return;
         Map<Trait, Integer> traits = TraitHelper.getTraits(stack, parts);
         double synergy = GearData.calculateSynergyValue(parts, parts.getUniqueParts(true), traits);
         Multimap<ItemStat, StatInstance> stats = GearData.getStatModifiers(new ItemStack(item.getItem()), parts, synergy);
@@ -159,8 +160,9 @@ public class ToolHead extends Item implements IStatItem {
     @Nonnull
     public static Collection<ItemPartData> getAllParts(ItemStack stack) {
         ImmutableList.Builder<ItemPartData> builder = ImmutableList.builder();
-        NBTTagCompound tags = getData(stack);
-        if (tags.hasKey(NBT_MATERIALS)) {
+        // Read-only: hovering a data-less tool head must not create a ToolHeadData compound.
+        NBTTagCompound tags = stack.getSubCompound(NBT_ROOT);
+        if (tags != null && tags.hasKey(NBT_MATERIALS)) {
             NBTTagList tagList = tags.getTagList(NBT_MATERIALS, 10);
             for (NBTBase nbt : tagList) {
                 if (nbt instanceof NBTTagCompound) {
@@ -197,9 +199,9 @@ public class ToolHead extends Item implements IStatItem {
 
         // Legacy tool heads created before the key was persisted: compute it on demand.
         String toolClass = data.getString(NBT_TOOL_CLASS);
-        ICoreTool toolItem = ModItems.toolClasses.get(toolClass);
+        ICoreItem toolItem = ModItems.gearClasses.get(toolClass);
         ItemPartData primary = getPrimaryPart(stack);
-        ItemPartData secondary = toolItem != null && toolItem.hasSwordGuard() ? getSecondaryPart(stack) : null;
+        ItemPartData secondary = toolItem instanceof ICoreTool && ((ICoreTool) toolItem).hasSwordGuard() ? getSecondaryPart(stack) : null;
         return getModelKey(toolClass, primary, secondary);
     }
 
@@ -228,7 +230,9 @@ public class ToolHead extends Item implements IStatItem {
         if (tag == null)
             return toolItem.construct(toolItem.getItem(), parts);
 
-        String key = toolItem.getGearClass() + "|" + tag;
+        // Only the tool class and the material parts determine the constructed tooltip; the rest
+        // of the head NBT (StatCache, ModelKey, ...) would just lengthen the key every frame.
+        String key = toolItem.getGearClass() + "|" + tag.getTag(NBT_MATERIALS);
         synchronized (TOOLTIP_STACK_CACHE) {
             ItemStack cached = TOOLTIP_STACK_CACHE.get(key);
             if (cached == null) {
@@ -260,14 +264,15 @@ public class ToolHead extends Item implements IStatItem {
         // List materials
         GearClientHelper.tooltipListParts(stack, list, parts);
 
-        // Example output warning
-        if (getData(stack).getBoolean(NBT_IS_EXAMPLE)) {
+        // Example output warning (read-only; see getAllParts)
+        NBTTagCompound exampleTags = stack.getSubCompound(NBT_ROOT);
+        if (exampleTags != null && exampleTags.getBoolean(NBT_IS_EXAMPLE)) {
             list.add(TextFormatting.YELLOW + i18n.translate("misc", "exampleOutput1"));
             list.add(TextFormatting.YELLOW + i18n.translate("misc", "exampleOutput2"));
         }
 
         // Tooltip from actual tool (minus rod and anything else)
-        ICoreItem toolItem = ModItems.toolClasses.get(toolClass);
+        ICoreItem toolItem = ModItems.gearClasses.get(toolClass);
         if (toolItem != null) {
             ItemStack constructed = getTooltipStack(stack, toolItem, parts);
             TooltipFlagTC tooltipFlag = TooltipFlagTC.withModifierKeys(flag.isAdvanced(), true, false);
@@ -285,7 +290,9 @@ public class ToolHead extends Item implements IStatItem {
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         if (!this.isInCreativeTab(tab)) return;
 
-        for (String toolClass : ModItems.toolClasses.keySet()) {
+        for (ICoreItem item : ModItems.gearClasses.values()) {
+            if (!(item instanceof ICoreTool)) continue;
+            String toolClass = item.getGearClass();
             for (int i = 1; i < 4; ++i) {
                 GearGenerator.selectRandom(PartMain.class, i).ifPresent(part ->
                         list.add(getStack(toolClass, (PartMain) part, true)));
@@ -296,7 +303,9 @@ public class ToolHead extends Item implements IStatItem {
     public Collection<IRecipe> getExampleRecipes() {
         Collection<IRecipe> list = new ArrayList<>();
 
-        ModItems.toolClasses.forEach((toolClass, item) -> {
+        for (ICoreItem item : ModItems.gearClasses.values()) {
+            if (!(item instanceof ICoreTool)) continue;
+            String toolClass = item.getGearClass();
             Ingredient blueprint = Blueprint.getBlueprintIngredientForGear(item);
             if (blueprint != null) {
                 for (PartMain part : PartRegistry.getVisibleMains()) {
@@ -311,7 +320,7 @@ public class ToolHead extends Item implements IStatItem {
             } else {
                 SilentGear.log.warn("Trying to add {} example recipes, but could not find blueprint item!", item.getGearClass());
             }
-        });
+        }
 
         return list;
     }

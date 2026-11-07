@@ -108,7 +108,7 @@ public class Config extends ConfigBaseNew {
      */
 
     public static Set<String> nerfedGear = ImmutableSet.of();
-    private static final String NERFED_GEAR_COMMENT = "These items will have reduced durability to discourage use, but they can still be crafted and used as normal. Items from other mods can be added to the list, but I cannot guarantee their durability will actually change.";
+    private static final String NERFED_GEAR_COMMENT = "Items in this list will have reduced durability. The list is empty by default, so vanilla gear is not nerfed. Add item IDs to enable nerfing; items from other mods can be added, but their durability may not actually change.";
 
     @ConfigOption(name = "Durability Multiplier", category = CAT_NERFED_GEAR)
     @ConfigOption.RangeFloat(value = 0.5f, min = 0f, max = 1f)
@@ -139,6 +139,9 @@ public class Config extends ConfigBaseNew {
     public static ConfigOptionEquipment mattock = forEquipment(ModItems.mattock);
     public static ConfigOptionEquipment sickle = forEquipment(ModItems.sickle);
     public static ConfigOptionEquipment bow = forEquipment(ModItems.bow);
+    public static ConfigOptionEquipment fishingRod = forEquipment(ModItems.fishingRod);
+    public static ConfigOptionEquipment shield = forEquipment(ModItems.shield);
+    public static ConfigOptionEquipment arrow = forEquipment(ModItems.arrow);
     public static ConfigOptionEquipment helmet = forEquipment(ModItems.helmet);
     public static ConfigOptionEquipment chestplate = forEquipment(ModItems.chestplate);
     public static ConfigOptionEquipment leggings = forEquipment(ModItems.leggings);
@@ -320,21 +323,9 @@ public class Config extends ConfigBaseNew {
     }
 
     private static String[] getDefaultNerfedGear() {
-        Set<String> toolTypes = ImmutableSet.of("pickaxe", "shovel", "axe", "sword");
-        Set<String> toolMaterials = ImmutableSet.of("wooden", "stone", "iron", "golden", "diamond");
-        List<String> items = toolTypes.stream()
-                .flatMap(type -> toolMaterials.stream()
-                        .map(material -> "minecraft:" + material + "_" + type))
-                .collect(Collectors.toList());
-
-        Set<String> armorTypes = ImmutableSet.of("helmet", "chestplate", "leggings", "boots");
-        Set<String> armorMaterials = ImmutableSet.of("leather", "chainmail", "iron", "diamond", "golden");
-        items.addAll(armorTypes.stream()
-                .flatMap(type -> armorMaterials.stream()
-                        .map(material -> "minecraft:" + material + "_" + type))
-                .collect(Collectors.toList()));
-
-        return items.toArray(new String[0]);
+        // Nerfing vanilla gear is disabled by default. Users can add item IDs to the
+        // "Nerfed Gear List" option to opt in.
+        return new String[0];
     }
 
     public File getDirectory() {

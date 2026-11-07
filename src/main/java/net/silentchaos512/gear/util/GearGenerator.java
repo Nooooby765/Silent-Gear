@@ -25,6 +25,7 @@ import net.silentchaos512.gear.api.item.ICoreTool;
 import net.silentchaos512.gear.api.parts.*;
 import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.init.ModMaterials;
+import net.silentchaos512.gear.item.ModularFletchingItem;
 import net.silentchaos512.gear.item.ModularTipItem;
 import net.silentchaos512.gear.item.ToolRods;
 
@@ -65,6 +66,13 @@ public final class GearGenerator {
         return fallback == null ? Optional.empty() : Optional.of(fallback);
     }
 
+    public static Optional<ItemPart> selectRandom(Predicate<? super ItemPart> condition) {
+        List<? extends ItemPart> list = getPartsOfType(condition);
+        if (!list.isEmpty())
+            return Optional.of(list.get(SilentGear.RANDOM.nextInt(list.size())));
+        return Optional.empty();
+    }
+
     @Nullable
     private static ItemPart getFallback(Class<? extends ItemPart> partClass) {
         SilentGear.log.debug("GearGenerator::getFallback: class {}", partClass);
@@ -92,7 +100,11 @@ public final class GearGenerator {
     public static ItemStack create(ICoreItem item, int tier) {
         // Select main and rod
         Optional<ItemPart> main = selectRandom(PartMain.class, tier);
-        Optional<ItemPart> rod = selectRandom(PartRod.class, tier);
+        Optional<ItemPart> rod = selectRandom(part -> part instanceof PartRod
+                && !(part instanceof ModularRodPart)
+                && (tier < 0 || part.getTier() == tier));
+        if (!rod.isPresent())
+            rod = Optional.of(ToolRods.WOOD.getPart());
         if (!main.isPresent() || !rod.isPresent()) {
             SilentGear.log.warn("Could not create {} of tier {}", item.getGearClass(), tier);
             return ItemStack.EMPTY;
@@ -112,10 +124,21 @@ public final class GearGenerator {
             Optional<ItemPart> bowstring = selectRandom(PartBowstring.class, tier);
             bowstring.ifPresent(parts::addPart);
         }
+        // Requires fletching? Arrows only; selected from the modular fletching material table.
+        if (config.getCraftingPartCount(PartType.FLETCHING) > 0) {
+            List<ItemPart> fletchingMaterials = ModularMaterialRegistry.getMaterials(PartType.FLETCHING);
+            if (!fletchingMaterials.isEmpty()) {
+                ItemPart material = fletchingMaterials.get(SilentGear.RANDOM.nextInt(fletchingMaterials.size()));
+                ItemStack fletchingStack = ModularFletchingItem.createStack(ItemPartData.instance(material));
+                ItemPartData fletchingData = ItemPartData.fromStack(fletchingStack);
+                if (fletchingData != null) parts.add(fletchingData);
+            }
+        }
         ItemStack result = item.construct(item.getItem(), parts);
 
         // 随机升级：旧固定 tip 已退场，从模块化材料表中挑选一个 tip 材料生成模块化尖端
-        if (item instanceof ICoreTool && SilentGear.RANDOM.nextFloat() < 0.2f * tier + 0.1f) {
+        if (item instanceof ICoreTool && item.canReceiveUpgrades()
+                && SilentGear.RANDOM.nextFloat() < 0.2f * tier + 0.1f) {
             List<ItemPart> tipMaterials = ModularMaterialRegistry.getMaterials(PartType.TIP);
             if (!tipMaterials.isEmpty()) {
                 ItemPart material = tipMaterials.get(SilentGear.RANDOM.nextInt(tipMaterials.size()));

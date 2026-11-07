@@ -1,0 +1,9 @@
+{
+    "parent": "item/handheld_rod",
+    "textures": {
+        "layer0": "silentgear:items/fishing_rod/rod_generic_lc",
+        "layer1": "silentgear:items/fishing_rod/main_generic_hc",
+        "layer2": "silentgear:items/fishing_rod/_highlight",
+        "layer3": "silentgear:items/fishing_rod/bowstring_string"
+    }
+}

@@ -11,8 +11,8 @@ import java.util.Set;
 public interface ICoreArmor extends ICoreItem {
     Set<ItemStat> RELEVANT_STATS = ImmutableSet.of(
             CommonItemStats.ARMOR,
-            CommonItemStats.MAGIC_ARMOR,
             CommonItemStats.ARMOR_TOUGHNESS,
+            CommonItemStats.KNOCKBACK_RESISTANCE,
             CommonItemStats.DURABILITY,
             CommonItemStats.ENCHANTABILITY,
             CommonItemStats.RARITY

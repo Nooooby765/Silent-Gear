@@ -1,0 +1,20 @@
+{
+    "modifiers": [
+        {"name": "durability",          "value": 0.0, "op": "MUL1"},
+        {"name": "repair_efficiency",   "value": 0.0, "op": "MUL1"},
+        {"name": "enchantability",      "value": 0.0, "op": "MUL1"},
+        {"name": "rarity",              "value": 0.0, "op": "MUL1"},
+        {"name": "ranged_damage",       "value": 0.0, "op": "MUL1"},
+        {"name": "ranged_speed",        "value": 0.0, "op": "MUL1"}
+    ],
+    "base_modifiers": {
+        "ranged_damage": 0.0,
+        "ranged_speed": 1.0,
+        "repair_efficiency": 1.0
+    },
+    "crafting": {
+        "main": 1,
+        "rod": 1,
+        "fletching": 1
+    }
+}
