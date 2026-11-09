@@ -129,15 +129,6 @@ public class GuiPage extends GuiGuide {
     private List<String> getWebLinks() {
         List<String> links = new ArrayList<>();
 
-        // for (IBookletPage page : this.pages) {
-        // if (page != null) {
-        // String link = page.getWebLink();
-        // if (link != null && !links.contains(link)) {
-        // links.add(link);
-        // }
-        // }
-        // }
-
         return links;
     }
 

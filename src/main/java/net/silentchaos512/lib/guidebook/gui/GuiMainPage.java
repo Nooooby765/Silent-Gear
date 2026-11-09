@@ -64,7 +64,6 @@ public class GuiMainPage extends GuiGuide {
 
         this.bookletName = "guide." + book.getModId() + ".manualName.1";
 
-        // Select a random quote, if there is any available.
         String usedQuote = book.selectQuote(mc.world.rand);
         if (!usedQuote.isEmpty()) {
             String[] quoteSplit = usedQuote.split("@");
@@ -86,16 +85,10 @@ public class GuiMainPage extends GuiGuide {
             this.bookletEdition = book.getEditionString(this.mc.player);
         }
 
-        // Buttons
         int xPos = this.guiLeft - 4;
 
-        // Config button?
         List<String> configText = new ArrayList<>();
         configText.add(TextFormatting.GOLD + book.i18n.translate("guide", "configButton.name"));
-        // configText.addAll(this.fontRendererObj.listFormattedStringToWidth(
-        // book.loc.getLocalizedString("guide", "configButton.desc", book.getModId())
-        // .replaceAll("\\\\n", "\n"),
-        // 200));
         if (book.getConfigScreen(this) != null) {
             xPos += 20;
             this.configButton = new TexturedButton(book.getResourceGadgets(), -388, xPos,
@@ -103,30 +96,14 @@ public class GuiMainPage extends GuiGuide {
             this.buttonList.add(this.configButton);
         }
 
-        // Achievements button?
         List<String> achievementText = new ArrayList<>();
         achievementText.add(TextFormatting.GOLD + book.i18n.translate("guide", "achievementButton.name"));
-        // achievementText.addAll(this.fontRendererObj.listFormattedStringToWidth(
-        // book.loc.getLocalizedString("booklet", "achievementButton.desc", book.getModId()), 200));
         if (book.getAchievementScreen(this) != null) {
             xPos += 20;
             this.achievementButton = new TexturedButton(book.getResourceGadgets(), -389, xPos,
                     this.guiTop + this.ySize - 30, 204, 14, 16, 16, achievementText);
             this.buttonList.add(this.achievementButton);
         }
-
-        // FIXME?
-        // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
-        // if (!data.didBookTutorial) {
-        // this.showTutorial = true;
-        //
-        // this.tutorialButton = new GuiButton(666666, this.guiLeft + 140 / 2 - 50, this.guiTop + 146,
-        // 100, 20, "Please click me <3");
-        // this.buttonList.add(this.tutorialButton);
-        //
-        // this.configButton.visible = false;
-        // this.achievementButton.visible = false;
-        // }
 
         for (int i = 0; i < BUTTONS_PER_PAGE; i++) {
             List<IGuideEntry> displayed = getDisplayedEntries();
@@ -151,33 +128,22 @@ public class GuiMainPage extends GuiGuide {
                 }
             }
         } else if (button == this.achievementButton) {
-            // Display achievements GUI, if there is one.
             GuiScreen achievements = book.getAchievementScreen(this);
             if (achievements != null)
                 this.mc.displayGuiScreen(achievements);
         } else if (button == this.configButton) {
-            // Display config GUI, if there is one.
             GuiScreen config = book.getConfigScreen(this);
             if (config != null)
                 this.mc.displayGuiScreen(config);
         } else if (this.showTutorial && button == this.tutorialButton) {
             if (this.hasBookmarkButtons()) {
                 if (!isShiftKeyDown()) {
-                    // for (int i = 0; i < InitBooklet.chaptersIntroduction.length; i++) {
-                    // this.bookmarkButtons[i].assignedPage = InitBooklet.chaptersIntroduction[i]
-                    // .getAllPages()[0];
-                    // }
                 }
                 this.showTutorial = false;
                 this.tutorialButton.visible = false;
 
                 this.configButton.visible = true;
                 this.achievementButton.visible = true;
-
-                // FIXME?
-                // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
-                // data.didBookTutorial = true;
-                // PacketHandlerHelper.sendPlayerDataToServer(false, 1);
             }
         } else {
             super.actionPerformed(button);

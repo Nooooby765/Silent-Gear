@@ -90,14 +90,10 @@ public final class RecipeMaker {
     }
 
     /*
-     * Recipes adders and makers.
-     *
-     * Adders will make and register a recipe. Makers just create a recipe (useful for guide book stuff, etc.)
-     *
-     * Group will default to the mod ID if not specified.
+     * Adders register the recipe they create; makers only create it (used by guide book, etc.).
+     * Group defaults to the mod ID when not specified.
      */
 
-    // -------------------------------------------------- Shapeless --------------------------------------------------
     public IRecipe addShapeless(String key, ItemStack result, Object... inputs) {
         return addShapeless(modId, key, result, makeStackArray(inputs));
     }
@@ -147,8 +143,6 @@ public final class RecipeMaker {
         return new ShapelessRecipes(group, result, list);
     }
 
-    // -------------------------------------------------- Shaped --------------------------------------------------
-
     public IRecipe addShaped(String key, ItemStack result, Object... inputs) {
         return addShaped(modId, key, result, inputs);
     }
@@ -170,8 +164,6 @@ public final class RecipeMaker {
         return new ShapedRecipes(group, primer.width, primer.height, primer.input, result);
     }
 
-    // -------------------------------------------------- Shapeless Ore --------------------------------------------------
-
     public IRecipe addShapelessOre(String key, ItemStack result, Object... inputs) {
         return addShapelessOre(modId, key, result, inputs);
     }
@@ -191,8 +183,6 @@ public final class RecipeMaker {
     public IRecipe makeShapelessOre(String group, ItemStack result, Object... inputs) {
         return new ShapelessOreRecipe(new ResourceLocation(group), result, inputs);
     }
-
-    // -------------------------------------------------- Shaped Ore --------------------------------------------------
 
     public IRecipe addShapedOre(String key, ItemStack result, Object... inputs) {
         return addShapedOre(modId, key, result, inputs);
@@ -214,8 +204,6 @@ public final class RecipeMaker {
         return new ShapedOreRecipe(new ResourceLocation(group), result, inputs);
     }
 
-    // -------------------------------------------------- Smelting --------------------------------------------------
-
     public void addSmelting(Block input, ItemStack output, float xp) {
         GameRegistry.addSmelting(input, output, xp);
     }
@@ -227,8 +215,6 @@ public final class RecipeMaker {
     public void addSmelting(ItemStack input, ItemStack output, float xp) {
         GameRegistry.addSmelting(input, output, xp);
     }
-
-    // -------------------------------------------- Generic/Custom -------------------------------------------
 
     /**
      * Adds some generic recipe. Not sure if this has any use. Typically you would use
@@ -291,10 +277,8 @@ public final class RecipeMaker {
      * are both ShapelessRecipes.
      */
     public IRecipe[] addCompression(String group, String key, ItemStack small, ItemStack big, int count) {
-        // Clamp to sane values.
         count = MathHelper.clamp(count, 1, 9);
 
-        // small -> big
         ItemStack[] smallArray = new ItemStack[count];
         for (int i = 0; i < count; ++i) {
             smallArray[i] = small;
@@ -302,7 +286,6 @@ public final class RecipeMaker {
         IRecipe[] ret = new IRecipe[2];
         ret[0] = addShapeless(group, key + "_compress", big, smallArray);
 
-        // big -> small
         ItemStack smallCopy = small.copy();
         smallCopy.setCount(count);
         ret[1] = addShapeless(group, key + "_decompress", smallCopy, big);
@@ -311,10 +294,8 @@ public final class RecipeMaker {
     }
 
     public IRecipe[] addCompressionOre(String key, ItemStack small, ItemStack big, @Nullable String smallOreName, @Nullable String bigOreName, int count) {
-        // Clamp to sane values.
         count = MathHelper.clamp(count, 1, 9);
 
-        // small -> big
         Object[] smallArray = new Object[count];
         for (int i = 0; i < count; ++i) {
             smallArray[i] = smallOreName != null && !smallOreName.isEmpty() ? smallOreName : small;
@@ -322,7 +303,6 @@ public final class RecipeMaker {
         IRecipe[] ret = new IRecipe[2];
         ret[0] = addShapelessOre(modId, key + "_oredict_compress", big, smallArray);
 
-        // big -> small
         ItemStack smallCopy = small.copy();
         smallCopy.setCount(count);
         Object bigObj = bigOreName != null && !bigOreName.isEmpty() ? bigOreName : big;
@@ -371,7 +351,6 @@ public final class RecipeMaker {
 
         switch (surrounding.length) {
             case 0:
-                // No surrounding stacks?
                 throw new IllegalArgumentException("No surrounding items!");
             case 1:
                 return addShaped(group, key, output, "xxx", "xcx", "xxx", 'c', middleStack, 'x', stacks[0]);
@@ -382,7 +361,6 @@ public final class RecipeMaker {
             case 4:
                 return addShaped(group, key, output, "xyz", "dcd", "zyx", 'c', middleStack, 'x', stacks[0], 'y', stacks[1], 'z', stacks[2], 'd', stacks[3]);
             default:
-                // Too many things!
                 throw new IllegalArgumentException("Too many items!");
         }
     }
@@ -415,7 +393,6 @@ public final class RecipeMaker {
     public IRecipe addSurroundOre(String group, String key, ItemStack output, Object middle, Object... surrounding) {
         switch (surrounding.length) {
             case 0:
-                // No surrounding stacks?
                 throw new IllegalArgumentException("No surrounding items!");
             case 1:
                 return addShapedOre(group, key, output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]);
@@ -426,7 +403,6 @@ public final class RecipeMaker {
             case 4:
                 return addShapedOre(group, key, output, "xyz", "dcd", "zyx", 'c', middle, 'x', surrounding[0], 'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]);
             default:
-                // Too many things!
                 throw new IllegalArgumentException("Too many items!");
         }
     }

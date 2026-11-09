@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A single item representing modular fletchings of any fletching material. The material id is
- * stored in NBT, mirroring {@link ModularRodItem}.
+ * One item representing modular fletchings of any material; the material id is stored in NBT,
+ * mirroring {@link ModularRodItem}.
  */
 public class ModularFletchingItem extends Item implements IColoredItem {
     public static ItemStack createStack(@Nullable ItemPartData material) {

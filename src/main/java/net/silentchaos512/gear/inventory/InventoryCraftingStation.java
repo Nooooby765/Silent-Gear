@@ -18,7 +18,6 @@ public final class InventoryCraftingStation extends InventoryCrafting {
         // This hold everything after the crafting grid, InventoryCrafting will only give 9 slots
         this.stacks = NonNullList.withSize(tile.getSizeInventory() - TileCraftingStation.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
 
-        // Fill crafting grid slots
         for (int i = 0; i < TileCraftingStation.CRAFTING_GRID_SIZE; ++i) {
             setInventorySlotContents(i, tile.getStackInSlot(i + TileCraftingStation.CRAFTING_GRID_START));
         }

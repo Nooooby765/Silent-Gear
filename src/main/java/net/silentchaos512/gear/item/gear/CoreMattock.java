@@ -98,16 +98,13 @@ public class CoreMattock extends ItemHoe implements ICoreTool {
 
     @Override
     public boolean canHarvestBlock(IBlockState state) {
-        // Vanilla version... Not good because we can't get the actual harvest level.
-        // Assume a very high level since we can't get the actual value.
+        // Vanilla path: no per-stack level available, so assume a high level.
         return canHarvestBlock(state, 10);
     }
 
     private boolean canHarvestBlock(IBlockState state, int toolLevel) {
-        // Wrong harvest level?
         if (state.getBlock().getHarvestLevel(state) > toolLevel)
             return false;
-        // Included in effective materials?
         return EFFECTIVE_MATERIALS.contains(state.getMaterial()) || super.canHarvestBlock(state);
     }
 

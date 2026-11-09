@@ -81,15 +81,7 @@ public abstract class ConfigBaseNew extends ConfigBase {
             }
 
             if (config != null) {
-                // Thought about localizing comments, but... maybe not the best idea
-//                String commentTranslationKey = comment != null
-//                        ? comment.value()
-//                        : i18n().getKey("config", config.name().replaceAll("\\s", ""), "comment");
-//                if (comment != null && !i18n().hasKey(commentTranslationKey)) {
-//                    log().warn("Config option \"{}\" is missing its comment translation (key {})",
-//                            config.name(), commentTranslationKey);
-//                }
-//                String commentTranslated = i18n().translate(commentTranslationKey);
+                // Comments are not localized; the annotation value is used directly.
                 String commentTranslated = comment != null ? comment.value() : "";
 
                 try {

@@ -36,7 +36,6 @@ public class GuiCraftingStation extends GuiContainer {
         this.container = inventorySlotsIn;
 
         this.xSize = 256;
-        // this.ySize = 256;
     }
 
     @Override
@@ -77,14 +76,6 @@ public class GuiCraftingStation extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        // Draw adjacent inventories
-//        NonNullList<Pair<ItemStack, IInventory>> list = this.tile.getAdjacentInventories();
-//        int itemX = 5;
-//        for (Pair<ItemStack, IInventory> pair : list) {
-//            AssetUtil.renderStackToGui(pair.getLeft(), itemX, -18, 1f);
-//            itemX += 20;
-//        }
-
         this.fontRenderer.drawString(SilentGear.i18n.subText(ModBlocks.craftingStation, "crafting"),
                 8, 6, 0x404040);
         this.fontRenderer.drawString(SilentGear.i18n.subText(ModBlocks.craftingStation, "parts"),
@@ -94,7 +85,6 @@ public class GuiCraftingStation extends GuiContainer {
         this.fontRenderer.drawString(I18n.format("container.inventory"),
                 8, this.ySize - 96 + 2, 0x404040);
 
-        // Version number (remove in full release)
         String versionNumString = "Version: " + SilentGear.VERSION + "-" + SilentGear.BUILD_NUM + (SilentGear.instance.isDevBuild() ? " (dev)" : "");
         int versionNumStringWidth = fontRenderer.getStringWidth(versionNumString);
         float versionNumScale = 0.65f;
@@ -106,16 +96,7 @@ public class GuiCraftingStation extends GuiContainer {
         ItemStack craftResult = this.container.craftResult.getStackInSlot(0);
         drawSlimeFace(craftResult);
 
-        // Debug
-//        if (SilentGear.instance.isDevBuild()) {
-//            Slot slot = getSlotUnderMouse();
-//            if (slot != null) {
-//                fontRenderer.drawString("slot=" + slot.getSlotIndex(), 130, 6, Color.VALUE_WHITE);
-//            }
-//        }
-
         if (!craftResult.isEmpty()) {
-            // Draw crafting result tooltip
             FontRenderer font = this.mc.fontRenderer;
             List<String> tooltip = craftResult.getTooltip(this.mc.player, getTooltipFlag(craftResult));
 
@@ -123,12 +104,10 @@ public class GuiCraftingStation extends GuiContainer {
             for (String line : tooltip) {
                 maxWidth = Math.max(maxWidth, font.getStringWidth(line));
             }
-            // SilentGear.log.debug(maxWidth);
 
             float scale = 75f / maxWidth;
             int xPos = (int) ((this.xSize - 82) / scale);
             int yPos = (int) ((this.ySize - 160) / scale);
-            // SilentGear.log.debug(xPos, yPos);
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, 1);
@@ -145,7 +124,6 @@ public class GuiCraftingStation extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        // Main window
         GlStateManager.color(1, 1, 1, 1);
         this.mc.getTextureManager().bindTexture(TEXTURE);
         int xPos = (this.width - this.xSize) / 2;
@@ -167,7 +145,6 @@ public class GuiCraftingStation extends GuiContainer {
 
         this.drawTexturedModalRect(x, y - totalHeight - 12, 0, 177, rowWidth, 15);
 
-        // Tooltip background
         x = xPos + 171;
         y = yPos + 4;
         drawRect(x, y, x + 80, y + 158, 0xCF000000);

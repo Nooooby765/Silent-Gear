@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A single item representing modular tips of any tip material. The material part key is stored in
- * NBT so only one item and one part need to be registered.
+ * One item representing modular tips of any material; the part key is stored in NBT, so only a
+ * single item and part need to be registered.
  */
 public class ModularTipItem extends Item implements IColoredItem {
     public static ItemStack createStack(@Nullable ItemPartData material) {

@@ -116,7 +116,6 @@ public abstract class DebugRenderOverlay extends Gui {
         if (isHidden() || debugText.isEmpty() || mc.isGamePaused() || mc.gameSettings.showDebugInfo || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
-        // Get text scale, sanity-check the value
         float scale = getTextScale();
         if (scale <= 0f) return;
 

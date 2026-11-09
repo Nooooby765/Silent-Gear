@@ -41,10 +41,8 @@ public final class SilentLibClientEvents {
 
     ItemStack stack = event.getItemStack();
     if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
-      // Client-side call
       ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
           .onItemLeftClickSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
-      // Server-side call
       if (result.getType() == EnumActionResult.SUCCESS) {
         SilentLib.network.wrapper
             .sendToServer(new MessageLeftClick(MessageLeftClick.Type.EMPTY, event.getHand()));
@@ -57,10 +55,8 @@ public final class SilentLibClientEvents {
 
     ItemStack stack = event.getItemStack();
     if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
-      // Client-side call
       ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
           .onItemLeftClickBlockSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
-      // Server-side call
       if (result.getType() == EnumActionResult.SUCCESS) {
         SilentLib.network.wrapper
             .sendToServer(new MessageLeftClick(MessageLeftClick.Type.BLOCK, event.getHand()));

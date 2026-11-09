@@ -54,18 +54,15 @@ public class NetherwoodTree extends WorldGenShrub {
             final int height = MathUtils.nextIntInclusive(3, 5);
             final int endY = startY + height;
 
-            // Generate logs and leaves
             for (int y = startY; y < endY + 2; ++y) {
                 BlockPos pos = position.up(y - startY);
 
-                // Logs/leave in center
                 if (y < endY) {
                     setBlockAndNotifyAdequately(worldIn, pos, wood);
                 } else {
                     tryPlaceLeaves(worldIn, pos, null);
                 }
 
-                // Leaves surrounding the center
                 if (y != startY && y < endY + 1) {
                     for (EnumFacing facing : EnumFacing.HORIZONTALS) {
                         tryPlaceLeaves(worldIn, pos, facing);

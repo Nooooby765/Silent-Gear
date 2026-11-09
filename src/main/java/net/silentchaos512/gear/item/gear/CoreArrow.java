@@ -39,9 +39,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Modular arrow. It is a consumable, stackable item (vanilla arrow stack size, no durability).
- * The material damage/speed/accuracy are computed once in {@link #onConstructed(ItemStack)} and
- * stored in the stack NBT; firing only reads those cached values.
+ * Modular arrow: consumable and stackable (vanilla arrow stack size, no durability).
+ * Damage/speed/accuracy are computed once in {@link #onConstructed(ItemStack)} and cached in stack NBT.
  */
 public class CoreArrow extends ItemArrow implements ICoreTool {
     public static final String NAME = "arrow";

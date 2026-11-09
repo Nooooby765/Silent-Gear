@@ -79,16 +79,13 @@ public class CorePickaxe extends ItemPickaxe implements ICoreTool {
 
     @Override
     public boolean canHarvestBlock(IBlockState state) {
-        // Vanilla version... Not good because we can't get the actual harvest level.
-        // Assume a very high level since we can't get the actual value.
+        // Vanilla path: no per-stack level available, so assume a high level.
         return canHarvestBlock(state, 10);
     }
 
     private boolean canHarvestBlock(IBlockState state, int toolLevel) {
-        // Wrong harvest level?
         if (state.getBlock().getHarvestLevel(state) > toolLevel)
             return false;
-        // Included in base or extra materials?
         if (BASE_EFFECTIVE_MATERIALS.contains(state.getMaterial()) || EXTRA_EFFECTIVE_MATERIALS.contains(state.getMaterial()))
             return true;
         return super.canHarvestBlock(state);
@@ -96,7 +93,6 @@ public class CorePickaxe extends ItemPickaxe implements ICoreTool {
 
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        // TODO
         return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
     }
 

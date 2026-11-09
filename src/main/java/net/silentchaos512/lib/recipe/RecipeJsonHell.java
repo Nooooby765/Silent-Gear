@@ -19,9 +19,9 @@ import java.util.Map;
  * Originally copied from Bookshelf by Darkhax, modified to support arbitrary JSON serializers.
  * <p>Original class: https://github.com/Darkhax-Minecraft/Bookshelf/blob/master/src/main/java/net/darkhax/bookshelf/json/RecipeGenerator.java</p>
  *
- * <p>The basic shaped/shapeless serializers work for most recipes (basic and oredict), but do not
- * support NBT. To have NBT on the crafting result, a custom {@link IRecipeSerializer} and {@link
- * net.minecraftforge.common.crafting.IRecipeFactory} are needed.</p>
+ * <p>The basic shaped/shapeless serializers support ore dictionary recipes but not NBT. Crafting
+ * results with NBT need a custom {@link IRecipeSerializer} and {@link
+ * net.minecraftforge.common.crafting.IRecipeFactory}.</p>
  */
 public final class RecipeJsonHell {
 
@@ -31,9 +31,7 @@ public final class RecipeJsonHell {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     /**
-     * Utility classes, such as this one, are not meant to be instantiated. Java adds an implicit
-     * public constructor to every class which does not define at lease one explicitly. Hence why
-     * this constructor was added.
+     * Private constructor, utility classes should not be instantiated.
      */
     private RecipeJsonHell() {
         throw new IllegalAccessError("Utility class");
@@ -80,35 +78,29 @@ public final class RecipeJsonHell {
      * @return A map containing the data for the componet.
      */
     private static JsonObject serializeComponent(Object component) {
-        // If the ingredient is an item, run it through again as an ItemStack.
         if (component instanceof Item) {
             return serializeComponent(new ItemStack((Item) component));
         }
 
-        // If the ingredient is a block, run it through again as an ItemStack.
         if (component instanceof Block) {
             return serializeComponent(new ItemStack((Block) component));
         }
 
-        // Handles the serialization of ItemStack. Doesn't support NBT yet.
         if (component instanceof ItemStack) {
             final ItemStack stack = (ItemStack) component;
             final JsonObject ret = new JsonObject();
 
-            // Sets the item id.
             ret.addProperty("item", stack.getItem().getRegistryName().toString());
 
-            // Sets the meta value of the item
             if (stack.getItem().getHasSubtypes() || stack.getItemDamage() != 0) {
                 ret.addProperty("data", stack.getItemDamage());
             }
 
-            // Sets the amount of items.
             if (stack.getCount() > 1) {
                 ret.addProperty("count", stack.getCount());
             }
 
-            // Warn about items with NBT, but go ahead and serialize what we can
+            // NBT cannot be serialized, but warn and continue.
             if (stack.hasTagCompound()) {
                 SilentLib.LOGGER.warn("Recipe component contains NBT and cannot be serialized properly: {}", component);
             }
@@ -116,7 +108,6 @@ public final class RecipeJsonHell {
             return ret;
         }
 
-        // Handles the serialization of an Ore Dict entry.
         if (component instanceof String) {
             final JsonObject ret = new JsonObject();
             ret.addProperty("type", "forge:ore_dict");
@@ -130,18 +121,14 @@ public final class RecipeJsonHell {
 
     private static void createRecipeFile(JsonObject json, String fileName) {
         fileName = fileName.replaceAll(":", "_");
-        // Sets the parent directory to that of the current mod being loaded.
         final File directory = new File("recipes/" + Loader.instance().activeModContainer().getModId());
 
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // The actual file being written.
         final File output = new File(directory, fileName + ".json");
-        //System.out.println(output.getAbsolutePath());
 
-        // Writes the json file.
         try (FileWriter writer = new FileWriter(output)) {
             GSON.toJson(json, writer);
         } catch (final IOException e) {
@@ -169,20 +156,17 @@ public final class RecipeJsonHell {
             boolean isOreDict = false;
             Character curKey = null;
 
-            // The current recipe argument index
             int i = 0;
 
-            // Adds the initial pattern args to the json map.
             while (i < components.length && components[i] instanceof String) {
                 pattern.add((String) components[i]);
                 i++;
             }
 
-            // Parses the rest of the recipe arguments
             for (; i < components.length; i++) {
                 final Object component = components[i];
 
-                // Handles character params. These should always be followed by an ingredient.
+                // Char params must always be followed by an ingredient.
                 if (component instanceof Character) {
                     if (curKey != null) {
                         throw new IllegalArgumentException("Provided two char keys in a row");
@@ -190,7 +174,6 @@ public final class RecipeJsonHell {
                     curKey = (Character) component;
                 }
 
-                // Handles ingredients.
                 else {
                     if (curKey == null) {
                         throw new IllegalArgumentException("Providing object without a char key");
@@ -237,7 +220,6 @@ public final class RecipeJsonHell {
             final List<JsonObject> ingredients = new ArrayList<>();
             boolean isOreDict = false;
 
-            // Handles the processing/serialization for all the ingredients.
             for (final Object component : components) {
                 // If a string is used as an ingredient, it means this is an oredict recipe.
                 if (component instanceof String) {

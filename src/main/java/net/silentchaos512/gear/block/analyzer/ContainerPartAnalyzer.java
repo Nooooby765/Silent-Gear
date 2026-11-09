@@ -53,8 +53,8 @@ public class ContainerPartAnalyzer extends ContainerSL {
     }
 
     /**
-     * Progress is a container field (a few bytes per change) instead of a per-tick block update,
-     * which used to serialize the entire inventory to every nearby client 20 times per second.
+     * Progress is synced as a container field rather than a per-tick block update, which would
+     * serialize the whole inventory to nearby clients.
      */
     @Override
     public void detectAndSendChanges() {
@@ -90,22 +90,18 @@ public class ContainerPartAnalyzer extends ContainerSL {
             final int endHotbar = size + 36;
 
             if (index >= 1 && index < TilePartAnalyzer.INVENTORY_SIZE) {
-                // Remove from output slot?
                 if (!this.mergeItemStack(stack1, startPlayer, endHotbar, true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index >= size && tileInventory.isItemValidForSlot(TilePartAnalyzer.INPUT_SLOT, stack1)) {
-                // Move from player to input slot?
                 if (!mergeItemStack(stack1, 0, 1, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index >= startPlayer && index < endPlayer) {
-                // Move player items to hotbar.
                 if (!mergeItemStack(stack1, startHotbar, endHotbar, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index >= startHotbar && index < endHotbar) {
-                // Move player items from hotbar.
                 if (!mergeItemStack(stack1, startPlayer, endPlayer, false)) {
                     return ItemStack.EMPTY;
                 }

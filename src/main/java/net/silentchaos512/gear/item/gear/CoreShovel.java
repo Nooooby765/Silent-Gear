@@ -77,16 +77,13 @@ public class CoreShovel extends ItemSpade implements ICoreTool {
 
     @Override
     public boolean canHarvestBlock(IBlockState state) {
-        // Vanilla version... Not good because we can't get the actual harvest level.
-        // Assume a very high level since we can't get the actual value.
+        // Vanilla path: no per-stack level available, so assume a high level.
         return canHarvestBlock(state, 10);
     }
 
     private boolean canHarvestBlock(IBlockState state, int toolLevel) {
-        // Wrong harvest level?
         if (state.getBlock().getHarvestLevel(state) > toolLevel)
             return false;
-        // Included in base or extra materials?
         if (BASE_EFFECTIVE_MATERIALS.contains(state.getMaterial()))
             return true;
         return super.canHarvestBlock(state);
@@ -98,7 +95,6 @@ public class CoreShovel extends ItemSpade implements ICoreTool {
         if (GearHelper.isBroken(stack) || player.isSneaking())
             return EnumActionResult.PASS;
 
-        // Make paths or whatever
         return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
     }
 

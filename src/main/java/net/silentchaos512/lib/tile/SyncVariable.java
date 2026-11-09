@@ -18,8 +18,8 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Marks variables that should be automatically synced with the client. Currently, this is used just
- * for tile entities, but could have other uses I guess? See {@link TileEntitySL} for usage.
+ * Marks variables that should be automatically synced with the client. Used for tile entities,
+ * see {@link TileEntitySL}.
  *
  * @author SilentChaos512
  * @since 2.0.6
@@ -95,14 +95,12 @@ public @interface SyncVariable {
          */
         public static void readSyncVars(Object obj, NBTTagCompound tags) {
 
-            // Try to read from NBT for fields marked with SyncVariable.
             for (Field field : obj.getClass().getDeclaredFields()) {
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
                     if (annotation instanceof SyncVariable) {
                         SyncVariable sync = (SyncVariable) annotation;
 
                         try {
-                            // Set fields accessible if necessary.
                             if (!field.isAccessible())
                                 field.setAccessible(true);
                             String name = sync.name();
@@ -151,17 +149,14 @@ public @interface SyncVariable {
         @SuppressWarnings("unchecked") // from serializer
         public static NBTTagCompound writeSyncVars(Object obj, NBTTagCompound tags, Type syncType) {
 
-            // Try to write to NBT for fields marked with SyncVariable.
             for (Field field : obj.getClass().getDeclaredFields()) {
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
                     if (annotation instanceof SyncVariable) {
                         SyncVariable sync = (SyncVariable) annotation;
 
-                        // Does variable allow writing in this case?
                         if (syncType == SyncVariable.Type.WRITE && sync.onWrite()
                                 || syncType == SyncVariable.Type.PACKET && sync.onPacket()) {
                             try {
-                                // Set fields accessible if necessary.
                                 if (!field.isAccessible())
                                     field.setAccessible(true);
                                 String name = sync.name();

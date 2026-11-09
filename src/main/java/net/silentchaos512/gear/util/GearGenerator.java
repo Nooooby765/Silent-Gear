@@ -98,7 +98,6 @@ public final class GearGenerator {
     }
 
     public static ItemStack create(ICoreItem item, int tier) {
-        // Select main and rod
         Optional<ItemPart> main = selectRandom(PartMain.class, tier);
         Optional<ItemPart> rod = selectRandom(part -> part instanceof PartRod
                 && !(part instanceof ModularRodPart)
@@ -110,21 +109,17 @@ public final class GearGenerator {
             return ItemStack.EMPTY;
         }
 
-        // Make the base item
         PartDataList parts = PartDataList.of();
         ConfigOptionEquipment config = item.getConfig();
-        // Proper number of mains for head
         for (int i = 0; i < config.getCraftingPartCount(PartType.MAIN); ++i)
             parts.addPart(main.get());
-        // Requires a rod?
         if (config.getRodCount() > 0)
             parts.addPart(rod.get());
-        // Requires bowstring?
         if (config.getBowstringCount() > 0) {
             Optional<ItemPart> bowstring = selectRandom(PartBowstring.class, tier);
             bowstring.ifPresent(parts::addPart);
         }
-        // Requires fletching? Arrows only; selected from the modular fletching material table.
+        // Arrows only; fletching comes from the modular material table.
         if (config.getCraftingPartCount(PartType.FLETCHING) > 0) {
             List<ItemPart> fletchingMaterials = ModularMaterialRegistry.getMaterials(PartType.FLETCHING);
             if (!fletchingMaterials.isEmpty()) {
@@ -136,7 +131,7 @@ public final class GearGenerator {
         }
         ItemStack result = item.construct(item.getItem(), parts);
 
-        // 随机升级：旧固定 tip 已退场，从模块化材料表中挑选一个 tip 材料生成模块化尖端
+        // 随机升级：从模块化材料表中挑选一个 tip 材料生成模块化尖端
         if (item instanceof ICoreTool && item.canReceiveUpgrades()
                 && SilentGear.RANDOM.nextFloat() < 0.2f * tier + 0.1f) {
             List<ItemPart> tipMaterials = ModularMaterialRegistry.getMaterials(PartType.TIP);

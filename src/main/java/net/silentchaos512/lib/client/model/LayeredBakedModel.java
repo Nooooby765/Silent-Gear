@@ -26,7 +26,6 @@ public abstract class LayeredBakedModel implements ILayeredBakedModel {
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long indexNotRand) {
         if (side == null) {
             int index = (int) indexNotRand;
-            // Check invalid index
             if (index < 0) {
                 // Return everything in one? Better than nothing.
                 if (allQuadsCache == null) {

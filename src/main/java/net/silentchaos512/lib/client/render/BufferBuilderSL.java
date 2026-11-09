@@ -43,16 +43,6 @@ public class BufferBuilderSL {
     buffer.sortVertexData(p_181674_1_, p_181674_2_, p_181674_3_);
   }
 
-//  public BufferBuilder.State getVertexState() {
-//
-//    return buffer.getVertexState();
-//  }
-//
-//  public void setVertexState(BufferBuilder.State state) {
-//
-//    buffer.setVertexState(state);
-//  }
-
   public void reset() {
 
     buffer.reset();

@@ -196,9 +196,8 @@ public final class ItemPartData {
     }
 
     /**
-     * Must stay consistent with {@link #equals(Object)}: equal instances are compared by part
-     * identity, grade and the crafting item's item+metadata. Without this, maps keyed by part
-     * data (for example the crafting station's compatible parts) can hold duplicate entries.
+     * Must stay consistent with {@link #equals(Object)}: part identity, grade and the crafting
+     * item's item+metadata. Otherwise part-keyed maps can hold duplicate entries.
      */
     @Override
     public int hashCode() {

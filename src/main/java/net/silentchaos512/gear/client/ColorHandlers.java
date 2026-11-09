@@ -38,16 +38,14 @@ public class ColorHandlers {
             return colors != null && tintIndex < colors.length ? colors[tintIndex] : 0xFFFFFF;
         }, gearItems.toArray(new Item[0]));
 
-        // Tool Heads
         itemColors.registerItemColorHandler((stack, tintIndex) -> {
             String modelKey = ModItems.toolHead.getModelKey(stack);
             Integer[] colors = gearColorCache.get(modelKey);
-            return colors != null && tintIndex < colors.length ? colors[tintIndex] : 0xFFFFFF;
+            return colors != null && tintIndex >= 0 && tintIndex < colors.length ? colors[tintIndex] : 0xFFFFFF;
         }, ModItems.toolHead);
 
-        // Modular shield: 0 = rod (handle/frame), 1 = main plate. Colors are written at
-        // construction time, so rendering only reads an int array. The old single Color key is
-        // kept as a fallback for shields made before Colors existed.
+        // Modular shield: 0 = rod/frame, 1 = main plate. Colors are written at construction, so
+        // rendering only reads an int array. Single "Color" is the pre-Colors fallback.
         itemColors.registerItemColorHandler((stack, tintIndex) -> {
             if (tintIndex < 0 || tintIndex > 1) return 0xFFFFFF;
             NBTTagCompound tag = stack.getSubCompound(CoreShield.NBT_ROOT);
@@ -59,20 +57,18 @@ public class ColorHandlers {
             return tintIndex == 1 && tag.hasKey(CoreShield.NBT_COLOR) ? tag.getInteger(CoreShield.NBT_COLOR) : 0xFFFFFF;
         }, ModItems.shield);
 
-        // Modular fishing rod: 0 = rod, 1 = main body, 2 = highlight, 3 = string.
-        // Colors are written once at construction, so rendering only reads an int array.
+        // Modular fishing rod: only layers 0 (rod) and 1 (main) are tinted; the highlight and
+        // string layers stay white.
         itemColors.registerItemColorHandler((stack, tintIndex) -> {
             if (tintIndex < 0 || tintIndex > 1) return 0xFFFFFF;
             int[] colors = CoreFishingRod.getColors(stack);
             return tintIndex < colors.length ? colors[tintIndex] : 0xFFFFFF;
         }, ModItems.fishingRod);
 
-        // Modular arrow: 0 = rod, 1 = arrow head, 2 = highlight (white), 3 = fletching.
-        // Colors are written once at construction, so rendering only reads an int array.
+        // Modular arrow: layer 2 is the white highlight; layer 3 (fletching) uses array index 2.
         itemColors.registerItemColorHandler((stack, tintIndex) -> {
             if (tintIndex < 0) return 0xFFFFFF;
-            if (tintIndex == 2) return 0xFFFFFF; // highlight layer
-            // Layer 3 (fletching) maps to index 2 of the stored array.
+            if (tintIndex == 2) return 0xFFFFFF;
             int index = tintIndex >= 3 ? 2 : tintIndex;
             NBTTagCompound tag = stack.getSubCompound(CoreArrow.NBT_ROOT);
             if (tag == null || !tag.hasKey(CoreArrow.NBT_COLORS)) return 0xFFFFFF;

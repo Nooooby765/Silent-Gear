@@ -27,13 +27,11 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean hasCustomName() {
-        // TODO Auto-generated method stub
         return false;
     }
 

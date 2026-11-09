@@ -65,8 +65,7 @@ public class TileSalvager extends TileSidedInventorySL implements ITickable {
         ItemStack input = getInputStack();
         if (!input.isEmpty()) {
             if (progress < BASE_WORK_TIME) {
-                // The progress bar is synced through the container window property, so no block
-                // update is needed for every step (that sent the whole inventory each tick).
+                // Progress syncs through the container window property; no block update per step.
                 ++progress;
             }
 
@@ -83,8 +82,8 @@ public class TileSalvager extends TileSidedInventorySL implements ITickable {
                 progress = 0;
                 input.shrink(1);
 
-                // The tile edits its own inventory here; the slot API only marks the block dirty
-                // for player edits, so without this the results could be lost on chunk unload.
+                // The slot API only marks the block dirty for player edits, so mark it explicitly or
+                // the results could be lost on chunk unload.
                 markDirty();
                 // Tell clients the contents changed (once per completed item, not every tick).
                 IBlockState state = world.getBlockState(pos);

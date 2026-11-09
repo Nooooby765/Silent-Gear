@@ -24,16 +24,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.gear.SilentGear;
 
 /**
- * Client-only model locations for the trident integration. Kept in a side-only class so the
- * common {@link net.silentchaos512.gear.compat.trident.CoreTrident} class never references client
- * types in its static initializer (dedicated servers would otherwise fail to load it).
+ * Client-only model locations, kept side-only so {@link net.silentchaos512.gear.compat.trident.CoreTrident}
+ * never references client types in its static initializer (dedicated servers would fail to load).
  */
 @SideOnly(Side.CLIENT)
 public final class TridentClientModels {
     /**
-     * The layered {@code ToolModel} registered for the "trident" gear class. Both the GUI model
-     * and the hand model point here: the Trident mod's render mixins then use the normal Silent
-     * Gear layered/colored rendering instead of its built-in 3D model.
+     * Layered {@code ToolModel} for the "trident" gear class; both GUI and hand model point here,
+     * so the Trident mod's render mixins use Silent Gear rendering instead of its 3D model.
      */
     public static final ModelResourceLocation INVENTORY =
             new ModelResourceLocation(SilentGear.MOD_ID + ":" + "trident", "inventory");

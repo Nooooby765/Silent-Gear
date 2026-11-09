@@ -91,7 +91,6 @@ public class ConfigOptionEquipment {
     }
 
     private void loadJsonResources() {
-        // Main resource file in JAR
         String path = "assets/" + SilentGear.MOD_ID + "/equipment/" + item.getGearClass() + ".json";
         InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(path);
         if (resourceStream == null) {

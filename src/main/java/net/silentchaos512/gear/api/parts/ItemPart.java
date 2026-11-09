@@ -60,20 +60,14 @@ public abstract class ItemPart {
     protected int tier = 0;
     protected boolean enabled = true;
     protected boolean hidden = false;
-    //    protected String textureDomain;
-//    protected String textureSuffix;
-//    @Getter(AccessLevel.NONE) protected Map<String, Integer> textureColor = new HashMap<>();
-//    @Getter(AccessLevel.NONE) protected Map<String, Integer> brokenColor = new HashMap<>();
-//    @Getter(AccessLevel.NONE) protected Map<String, Integer> fallbackColor = new HashMap<>();
     @Getter(AccessLevel.NONE) private Map<String, PartDisplayProperties> display = new HashMap<>();
     protected TextFormatting nameColor = TextFormatting.GRAY;
     protected String localizedNameOverride = "";
     private final PartOrigins origin;
 
     /**
-     * Numerical index for model caching. This value could change any time the mod updates or new
-     * materials are added, so don't use it for persistent data! Also good for identifying subtypes
-     * in JEI.
+     * Numerical index for model caching. It may change on updates or new materials, so never use
+     * it for persistent data.
      */
     @Getter(AccessLevel.NONE) protected int modelIndex;
     private static int lastModelIndex = -1;
@@ -112,10 +106,6 @@ public abstract class ItemPart {
     public void loadFromJson(JsonObject json) {
         Loader.processJson(this, json);
     }
-
-    // ===========================
-    // = Stats and Miscellaneous =
-    // ===========================
 
     public abstract PartType getType();
 
@@ -163,7 +153,6 @@ public abstract class ItemPart {
     }
 
     public float getRepairAmount(ItemStack gear, ItemPartData part, RepairContext context) {
-        // Base value on material durability
         ItemPartData gearPrimary = GearData.getPrimaryPart(gear);
         if (gearPrimary != null && part.part.tier < gearPrimary.part.tier) return 0;
         Collection<StatInstance> mods = getStatModifiers(gear, CommonItemStats.DURABILITY, part);
@@ -186,10 +175,6 @@ public abstract class ItemPart {
     public float computeStatValue(ItemStat stat, ItemPartData part) {
         return stat.compute(0, getStatModifiers(stat, part));
     }
-
-    // ============
-    // = Crafting =
-    // ============
 
     public boolean matchesForCrafting(ItemStack partRep, boolean matchOreDict) {
         if (partRep.isEmpty())
@@ -222,17 +207,11 @@ public abstract class ItemPart {
         return !this.enabled;
     }
 
-    // ===================================
-    // = Display (textures and tooltips) =
-    // ===================================
-
     /**
      * Gets a texture to use based on the item class.
      *
-     * <p>Resolves the display properties from the gear stack, then delegates to
-     * {@link #getTexture(PartDisplayProperties, String, IPartPosition, int)}. Subclasses must
-     * override that method instead of this one, so texture dependencies can be gathered for
-     * every display variant with {@link #getTextureVariants(String, IPartPosition, int)}.
+     * <p>Subclasses must override {@link #getTexture(PartDisplayProperties, String, IPartPosition, int)},
+     * not this method, so texture dependencies cover every display variant.
      *
      * @param part           The part
      * @param gear           The equipment item (tool/weapon/armor)
@@ -256,11 +235,8 @@ public abstract class ItemPart {
     /**
      * Gets every texture this part may use for the given gear class.
      *
-     * <p>Textures returned here are declared as model dependencies, so they are guaranteed to be
-     * stitched into the texture atlas before the model is baked. Runtime rendering resolves the
-     * display properties from the actual gear stack, so every gear type override (for example
-     * {@code "hoe": {"texture_suffix": "generic_hc"}}) has to be included here, not just the
-     * default {@code "all"} variant.
+     * <p>Returned textures are declared as model dependencies, so every gear type override (for
+     * example {@code "hoe": {"texture_suffix": "generic_hc"}}) must be included, not just "all".
      */
     public Set<ResourceLocation> getTextureVariants(String gearClass, IPartPosition position, int animationFrame) {
         Set<ResourceLocation> textures = new LinkedHashSet<>();
@@ -312,7 +288,6 @@ public abstract class ItemPart {
             if (gearType != null)
                 return getDisplayProperties(gearType);
         }
-        // Default
         return getDefaultDisplayProperties();
     }
 
@@ -388,7 +363,7 @@ public abstract class ItemPart {
     public String getTranslatedName(@Nullable ItemPartData part, ItemStack gear) {
         if (!localizedNameOverride.isEmpty())
             return localizedNameOverride;
-        return /* nameColor + */ SilentGear.i18n.translate(this.getTranslationKey(part));
+        return SilentGear.i18n.translate(this.getTranslationKey(part));
     }
 
     /**
@@ -434,10 +409,6 @@ public abstract class ItemPart {
         return str;
     }
 
-    // ====================================
-    // = Resource file and NBT management =
-    // ====================================
-
     /**
      * Get the location of the resource file that contains material information
      */
@@ -446,7 +417,6 @@ public abstract class ItemPart {
     }
 
     private void loadJsonResources() {
-        // Main resource file in JAR
         String path = getResourceFileLocation();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(path);
         if (resourceAsStream != null) {
@@ -489,14 +459,12 @@ public abstract class ItemPart {
     @Nullable
     public static ItemPart fromNBT(NBTTagCompound tags) {
         String key = tags.getString(NBT_KEY);
-        // 旧固定尖端/覆层部件已删除，加载期 alias 表优先于注册表（避免旧 config 材料文件
-        // 重新注册同名 legacy 部件时绕过模块化材料）。
+        // 旧固定尖端/覆层部件已删除：alias 表优先于注册表，避免旧 config 重新注册同名 legacy 部件。
         ItemPart aliased = ModularMaterialRegistry.getAliasedPart(key);
         return aliased != null ? aliased : PartRegistry.get(key);
     }
 
     public void postInitChecks() {
-        // Crafting item missing? Try to acquire an item from the ore dictionary.
         if (requiresCraftingItem() && getCraftingStack().isEmpty()) {
             ItemStack fromOredict = getCraftingItemFromOreDict();
             if (!fromOredict.isEmpty())
@@ -512,9 +480,8 @@ public abstract class ItemPart {
     }
 
     /**
-     * Whether this part is obtained by crafting and therefore needs a crafting item. Render-only
-     * parts (for example the highlight overlay) return false, so post-init validation does not
-     * report a missing crafting item for them.
+     * Whether this part is obtained by crafting and needs a crafting item. Render-only parts
+     * (for example the highlight overlay) return false.
      */
     public boolean requiresCraftingItem() {
         return true;
@@ -522,7 +489,6 @@ public abstract class ItemPart {
 
     @SuppressWarnings("MethodWithMultipleReturnPoints")
     private ItemStack getCraftingItemFromOreDict() {
-        // Attempts to get a crafting item based on the part's oredict key.
         if (craftingOreDictName.isEmpty()) {
             SilentGear.LOGGER.error("No crafting item or ore dictionary key for part: {}", this);
             return ItemStack.EMPTY;
@@ -572,8 +538,7 @@ public abstract class ItemPart {
                     }
                 }
 
-                // Replace existing modifiers for the stats present in the file, but keep every
-                // modifier (files may legitimately contain an ADD and a MUL entry for one stat).
+                // Only replace stats listed in the file; keep multiple modifiers (ADD and MUL can coexist).
                 statMap.keySet().forEach(part.stats::removeAll);
                 part.stats.putAll(statMap);
             }

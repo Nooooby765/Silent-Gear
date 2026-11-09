@@ -46,9 +46,7 @@ public class TraitRefractive extends Trait {
         super.tick(world, player, level, gear, isEquipped);
 
         if (player != null && player.ticksExisted % ACTIVATE_RATE == 0) {
-            // TODO: Phantom lights, block config?
-            // This fails with torches to some extent, they don't attach to walls
-            //placeLight(player.world, player, ModBlocks.phantomLight.getDefaultState());
+            // TODO: enable phantom lights? Placement fails with torches, which don't attach to walls.
         }
     }
 

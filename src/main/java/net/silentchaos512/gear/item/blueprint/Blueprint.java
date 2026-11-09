@@ -79,7 +79,6 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
 
     @Override
     public ItemStack getCraftingResult(ItemStack blueprint, Collection<ItemStack> parts) {
-        // Blueprints/templates disabled?
         if (isDisabled())
             return ItemStack.EMPTY;
 
@@ -89,7 +88,6 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
             if (data != null) partList.add(data);
         }
         for (ItemPartData part : partList) {
-            // Block blacklisted parts
             if (part.getPart().isBlacklisted())
                 return ItemStack.EMPTY;
         }
@@ -125,18 +123,14 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
         String itemClass = this.gearItem.getGearClass();
         ConfigOptionEquipment config = this.gearItem.getConfig();
 
-        // Output item class
         String key = this.gearItem.getItem().getTranslationKey() + ".name";
         list.add(TextFormatting.AQUA + i18n.translate(key));
-        // Flavor text
         if (this.gearItem instanceof ICoreTool)
             list.add(TextFormatting.ITALIC + i18n.itemSubText(NAME, this.gearItem.getGearClass() + ".desc"));
 
-        // Material required for crafting
         int amount = config.getCraftingPartCount(PartType.MAIN);
         list.add(i18n.itemSubText(NAME, "materialAmount", amount));
 
-        // Single use or multiple uses? Or disabled?
         if (isDisabled()) {
             list.add(TextFormatting.DARK_RED + i18n.itemSubText(NAME, "disabled"));
         } else if (this.singleUse) {
@@ -145,14 +139,12 @@ public class Blueprint extends Item implements IBlueprint, IColoredItem {
             list.add(TextFormatting.GREEN + i18n.itemSubText(NAME, "multiUse"));
         }
 
-        // Is mixed material allowed in this GUI?
         if (Minecraft.getMinecraft().currentScreen instanceof GuiCraftingStation) {
             list.add(TextFormatting.GREEN + i18n.itemSubText(NAME, "canMix"));
         } else {
             list.add(TextFormatting.RED + i18n.itemSubText(NAME, "noMixing"));
         }
 
-        // Item recipe
         if (this.gearItem instanceof ICoreTool) {
             list.add("");
             if (KeyTrackerSL.isAltDown()) {

@@ -110,8 +110,7 @@ public final class GearEvents {
             if (toolLevel < blockLevel)
                 return;
 
-            // FIXME: Seems to be very inconsistent. Need to check block/sky light separately?
-            // Like this: player.world.getLightFor(EnumSkyBlock.BLOCK, player.getPosition());
+            // FIXME: Results are inconsistent; may need to check block and sky light separately.
             float light = getAreaLightBrightness(player.world, player.getPosition());
             event.setNewSpeed(event.getOriginalSpeed() + 3 * level * light);
         }
@@ -149,8 +148,7 @@ public final class GearEvents {
             ItemStack stack = event.getDrops().get(i);
             ItemStack smelted = FurnaceRecipes.instance().getSmeltingResult(stack);
             if (!smelted.isEmpty()) {
-                // set() replaces in place. The previous remove(i)+add(i) produced the same list
-                // contents, but did two structural edits per drop.
+                // set() replaces in place, avoiding the structural edits of remove(i)+add(i).
                 event.getDrops().set(i, smelted.copy());
             }
         }

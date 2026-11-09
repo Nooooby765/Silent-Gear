@@ -28,9 +28,8 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * 模块化钓鱼竿。抛竿/收竿/漂浮物/钓鱼判定全部复用原版 {@link ItemFishingRod}，
- * 这里只通过 Forge 的按 ItemStack 钩子覆盖耐久、附魔、修理、稀有度与 traits。
- * 战利品仍走原版 {@code WeightedRandomFishable}/loot 机制。
+ * 模块化钓鱼竿。抛竿/收竿/漂浮物/钓鱼判定复用原版 {@link ItemFishingRod}，仅通过 Forge 的按 ItemStack 钩子
+ * 覆盖耐久、附魔、修理、稀有度与 traits；战利品仍走原版 {@code WeightedRandomFishable}/loot 机制。
  */
 public class CoreFishingRod extends ItemFishingRod implements ICoreItem {
     public static final String NBT_COLORS = "Colors";

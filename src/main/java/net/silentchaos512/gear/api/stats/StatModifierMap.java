@@ -40,7 +40,6 @@ public class StatModifierMap implements Multimap<ItemStat, StatInstance> {
 
     @Override
     public boolean put(ItemStat key, StatInstance value) {
-        // Disallow duplicate IDs
         for (StatInstance inst : this.map.get(key))
             if (inst.getId().equals(value.getId()))
                 return false;

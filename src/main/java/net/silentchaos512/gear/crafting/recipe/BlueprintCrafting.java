@@ -69,7 +69,6 @@ public class BlueprintCrafting implements IRecipeFactory {
             StackList list = StackHelper.getNonEmptyStacks(inv);
             ItemStack blueprint = list.uniqueOfType(IBlueprint.class);
 
-            // Only one blueprint
             if (blueprint.isEmpty()) {
                 return false;
             }
@@ -99,21 +98,20 @@ public class BlueprintCrafting implements IRecipeFactory {
                 }
             }
 
-            // Right number of materials and nothing else? FIXME: blueprint book support?
+            // FIXME: blueprint book support?
             if (materialCount + 1 != list.size() || requiredCount != blueprintItem.getMaterialCost(blueprint)) {
                 return false;
             }
 
-            // Blueprint may restrict the accepted material types (legacy blueprints accept all)
+            // Blueprints may restrict accepted material types (legacy blueprints accept all)
             for (ItemPartData data : materials) {
                 ItemPart part = data.getPart();
                 if (part == null || !blueprintItem.isValidMaterial(part))
                     return false;
             }
 
-            // Inventory allows mixing? Otherwise main materials must be uniform. Only blueprints
-            // that accept optional parts may mix an optional part (lining/rod) with the mains;
-            // legacy blueprints keep the stricter all-parts-uniform rule.
+            // Only blueprints accepting optional parts may mix lining/rod with mains; legacy
+            // blueprints keep the stricter all-parts-uniform rule.
             if (inventoryAllowsMixedMaterial(inv)) return true;
             return optionalCounts.isEmpty() ? allPartsUniform(materials) : mainsAreUniform(materials);
         }

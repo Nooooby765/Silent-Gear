@@ -58,24 +58,20 @@ public class TilePartAnalyzer extends TileSidedInventorySL implements ITickable 
         ItemPart part = PartRegistry.get(input);
 
         if (part != null) {
-            // Analyzing. The progress bar is synced through the container window property, so
-            // bumping the counter does not need to notify clients every tick.
+            // Progress syncs through the container window property, so clients need no per-tick update.
             if (progress < BASE_ANALYZE_TIME) {
                 ++progress;
             }
 
-            // Grade part if any output slot is free
             if (progress >= BASE_ANALYZE_TIME) {
                 int outputSlot = getFreeOutputSlot();
                 if (outputSlot > 0) {
                     progress = 0;
 
-                    // Take one from input stack
                     ItemStack stack = input.copy();
                     stack.setCount(1);
                     input.shrink(1);
 
-                    // Assign grade, move to output slot
                     MaterialGrade.selectRandom(SilentGear.RANDOM).setGradeOnStack(stack);
                     setInventorySlotContents(outputSlot, stack);
                     if (input.getCount() <= 0) {

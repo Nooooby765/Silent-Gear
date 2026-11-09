@@ -101,9 +101,8 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
     }
 
     private static Field[] getClassFields(Class<?> clazz) {
-        // The cache is keyed by class. This used to call containsValue(clazz), which compares the
-        // class against the cached Field[] values and therefore never matched: getFields() and the
-        // sort ran again for every packet, on the netty thread.
+        // Keyed by class: containsValue(clazz) never matched, so fields were re-sorted for every
+        // packet on the netty thread.
         Field[] cached = fieldCache.get(clazz);
         if (cached != null)
             return cached;
@@ -239,7 +238,6 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
         buf.writeLong(pos.toLong());
     }
 
-    // Functional interfaces
     public interface Writer<T extends Object> {
         void write(T t, ByteBuf buf);
     }

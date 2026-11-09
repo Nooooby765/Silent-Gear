@@ -27,12 +27,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.gear.SilentGear;
 
 /**
- * Common-side registration hook for the optional Trident integration.
- * <p>
- * The class is loaded by Forge on every launch (it only contains common types), but its body is a
- * single mod check when the Trident mod is absent. No Trident class is referenced in any field,
- * method signature or static initializer, so the base mod behaves byte-for-byte as it did
- * before when the mod is not installed.
+ * Common-side registration hook for the optional Trident integration. Loaded on every launch, but
+ * no Trident class is referenced outside the mod check, so the base mod is unaffected when absent.
  */
 @Mod.EventBusSubscriber(modid = SilentGear.MOD_ID)
 public final class TridentEventHandler {
@@ -41,8 +37,7 @@ public final class TridentEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {
-        // MOD_ID is a compile-time constant, so this check does not even load TridentIntegration
-        // when the Trident mod is missing.
+        // MOD_ID is a compile-time constant, so this check does not even load TridentIntegration when absent.
         if (!Loader.isModLoaded(TridentIntegration.MOD_ID)) {
             return;
         }

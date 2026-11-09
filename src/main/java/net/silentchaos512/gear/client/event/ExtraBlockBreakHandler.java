@@ -179,13 +179,8 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
     private static class DestroyExtraBlocksProgress {
         private final int miningPlayerEntId;
         private final BlockPos[] positions;
-        /**
-         * damage ranges from 1 to 10. -1 causes the client to delete the partial block renderer.
-         */
+        /** Damage ranges from 1 to 10; -1 causes the client to delete the partial block renderer. */
         private int partialBlockProgress;
-        /**
-         * keeps track of how many ticks this PartiallyDestroyedBlock already exists
-         */
         private int createdAtWorldTick;
 
         public DestroyExtraBlocksProgress(int miningPlayerEntIdIn, BlockPos... positionsIn) {
@@ -209,17 +204,11 @@ public class ExtraBlockBreakHandler implements IResourceManagerReloadListener {
             return this.partialBlockProgress;
         }
 
-        /**
-         * saves the current world tick into the DestroyExtraBlocksProgress
-         */
         public void setWorldTick(int createdAtWorldTickIn) {
 
             this.createdAtWorldTick = createdAtWorldTickIn;
         }
 
-        /**
-         * retrieves the 'date' at which the DestroyExtraBlocksProgress was created
-         */
         public int getCreationWorldTick() {
 
             return this.createdAtWorldTick;

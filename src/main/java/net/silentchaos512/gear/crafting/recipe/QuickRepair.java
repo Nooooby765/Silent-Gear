@@ -51,7 +51,6 @@ public class QuickRepair implements IRecipeFactory {
             ItemStack gear = ItemStack.EMPTY;
             int partsCount = 0;
 
-            // Need 1 gear and 1+ parts
             for (ItemStack stack : StackList.fromInventory(inv)) {
                 if (stack.getItem() instanceof ICoreItem) {
                     if (gear.isEmpty())
@@ -61,7 +60,6 @@ public class QuickRepair implements IRecipeFactory {
                 }
                 else if (PartRegistry.get(stack) != null) {
                     ++partsCount;
-                    // It needs to be a part with repair value
                     ItemPartData data = ItemPartData.fromStack(stack);
                     if (data == null || data.getRepairAmount(gear, RepairContext.QUICK) <= 0)
                         return false;
@@ -95,12 +93,10 @@ public class QuickRepair implements IRecipeFactory {
             // Makes odd repair values line up better
             repairValue += 1;
 
-            // Repair efficiency instance tool class
             if (gear.getItem() instanceof ICoreItem)
                 repairValue *= GearData.getStat(gear, CommonItemStats.REPAIR_EFFICIENCY);
 
             gear.attemptDamageItem(-Math.round(repairValue), SilentGear.RANDOM, null);
-//            GearStatistics.incrementStat(gear, "silentgear.repair_count", materialCount);
             GearData.incrementRepairCount(gear, materialCount);
             GearData.recalculateStats(gear);
             return gear;

@@ -85,17 +85,14 @@ public final class GearHelper {
         @SuppressWarnings("deprecation")
         Multimap<String, AttributeModifier> map = stack.getItem().getItemAttributeModifiers(slot);
 
-        // Melee Damage
         String key = SharedMonsterAttributes.ATTACK_DAMAGE.getName();
         float value = getMeleeDamageModifier(stack);
         replaceAttributeModifierInMap(map, key, value);
 
-        // Melee Speed
         key = SharedMonsterAttributes.ATTACK_SPEED.getName();
         value = getAttackSpeedModifier(stack);
         replaceAttributeModifierInMap(map, key, value);
 
-        // Reach distance
         map.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(REACH_MODIFIER_UUID, "Gear reach",
                 GearData.getStat(stack, CommonItemStats.REACH_DISTANCE), 0));
 
@@ -154,7 +151,7 @@ public final class GearHelper {
             if (player != null)
                 notifyPlayerOfBrokenGear(stack, player);
         } else if (canBreakPermanently && wouldBreak) {
-            // Item is gone forever, rest in pieces
+            // Permanently destroyed.
             entityLiving.renderBrokenItemStack(stack);
             stack.shrink(1);
         }
@@ -170,8 +167,8 @@ public final class GearHelper {
     }
 
     private static void notifyPlayerOfBrokenGear(ItemStack stack, EntityPlayerMP player) {
-        // Notify player. Mostly for armor, but might help new players as well.
-        // FIXME: Does not work with armor currently, need to find a way to get player
+        // Mostly relevant for armor, but may help new players as well.
+        // FIXME: Does not work with armor currently, need a way to get the player
         player.sendMessage(new TextComponentTranslation("misc.silentgear.notifyOnBreak", stack.getDisplayName()));
     }
 
@@ -194,11 +191,6 @@ public final class GearHelper {
     }
 
     public static boolean isBroken(ItemStack stack) {
-        // if (gear.getItem() instanceof ItemGemArrow) {
-        // // Quick hack for arrow coloring.
-        // return true;
-        // }
-
         if (Config.gearBreaksPermanently || GearData.hasRedCard(stack))
             return false;
 
@@ -229,8 +221,7 @@ public final class GearHelper {
     }
 
     public static void setHarvestLevel(ICoreItem item, String toolClass, int level, Set<String> mutableSet) {
-        // Add tool class to list if level is non-negative. Because this is on the item level, the
-        // actual number is meaningless. Harvest levels can be customized in the material JSONs.
+        // Item-level tool class: the number is meaningless here, harvest levels come from material JSONs.
         final boolean add = level >= 0;
         SilentGear.LOGGER.info("{}: {} tool class \"{}\"", item.getClass().getSimpleName(), (add ? "set" : "remove"), toolClass);
         if (add) mutableSet.add(toolClass);
@@ -243,24 +234,20 @@ public final class GearHelper {
 
         float speed = GearData.getStat(stack, CommonItemStats.HARVEST_SPEED);
 
-        // Tool effective on block?
         if (stack.getItem().canHarvestBlock(state, stack)) {
             return speed;
         }
 
-        // Check tool classes
         for (String type : stack.getItem().getToolClasses(stack)) {
             if (state.getBlock().isToolEffective(type, state)) {
                 return speed;
             }
         }
 
-        // Check extra materials
         if (extraMaterials != null && extraMaterials.contains(state.getMaterial())) {
             return speed;
         }
 
-        // Tool ineffective.
         return 1f;
     }
 
@@ -269,7 +256,6 @@ public final class GearHelper {
             int damage = ((ICoreTool) stack.getItem()).getDamageOnBlockBreak(stack, world, state, pos);
             attemptDamage(stack, damage, entityLiving);
         }
-//        GearStatistics.incrementStat(stack, GearStatistics.BLOCKS_MINED);
 
         // TODO: Implement multi-break skill
 
@@ -313,14 +299,12 @@ public final class GearHelper {
     }
 
     public static boolean shouldUseFallbackColor(ItemStack stack, ItemPartData part) {
-        // TODO
         return false;
     }
 
     /**
-     * Resolves the representative color of a part for items that bake the color into NBT at
-     * construction time. Many materials use pre-colored textures and leave textureColor white,
-     * storing the display color in brokenColor or fallbackColor instead.
+     * Resolves the part color for items that bake color into NBT at construction; pre-colored
+     * materials leave textureColor white and use brokenColor or fallbackColor instead.
      */
     public static int getPartDisplayColor(@Nullable ItemPartData part, GearType gearType) {
         if (part == null) return 0xFFFFFF;

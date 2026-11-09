@@ -72,7 +72,6 @@ public class ItemDisplay {
 
             ScaledResolution res = new ScaledResolution(mc);
             int posX = mouseX;
-//      SilentLib.logHelper.debug(posX, res.getScaledWidth());
             if (posX + maxWidth > res.getScaledWidth() - 15)
                 posX -= maxWidth + 20;
 

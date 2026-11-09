@@ -257,11 +257,9 @@ public class Color {
      * @implNote Uses {@link UnsignedInts#parseUnsignedInt(String, int)} for parsing
      */
     public static Color parse(String str) {
-        // Named color?
         str = str.toLowerCase(Locale.ROOT);
         if (NAMED_MAP.containsKey(str)) return NAMED_MAP.get(str);
 
-        // Hex code
         str = PATTERN_LEADING_JUNK.matcher(str).replaceFirst("");
         int color = UnsignedInts.parseUnsignedInt(str, 16);
         return new Color(color);

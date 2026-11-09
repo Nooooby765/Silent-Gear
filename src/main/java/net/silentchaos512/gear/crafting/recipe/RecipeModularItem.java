@@ -46,8 +46,7 @@ public class RecipeModularItem extends RecipeBaseSL {
 
     public ItemStack getCraftingResult(Collection<ItemStack> parts) {
         List<ItemPartData> data = new ArrayList<>();
-        // LinkedHashMap keeps the result deterministic: the order of non-main parts can affect
-        // floating-point stat aggregation slightly.
+        // LinkedHashMap keeps results deterministic; float stat sums depend slightly on part order.
         Map<PartType, ItemPartData> partsByType = new LinkedHashMap<>();
 
         for (ItemStack stack : parts) {
@@ -81,9 +80,7 @@ public class RecipeModularItem extends RecipeBaseSL {
     }
 
     private Collection<ItemStack> getComponents(InventoryCrafting inv) {
-        // Tool heads first, then every other non-empty stack. matchesRecipe rejects non-part
-        // stacks itself, so the old PartRegistry filter and the non-empty count check are
-        // redundant. One result list instead of three temporary lists.
+        // Tool heads first, then other non-empty stacks; matchesRecipe rejects non-part stacks itself.
         List<ItemStack> parts = new ArrayList<>();
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             ItemStack stack = inv.getStackInSlot(i);

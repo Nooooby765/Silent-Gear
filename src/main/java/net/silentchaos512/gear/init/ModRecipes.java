@@ -21,7 +21,6 @@ public final class ModRecipes {
     private ModRecipes() {}
 
     public static void registerAll(SRegistry reg) {
-        // Gear recipes
         RecipeMaker recipes = reg.getRecipeMaker();
         for (ICoreItem item : ModItems.gearClasses.values()) {
             final IRecipe recipe = Config.blueprintlessGearRecipes
@@ -33,7 +32,6 @@ public final class ModRecipes {
             recipes.addCustomRecipe("core_" + item.getGearClass(), recipe);
         }
 
-        // Smelting recipes
         recipes.addSmelting(ModBlocks.crimsonIronOre, new ItemStack(CraftingItems.CRIMSON_IRON_INGOT.getItem()), 0.6f);
 
         // Repair recipe "fix" - prevents gear items from being destroyed by vanilla

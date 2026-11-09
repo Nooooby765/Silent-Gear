@@ -46,11 +46,7 @@ public class DebugOverlay extends DebugRenderOverlay {
     @Override
     public List<String> getDebugText() {
         List<String> list = new ArrayList<>();
-//            PartRegistry.getDebugLines(list);
-//            list.add("GearClientHelper.modelCache=" + GearClientHelper.modelCache.size());
-//            list.add("ColorHandlers.gearColorCache=" + ColorHandlers.gearColorCache.size());
 
-        // Harvest level checks
         RayTraceResult rt = Minecraft.getMinecraft().objectMouseOver;
         if (rt != null && rt.typeOfHit == RayTraceResult.Type.BLOCK) {
             Entity renderViewEntity = Minecraft.getMinecraft().getRenderViewEntity();

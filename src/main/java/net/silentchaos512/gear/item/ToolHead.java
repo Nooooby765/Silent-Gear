@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -67,8 +66,7 @@ public class ToolHead extends Item implements IStatItem {
 
         writeStatCache(result, parts);
 
-        // The model key is fully determined by the head; storing it avoids rebuilding it from
-        // NBT every frame in the model override and color handlers.
+        // Persisted so the per-frame model override and tint handlers do not rebuild it from NBT.
         List<ItemPartData> mains = parts.getMains();
         ItemPartData primary = mains.isEmpty() ? null : mains.get(0);
         ItemPartData secondary = "sword".equals(toolClass) && mains.size() > 1
@@ -124,7 +122,9 @@ public class ToolHead extends Item implements IStatItem {
      */
     @Nonnull
     public static String getToolClass(ItemStack stack) {
-        return getData(stack).getString(NBT_TOOL_CLASS);
+        // Read-only: called from item display name and model key. Missing key already yields "".
+        NBTTagCompound tags = stack.getSubCompound(NBT_ROOT);
+        return tags != null ? tags.getString(NBT_TOOL_CLASS) : "";
     }
 
     /**
@@ -132,8 +132,9 @@ public class ToolHead extends Item implements IStatItem {
      */
     @Nullable
     public static ItemPartData getPrimaryPart(ItemStack stack) {
-        NBTTagCompound tags = getData(stack);
-        if (!tags.hasKey(NBT_MATERIALS))
+        // Read-only: reached from render/model paths for heads without a persisted key.
+        NBTTagCompound tags = stack.getSubCompound(NBT_ROOT);
+        if (tags == null || !tags.hasKey(NBT_MATERIALS))
             return ItemPartData.instance(ModMaterials.mainWood);
         NBTTagList tagList = tags.getTagList(NBT_MATERIALS, 10);
         if (tagList.tagCount() == 0)
@@ -144,8 +145,9 @@ public class ToolHead extends Item implements IStatItem {
 
     @Nullable
     public static ItemPartData getSecondaryPart(ItemStack stack) {
-        NBTTagCompound tags = getData(stack);
-        if (!tags.hasKey(NBT_MATERIALS))
+        // Read-only, same reasoning as getPrimaryPart.
+        NBTTagCompound tags = stack.getSubCompound(NBT_ROOT);
+        if (tags == null || !tags.hasKey(NBT_MATERIALS))
             return ItemPartData.instance(ModMaterials.mainWood);
         NBTTagList tagList = tags.getTagList(NBT_MATERIALS, 10);
         if (tagList.tagCount() < 2)
@@ -192,13 +194,15 @@ public class ToolHead extends Item implements IStatItem {
     }
 
     public static String getModelKey(ItemStack stack) {
-        NBTTagCompound data = getData(stack);
-        String cached = data.getString(NBT_MODEL_KEY);
-        if (!cached.isEmpty())
-            return cached;
+        NBTTagCompound data = stack.getSubCompound(NBT_ROOT);
+        if (data != null) {
+            String cached = data.getString(NBT_MODEL_KEY);
+            if (!cached.isEmpty())
+                return cached;
+        }
 
         // Legacy tool heads created before the key was persisted: compute it on demand.
-        String toolClass = data.getString(NBT_TOOL_CLASS);
+        String toolClass = data != null ? data.getString(NBT_TOOL_CLASS) : "";
         ICoreItem toolItem = ModItems.gearClasses.get(toolClass);
         ItemPartData primary = getPrimaryPart(stack);
         ItemPartData secondary = toolItem instanceof ICoreTool && ((ICoreTool) toolItem).hasSwordGuard() ? getSecondaryPart(stack) : null;
@@ -214,9 +218,8 @@ public class ToolHead extends Item implements IStatItem {
     private static final int TOOLTIP_STACK_CACHE_SIZE = 128;
 
     /**
-     * Tooltips are rebuilt every frame while an item is hovered. Building the rod-less tool and
-     * recalculating its stats is expensive, and the result is fully determined by the tool head's
-     * NBT (tool class + material parts + grades). Cache a bounded number of results by that NBT.
+     * Tooltips are rebuilt every frame while hovered, and building the rod-less tool plus its stats
+     * is expensive. Results are fully determined by the head's NBT, so cache a bounded number of them.
      */
     private static final Map<String, ItemStack> TOOLTIP_STACK_CACHE = new LinkedHashMap<String, ItemStack>(16, 0.75f, true) {
         @Override
@@ -230,8 +233,8 @@ public class ToolHead extends Item implements IStatItem {
         if (tag == null)
             return toolItem.construct(toolItem.getItem(), parts);
 
-        // Only the tool class and the material parts determine the constructed tooltip; the rest
-        // of the head NBT (StatCache, ModelKey, ...) would just lengthen the key every frame.
+        // Only the tool class and material parts affect the result; including StatCache/ModelKey
+        // would just make the key longer to build every frame.
         String key = toolItem.getGearClass() + "|" + tag.getTag(NBT_MATERIALS);
         synchronized (TOOLTIP_STACK_CACHE) {
             ItemStack cached = TOOLTIP_STACK_CACHE.get(key);
@@ -249,7 +252,6 @@ public class ToolHead extends Item implements IStatItem {
         String toolClass = getToolClass(stack);
         Collection<ItemPartData> parts = getAllParts(stack);
 
-        // Ungraded parts warning
         boolean hasUngradedParts = false;
         for (ItemPartData part : parts) {
             if (part.getGrade() == MaterialGrade.NONE) {
@@ -261,29 +263,21 @@ public class ToolHead extends Item implements IStatItem {
             list.add(TextFormatting.ITALIC + SilentGear.i18n.miscText("ungradedParts"));
         }
 
-        // List materials
         GearClientHelper.tooltipListParts(stack, list, parts);
 
-        // Example output warning (read-only; see getAllParts)
+        // Read-only; see getAllParts.
         NBTTagCompound exampleTags = stack.getSubCompound(NBT_ROOT);
         if (exampleTags != null && exampleTags.getBoolean(NBT_IS_EXAMPLE)) {
             list.add(TextFormatting.YELLOW + i18n.translate("misc", "exampleOutput1"));
             list.add(TextFormatting.YELLOW + i18n.translate("misc", "exampleOutput2"));
         }
 
-        // Tooltip from actual tool (minus rod and anything else)
         ICoreItem toolItem = ModItems.gearClasses.get(toolClass);
         if (toolItem != null) {
             ItemStack constructed = getTooltipStack(stack, toolItem, parts);
             TooltipFlagTC tooltipFlag = TooltipFlagTC.withModifierKeys(flag.isAdvanced(), true, false);
             GearClientHelper.addInformation(constructed, world, list, tooltipFlag);
         }
-    }
-
-    @Override
-    public EnumRarity getRarity(ItemStack stack) {
-        // TODO Auto-generated method stub
-        return super.getRarity(stack);
     }
 
     @Override

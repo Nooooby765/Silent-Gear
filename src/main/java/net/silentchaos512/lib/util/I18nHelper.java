@@ -131,7 +131,7 @@ public class I18nHelper {
                     log.catching(new RuntimeException());
                 triedToTranslateOnServer.add(key);
             }
-            // Go ahead and translate text with deprecated I18n on the server for now...
+            // Server-side fallback, deprecated but still works for now
             return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(key, params);
         }
 

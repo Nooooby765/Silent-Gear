@@ -44,7 +44,7 @@ public class SlotCraftingStationOutput extends SlotCrafting {
         this.container = container;
     }
 
-    // Called on shift-click? Param amount seems to always be 2
+    // Shift-click path (amount is normally 2).
     @Override
     protected void onCrafting(ItemStack stack, int amount) {
         this.amountCrafted += amount;
@@ -52,7 +52,7 @@ public class SlotCraftingStationOutput extends SlotCrafting {
         consumeParts(stack);
     }
 
-    // Called on regular click?
+    // Regular click path.
     @Override
     protected void onCrafting(ItemStack stack) {
         ++this.amountCrafted;
@@ -70,22 +70,6 @@ public class SlotCraftingStationOutput extends SlotCrafting {
     private void consumeParts(ItemStack stack) {
         if (stack.getItem() instanceof ICoreItem) {
             ICoreItem item = (ICoreItem) stack.getItem();
-//            Set<PartType> partTypesFound = new HashSet<>();
-
-//            for (int i = TileCraftingStation.GEAR_PARTS_START; i < TileCraftingStation.GEAR_PARTS_START + TileCraftingStation.GEAR_PARTS_SIZE; ++i) {
-//                ItemStack stackInSlot = station.getStackInSlot(i);
-//                ItemPart part = PartRegistry.get(stackInSlot);
-//
-//                if (!stackInSlot.isEmpty() && part != null && (!partTypesFound.contains(part.getType()) || part.getType() == PartType.MISC_UPGRADE)) {
-//                    int count = Math.max(item.getConfig().getCraftingPartCount(part.getType()), 1);
-//                    station.decrStackSize(i, count); // was 'count * amountCrafted'
-//                    SilentGear.log.debug("Remove {} from {}", count, stackInSlot);
-//
-//                    if (part.getType() != PartType.MISC_UPGRADE) {
-//                        partTypesFound.add(part.getType());
-//                    }
-//                }
-//            }
 
             Map<ItemPartData, Integer> partList = container.getCompatibleParts(item);
             for (Map.Entry<ItemPartData, Integer> entry : partList.entrySet()) {

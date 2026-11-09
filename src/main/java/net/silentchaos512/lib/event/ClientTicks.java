@@ -60,7 +60,6 @@ public final class ClientTicks {
             SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
 
         if (scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
-            // Queue overflow?
             SilentLib.LOGGER.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
                     scheduledActions.size(), action);
             SilentLib.LOGGER.catching(new IllegalStateException("ClientTicks queue overflow"));

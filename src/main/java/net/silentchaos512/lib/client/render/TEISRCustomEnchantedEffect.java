@@ -57,9 +57,8 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
     // Empty set stored for convenience (could pass nulls, but I don't like that)
     private static final ImmutableSet<EnumFacing> EMPTY = ImmutableSet.of();
-    // The "front" and "back" of the item model. For the enchanted effect to display correctly, we
-    // must render it on all faces for the first layer, then all faces EXCEPT THESE on all other
-    // layers. I have no idea how I figured this out.
+    // The "front" and "back" of the item model. For the effect to display correctly, exclude these
+    // for every layer after the first. I have no idea how I figured this out.
     private static final ImmutableSet<EnumFacing> STUPID_FACES = ImmutableSet.of(EnumFacing.SOUTH, EnumFacing.NORTH);
 
     private TEISRCustomEnchantedEffect() {
@@ -81,7 +80,6 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
         int layerCount = ((ILayeredBakedModel) model).getLayerCount();
 
         for (int i = 0; i < layerCount; ++i) {
-            // if (i == 0) // Uncomment to test individual layers
             this.renderModelExcluding(model, -1, stack, i, EMPTY);
         }
 
@@ -133,11 +131,6 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
 
             if (flag && bakedquad.hasTintIndex()) {
                 k = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, bakedquad.getTintIndex());
-
-//                if (EntityRenderer.anaglyphEnable) {
-//                    k = TextureUtil.anaglyphColor(k);
-//                }
-
                 k = k | -16777216;
             }
 
@@ -195,7 +188,6 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
 
         List<BakedQuad> quads = new ArrayList<>();
         if (layerIndex < 0) {
-            // FIXME
             for (int i = 0; i < ((ILayeredBakedModel) model).getLayerCount(); ++i) {
                 for (BakedQuad quad : model.getQuads(null, null, i)) {
                     if (!excludeFaces.contains(quad.getFace())) {

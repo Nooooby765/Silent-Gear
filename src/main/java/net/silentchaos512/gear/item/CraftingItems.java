@@ -74,7 +74,7 @@ public enum CraftingItems implements IEnumItems<CraftingItems, Item> {
         OreDictionary.registerOre("ingotCrimsonSteel", CRIMSON_STEEL_INGOT.item);
         OreDictionary.registerOre("nuggetDiamond", DIAMOND_SHARD.item);
         OreDictionary.registerOre("nuggetEmerald", EMERALD_SHARD.item);
-        // Vanilla sticks must keep the stickWood entry now that the netherwood stick is gone.
+        // Vanilla sticks must keep the stickWood entry.
         OreDictionary.registerOre("stickWood", Items.STICK);
         OreDictionary.registerOre("string", FLAX_STRING.item);
     }

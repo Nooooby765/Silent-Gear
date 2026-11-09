@@ -45,8 +45,7 @@ public final class PartDataList implements List<ItemPartData> {
 
     public static PartDataList from(Collection<ItemStack> stacks) {
         PartDataList ret = new PartDataList();
-        // Get part data for each stack, if it is a part. Silently ignore non-parts.
-        // Indexed/foreach loop instead of a Stream: same order, same null filtering, no pipeline.
+        // Foreach instead of a Stream: same order and null filtering, no pipeline allocation.
         for (ItemStack stack : stacks) {
             ItemPartData data = ItemPartData.fromStack(stack);
             if (data != null)
@@ -57,8 +56,7 @@ public final class PartDataList implements List<ItemPartData> {
 
     public PartDataList getUniqueParts(boolean mainsOnly) {
         PartDataList result = PartDataList.of();
-        // Indexed loop instead of one stream per element: this runs on every stat recalculation
-        // and tooltip build, and the lists only ever hold a handful of parts.
+        // Plain loop: runs on every stat recalculation and tooltip build.
         for (ItemPartData data : (mainsOnly ? getMains() : this.list)) {
             boolean duplicate = false;
             for (int i = 0; i < result.size(); ++i) {
@@ -103,8 +101,7 @@ public final class PartDataList implements List<ItemPartData> {
     }
 
     public List<ItemPartData> getParts(Predicate<ItemPartData> predicate) {
-        // Plain loop instead of a Stream: keeps the same order and predicate calls, but avoids
-        // allocating the stream pipeline. Called several times per stat recalculation.
+        // Plain loop: same order/predicate calls, no stream pipeline. Called several times per recalc.
         ImmutableList.Builder<ItemPartData> builder = ImmutableList.builder();
         for (ItemPartData data : this.list) {
             if (predicate.test(data))

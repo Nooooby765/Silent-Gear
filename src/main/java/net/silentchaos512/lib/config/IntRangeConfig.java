@@ -48,13 +48,12 @@ public class IntRangeConfig {
         max = MathHelper.clamp(max, lowerLimit, upperLimit);
 
         if (max < min) {
-            // Values not sane
             ModContainer modContainer = Loader.instance().activeModContainer();
             if (modContainer != null) {
                 LogHelper.getRegisteredLogger(modContainer.getName()).ifPresent(log -> log.warn(
                         "Config '{}' (category {}): max ({}) is less than min ({})!", name, category, max, min));
             }
-            // Make it sane
+            // Clamp max up to min so the range is always valid.
             max = min;
         }
     }

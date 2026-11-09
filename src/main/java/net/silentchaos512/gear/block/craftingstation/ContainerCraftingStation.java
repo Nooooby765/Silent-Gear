@@ -48,14 +48,6 @@ public class ContainerCraftingStation extends Container {
         setupInventorySlots(playerInventory, this.tile);
     }
 
-//    void setExtendedInventory(IInventory inventory) {
-//        if (inventory == this.extendedInventory)
-//            return;
-//
-//        this.extendedInventory = inventory;
-//        setupInventorySlots(this.playerInventory, inventory);
-//    }
-
     //region Slots
 
     private void setupInventorySlots(InventoryPlayer playerInv, IInventory extendedInv) {
@@ -169,14 +161,12 @@ public class ContainerCraftingStation extends Container {
 
                 slot.onSlotChange(itemstack1, itemstack);
             } else if (index >= playerStart && index < hotbarStart) { // Player
-                // To parts grid, side inventory, or hotbar?
                 if (!this.mergeItemStack(itemstack1, TileCraftingStation.GEAR_PARTS_START, TileCraftingStation.GEAR_PARTS_START + TileCraftingStation.GEAR_PARTS_SIZE, false)
                         && !this.mergeItemStack(itemstack1, TileCraftingStation.SIDE_INVENTORY_START, TileCraftingStation.SIDE_INVENTORY_START + TileCraftingStation.SIDE_INVENTORY_SIZE, false)
                         && !this.mergeItemStack(itemstack1, hotbarStart, hotbarStart + 9, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index >= hotbarStart && index < hotbarStart + 9) { // Hotbar
-                // To parts grid, side inventory, or player?
                 if (!this.mergeItemStack(itemstack1, TileCraftingStation.GEAR_PARTS_START, TileCraftingStation.GEAR_PARTS_START + TileCraftingStation.GEAR_PARTS_SIZE, false)
                         && !this.mergeItemStack(itemstack1, TileCraftingStation.SIDE_INVENTORY_START, TileCraftingStation.SIDE_INVENTORY_START + TileCraftingStation.SIDE_INVENTORY_SIZE, false)
                         && !this.mergeItemStack(itemstack1, playerStart, playerStart + 27, false)) { // To player
@@ -237,7 +227,6 @@ public class ContainerCraftingStation extends Container {
                     Set<PartType> partTypesFound = partList.keySet().stream().map(p -> p.getPart().getType()).collect(Collectors.toSet());
                     partTypesFound.add(PartType.MAIN);
 
-                    // Make sure all required parts are present
                     boolean allRequiredPartsFound = true;
                     for (PartType type : item.getConfig().getRequiredPartTypes()) {
                         if (!partTypesFound.contains(type)) {
@@ -247,7 +236,6 @@ public class ContainerCraftingStation extends Container {
                     }
 
                     if (allRequiredPartsFound) {
-                        // Make the tool with extra parts
                         partStackList.addAll(partList.keySet().stream().map(ItemPartData::getCraftingItem).collect(Collectors.toList()));
                         ItemStack result = recipe.getCraftingResult(partStackList);
                         if (!result.isEmpty()) {

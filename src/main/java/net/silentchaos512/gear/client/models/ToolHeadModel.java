@@ -188,7 +188,7 @@ public class ToolHeadModel implements IModel {
 
             String key = ToolHead.getModelKey(stack);
             // Fast path: check the cache before parsing construction NBT or resolving textures.
-            // This runs for every visible tool head, every frame.
+            // Runs for every visible tool head, every frame.
             IBakedModel cached = GearClientHelper.modelCache.get(key);
             if (cached != null)
                 return cached;
@@ -223,7 +223,6 @@ public class ToolHeadModel implements IModel {
             IBakedModel bakedModel = parent.bake(new SimpleModelState(model.transforms), model.getVertexFormat(), textureGetter);
             GearClientHelper.modelCache.put(key, bakedModel);
 
-            // Color cache
             ColorHandlers.gearColorCache.put(key, Stream.of(primaryPart, secondaryPart)
                     .filter(Objects::nonNull)
                     .map(part -> part.getColor(stack, 0)).toArray(Integer[]::new));

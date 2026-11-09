@@ -22,6 +22,5 @@ public class KeyTracker extends KeyTrackerSL {
 
     @Override
     public void onKeyInput(KeyInputEvent event) {
-        // TODO
     }
 }

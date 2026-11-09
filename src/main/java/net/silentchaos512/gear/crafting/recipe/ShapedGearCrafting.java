@@ -51,14 +51,12 @@ public class ShapedGearCrafting extends ShapedRecipes {
     public boolean matches(InventoryCrafting inv, World worldIn) {
         StackList stackList = StackList.fromInventory(inv);
 
-        // Make sure the rods match
         ItemStack rod = stackList.firstMatch(s -> typeOf(s) == PartType.ROD);
         for (ItemStack stack : stackList.allMatches(s -> typeOf(s) == PartType.ROD)) {
             if (!rod.isItemEqual(stack)) {
                 return false;
             }
         }
-        // Make sure bowstrings match (if there are any)
         ItemStack bowstring = stackList.firstMatch(s -> typeOf(s) == PartType.BOWSTRING);
         if (!bowstring.isEmpty()) {
             for (ItemStack stack : stackList.allMatches(s -> typeOf(s) == PartType.BOWSTRING)) {
@@ -67,7 +65,6 @@ public class ShapedGearCrafting extends ShapedRecipes {
                 }
             }
         }
-        // Make sure fletchings match (if there are any)
         ItemStack fletching = stackList.firstMatch(s -> typeOf(s) == PartType.FLETCHING);
         if (!fletching.isEmpty()) {
             for (ItemStack stack : stackList.allMatches(s -> typeOf(s) == PartType.FLETCHING)) {

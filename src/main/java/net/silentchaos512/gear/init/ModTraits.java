@@ -101,8 +101,7 @@ public final class ModTraits implements IPhasedInitializer {
             public float onGetStat(@Nullable EntityPlayer player, ItemStat stat, int level, ItemStack gear, float value, float damageRatio) {
                 float result = super.onGetStat(player, stat, level, gear, value, damageRatio);
                 if (stat == CommonItemStats.ATTACK_SPEED) {
-                    // TODO: If part durability ever gets implemented, reduce speed lost as part is damaged.
-                    // This trait will be used with a future upgrade item.
+                    // TODO: Reduce speed loss with part damage (future upgrade item) once part durability exists.
                     return result > -3.95f ? result : -3.9f;
                 }
                 return result;
@@ -175,7 +174,7 @@ public final class ModTraits implements IPhasedInitializer {
                         String type = JsonUtils.getString(json, "type", "stat_modifier");
                         if (!type.contains(":")) type = "silentgear:" + type;
 
-                        // 1.14+ uses proper serializers, but I am NOT going to fix this here...
+                        // Legacy type-string dispatch; 1.14+ would use JSON serializers.
                         Trait trait;
                         if ("silentgear:nbt_trait".equals(type)) {
                             trait = new NBTTrait(name, ResourceOrigin.USER_DEFINED);

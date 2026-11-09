@@ -37,8 +37,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A modular hoe. Tills soil on right-click like a vanilla hoe, and can quickly clear
- * plants/crops. Modeled after the other core tools; no per-tick heavy work is introduced.
+ * A modular hoe. Tills soil on right-click like a vanilla hoe and quickly clears plants/crops.
  */
 public class CoreHoe extends ItemHoe implements ICoreTool {
     // Materials the hoe clears at full harvest speed (crops/underbrush).
@@ -99,7 +98,6 @@ public class CoreHoe extends ItemHoe implements ICoreTool {
         if (GearHelper.isBroken(stack) || player.isSneaking()) {
             return EnumActionResult.PASS;
         }
-        // Vanilla tilling behavior (dirt/grass -> farmland).
         return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
     }
 

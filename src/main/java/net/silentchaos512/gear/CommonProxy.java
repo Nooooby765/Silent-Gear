@@ -28,13 +28,11 @@ import net.silentchaos512.lib.registry.SRegistry;
 
 public class CommonProxy {
     public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
-        // Registration Handlers
         registry.addRegistrationHandler(ModBlocks::registerAll, Block.class);
         registry.addRegistrationHandler(ModItems::registerAll, Item.class);
         registry.addRegistrationHandler(ModRecipes::registerAll, IRecipe.class);
         ModLootStuff.registerAll(registry);
 
-        // Phased Initializers
         registry.addPhasedInitializer(Config.INSTANCE);
         registry.addPhasedInitializer(ModTraits.INSTANCE);
         registry.addPhasedInitializer(ModMaterials.INSTANCE);
@@ -50,7 +48,6 @@ public class CommonProxy {
         EntityRegistry.registerModEntity(new ResourceLocation(SilentGear.MOD_ID, "silent_arrow"),
                 EntitySilentArrow.class, "silent_arrow", 0, SilentGear.instance, 64, 1, true);
 
-        // Event Handlers
         MinecraftForge.EVENT_BUS.register(DropsHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(GearData.EventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(RepairHandler.INSTANCE);
@@ -64,9 +61,6 @@ public class CommonProxy {
         registry.init(event);
 
         // TODO: re-add EvilCraft blood-chest repair compat once a dev jar is available
-        // if (Loader.isModLoaded("evilcraft")) {
-        //     EvilCraftCompat.init();
-        // }
     }
 
     public void postInit(SRegistry registry, FMLPostInitializationEvent event) {

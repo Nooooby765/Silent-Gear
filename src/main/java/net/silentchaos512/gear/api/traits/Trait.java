@@ -131,7 +131,6 @@ public class Trait {
     }
 
     void loadJsonResources() {
-        // Main resource file in JAR
         String path = getResourceFileLocation();
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(path);
         if (resourceAsStream != null) {
@@ -188,7 +187,6 @@ public class Trait {
         return value;
     }
 
-    // Was onUpdate
     public void tick(World world, @Nullable EntityPlayer player, int level, ItemStack gear, boolean isEquipped) {}
 
     public void onGearCrafted(@Nullable EntityPlayer player, int level, ItemStack gear) {}

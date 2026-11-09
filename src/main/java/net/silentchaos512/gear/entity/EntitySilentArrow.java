@@ -9,12 +9,9 @@ import net.minecraft.world.World;
 import net.silentchaos512.gear.item.gear.CoreArrow;
 
 /**
- * Minimal arrow entity for modular arrows. Vanilla {@code EntityArrow} keeps its damage field
- * private, so a subclass is required to combine the bow's damage with the arrow material damage
- * and to return the original modular arrow stack on pickup.
- *
- * <p>The material damage/speed/accuracy are read once from the arrow item's NBT. No tick handler,
- * event subscription or per-tick NBT lookup is added.</p>
+ * Minimal arrow entity for modular arrows: vanilla {@code EntityArrow} keeps its damage field
+ * private, so a subclass is needed to add material damage and return the modular arrow on pickup.
+ * <p>Material damage/speed/accuracy are read once from the arrow item's NBT; no per-tick NBT lookups.</p>
  */
 public class EntitySilentArrow extends EntityArrow {
     private static final String NBT_BASE_DAMAGE = "SilentBaseDamage";

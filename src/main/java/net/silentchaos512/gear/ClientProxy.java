@@ -81,10 +81,10 @@ public class ClientProxy extends CommonProxy {
     }
 
     /**
-     * The baked models hold atlas sprites and the color cache holds tint arrays, both keyed by
-     * model key. After a resource reload (F3+T, resource pack change) those keys stay the same
-     * while the sprites are rebuilt, so stale entries must be dropped or items keep rendering
-     * with the previous atlas.
+     * Baked models hold atlas sprites and colors are keyed by model key, so both caches must be
+     * dropped after a resource reload or items keep rendering with the previous atlas.
+     *
+     * @return Number of cached models that were removed
      */
     @SubscribeEvent
     public void onModelBake(ModelBakeEvent event) {

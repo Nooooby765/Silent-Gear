@@ -39,15 +39,14 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
     @Nullable
     private IFuelBurner burner;
 
-    // Store the different slot types in separate list. Bit harder to manage, but eliminates some object creation.
+    // Separate lists per slot type: harder to manage, but avoids some object creation.
     private NonNullList<ItemStack> inputs;
     private NonNullList<ItemStack> fuels;
     private NonNullList<ItemStack> outputs;
 
     /**
-     * Output overflow, because verifying whether or not items can fit in the output slots could be
-     * expensive, since multiple items could come from a single operation. This variable is
-     * reassigned whenever all outputs cannot fit.
+     * Output overflow. Checking whether all outputs fit could be expensive (one operation may
+     * produce several items), so leftovers are buffered here whenever they do not fit.
      */
     private Collection<ItemStack> overflow = ImmutableList.of();
     private int timer = MathUtils.nextInt(LONG_UPDATE_DELAY);
@@ -152,7 +151,6 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
 
             if (timer % LONG_UPDATE_DELAY == 0 && !overflow.isEmpty()) {
                 int oldCount = overflow.size();
-                // Try to move overflow to output slots
                 int start = getInputSlotCount() + getFuelSlotCount();
                 overflow = InventoryUtils.mergeItems(this, start, start + getOutputSlotCount(), overflow);
                 requiresClientSync |= oldCount != overflow.size();

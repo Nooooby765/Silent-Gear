@@ -125,7 +125,6 @@ public class CoreSickle extends ItemTool implements ICoreTool {
                             }
                         }
 
-                        // Reset to default state
                         worldIn.setBlockState(target, block.getDefaultState(), 2);
                         flag = true;
                     }

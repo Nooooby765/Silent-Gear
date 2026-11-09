@@ -21,8 +21,7 @@ public final class PartRegistry {
     private static ImmutableList<PartRod> rods = null;
     private static ImmutableList<PartMain> visibleMains = null;
     private static ImmutableList<PartRod> visibleRods = null;
-    // Keyed by item + metadata instead of a concatenated string, so tooltip/model lookups do not
-    // allocate a new key every call.
+    // Keyed by item + metadata: no string key allocation on tooltip/model lookups.
     private static final Map<Item, Map<Integer, ItemPart>> STACK_TO_PART = new HashMap<>();
     private static final Map<Item, Set<Integer>> STACK_TO_PART_MISSES = new HashMap<>();
     @Getter private static int highestMainPartTier = 0;
@@ -75,7 +74,6 @@ public final class PartRegistry {
         if (misses != null && misses.contains(damage))
             return null;
 
-        // Match exact item first, then ore dictionary
         ItemPart part = getPart(stack, false);
         if (part == null)
             part = getPart(stack, true);
@@ -107,8 +105,7 @@ public final class PartRegistry {
             throw new IllegalArgumentException("Already have a part with key " + part.registryName);
         map.put(key, part);
 
-        // Cached views are stale as soon as another part is registered (add-ons register parts
-        // during pre-init, possibly after another mod already queried a view).
+        // Add-ons may register parts after a view was first queried, so invalidate the views.
         resetCaches();
 
         if (part instanceof PartMain && part.getTier() > highestMainPartTier)

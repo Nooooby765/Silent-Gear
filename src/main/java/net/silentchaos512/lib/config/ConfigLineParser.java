@@ -47,16 +47,12 @@ public class ConfigLineParser {
             U second;
             String[] elements = line.split(delimiter);
 
-            // Check number of elements
             if (elements.length < 2) {
                 log.warn("ConfigLineParser: Too few elements in line \"{}\". Ignoring entire line. Fix your config file!");
                 continue;
             } else if (elements.length > 2) {
                 log.warn("ConfigLineParser: Too many elements in line \"{}\". Ignoring extra values. Fix your config file!");
             }
-
-//            first = elements[0];
-//            second = elements[1];
         }
         return list;
     }

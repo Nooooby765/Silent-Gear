@@ -94,7 +94,6 @@ public class ConfigOptionOreGen {
 
   public boolean isEnabled() {
 
-    // Ore will be disabled if either the vein count or vein size is set to 0.
     return veinCount > 0 && veinSize > 0;
   }
 

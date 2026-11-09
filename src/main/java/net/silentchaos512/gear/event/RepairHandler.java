@@ -53,7 +53,7 @@ public class RepairHandler {
         float amount =  part.getRepairAmount(result, RepairContext.ANVIL);
         amount *= GearData.getStat(result, CommonItemStats.REPAIR_EFFICIENCY);
 
-        // How many of materials to use?
+        // How many materials are needed?
         int materialCount = 1;
         float repaired = amount;
         while (materialCount < event.getRight().getCount() && repaired < result.getItemDamage()) {
@@ -76,7 +76,6 @@ public class RepairHandler {
         if (!(event.crafting.getItem() instanceof ICoreItem)) return;
 
         if (event.player instanceof EntityPlayerMP) {
-            // Try to trigger some advancments
             EntityPlayerMP player = (EntityPlayerMP) event.player;
 
             // Repair from broken

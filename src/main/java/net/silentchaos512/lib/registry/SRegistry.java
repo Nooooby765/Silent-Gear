@@ -233,7 +233,6 @@ public class SRegistry {
         safeSetRegistryName(itemBlock, name);
         ForgeRegistries.ITEMS.register(itemBlock);
 
-        // Register TileEntity
         if (block instanceof ITileEntityBlock) {
             Class<? extends TileEntity> clazz = ((ITileEntityBlock) block).getTileEntityClass();
             registerTileEntity(clazz, key);

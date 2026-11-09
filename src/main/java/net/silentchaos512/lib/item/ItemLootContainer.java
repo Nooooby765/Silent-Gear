@@ -40,10 +40,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * An item that gives the player items from a loot table when used, similar to a loot bag. A default
- * loot table must be specified, but ultimately an NBT tag is used to determine which loot table to
- * pull items from. This could be extended to not use loot tables (see {@link
- * #getLootDrops(ItemStack, EntityPlayerMP)}).
+ * An item that gives the player items from a loot table when used, like a loot bag. A default loot
+ * table is required, but NBT can override it. See {@link #getLootDrops(ItemStack, EntityPlayerMP)}.
  *
  * @author SilentChaos512
  * @since 3.0.2
@@ -119,13 +117,11 @@ public class ItemLootContainer extends Item {
             return ActionResult.newResult(EnumActionResult.SUCCESS, heldItem);
         EntityPlayerMP playerMP = (EntityPlayerMP) playerIn;
 
-        // Generate items from loot table, give to player.
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
         if (lootDrops.isEmpty())
             SilentLib.LOGGER.warn("ItemLootContainer has no drops? {}", heldItem);
         lootDrops.forEach(stack -> PlayerHelper.giveItem(playerMP, stack));
 
-        // Play item pickup sound...
         playerMP.world.playSound(null, playerMP.posX, playerMP.posY, playerMP.posZ,
                 SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
                 ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);

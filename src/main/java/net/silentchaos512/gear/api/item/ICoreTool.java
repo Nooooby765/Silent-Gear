@@ -93,7 +93,6 @@ public interface ICoreTool extends ICoreItem {
         for (ItemStack stack : parts) {
             ItemPart part = PartRegistry.get(stack);
             if (stack.getItem() instanceof ToolHead) {
-                // Head
                 if (!head.isEmpty())
                     return false;
                 String headClass = ToolHead.getToolClass(stack);
@@ -102,7 +101,6 @@ public interface ICoreTool extends ICoreItem {
                 head = stack;
                 partCounts.put(PartType.MAIN, config.getCraftingPartCount(PartType.MAIN));
             } else if (part != null) {
-                // Count parts
                 final PartType type = part.getType();
                 if (partsFound.containsKey(type) && partsFound.get(type) != part)
                     return false;
@@ -110,7 +108,6 @@ public interface ICoreTool extends ICoreItem {
                 partCounts.put(type, current + 1);
                 partsFound.putIfAbsent(type, part);
             } else {
-                // Other non-part item
                 return false;
             }
         }
@@ -122,7 +119,6 @@ public interface ICoreTool extends ICoreItem {
                 // Allow a single upgrade of this type
                 if (found > 1) return false;
             } else if (required != found) {
-                // Wrong number of parts
                 return false;
             }
         }

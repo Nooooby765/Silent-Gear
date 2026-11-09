@@ -77,8 +77,7 @@ public class ItemStat {
         if (modifiers.isEmpty())
             return baseValue;
 
-        // Used for weighted average. Percent difference in the value between each part and the primary part affects
-        // weight. The bigger the difference, the less weight the part has.
+        // Weighted average: the bigger the value difference from the primary part, the lower the weight.
         float primaryMod = -1f;
         for (StatInstance mod : modifiers) {
             if (mod.getOp() == StatInstance.Operation.AVG) {

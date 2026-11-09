@@ -31,11 +31,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Registers the Silent Gear trident and its blueprint/template when the Trident mod is present.
- * <p>
- * Everything here runs during the item registry event, once. The resulting items are then picked
- * up automatically by the existing systems (recipes, JEI, colors, models, repair and salvage),
- * because the gear class maps are the same ones the rest of the mod already reads at runtime.
+ * Registers the Silent Gear trident and its blueprint/template once during the item registry
+ * event. The existing systems (recipes, JEI, colors, models, repair and salvage) pick the items
+ * up automatically through the shared gear class maps.
  */
 public final class TridentIntegration {
     public static final String MOD_ID = "trident";
@@ -49,8 +47,8 @@ public final class TridentIntegration {
     }
 
     /**
-     * Called only when {@link #MOD_ID} is loaded. The Trident-specific class is instantiated
-     * inside this method, which keeps it out of the class-loading path of every other launch.
+     * Called only when {@link #MOD_ID} is loaded; instantiates the Trident-specific class here to
+     * keep it out of the class-loading path of every other launch.
      */
     public static void onRegisterItems(RegistryEvent.Register<Item> event) {
         if (item != null) {
@@ -63,8 +61,7 @@ public final class TridentIntegration {
         trident.getItem().setCreativeTab(SilentGear.ITEM_GROUP);
         event.getRegistry().register(trident.getItem());
 
-        // The rest of the mod looks these maps up by gear class. Inserting the item here (instead
-        // of in ModItems) is the entire integration surface.
+        // Inserting into the gear-class maps here (instead of ModItems) is the whole integration surface.
         ModItems.toolClasses.put(GEAR_CLASS, trident);
         ModItems.gearClasses.put(GEAR_CLASS, trident);
 

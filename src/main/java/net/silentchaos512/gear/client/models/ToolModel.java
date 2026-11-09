@@ -68,28 +68,26 @@ public final class ToolModel implements IModel {
     public Collection<ResourceLocation> getTextures() {
         ImmutableSet.Builder<ResourceLocation> builder = ImmutableSet.builder();
 
-//        SilentGear.log.info("Getting item part textures... what could go wrong?");
         for (String toolClass : ModItems.toolClasses.keySet()) {
             boolean hasGuard = "sword".equals(toolClass);
             ICoreTool item = ModItems.toolClasses.get(toolClass);
 
             for (ItemPart part : PartRegistry.getValues()) {
-                // Non-rendered positions (coating, fletching, armor, any) contribute no tool
-                // layers, so requesting their texture variants would only add missing sprites.
+                // Non-rendered positions (coating, fletching, armor, any) contribute no tool layers;
+                // requesting their texture variants would only add missing sprites.
                 IPartPosition position = part.getPartPosition();
                 if (!IPartPosition.RENDER_LAYERS.contains(position))
                     continue;
 
-                // Do not skip disabled parts: gear made before a material was disabled still
-                // renders with it, and unstitched sprites would silently become missingno.
+                // Do not skip disabled parts: gear made before a material was disabled still renders
+                // with it, and unstitched sprites would silently become missingno.
                 ItemPartData partData = ItemPartData.instance(part);
 
-                // Every display variant the part can select at runtime (gear type overrides such
-                // as "hoe": { "texture_suffix": "generic_hc" } included), for every animation frame
+                // Every display variant the part can select at runtime (gear type overrides such as
+                // "hoe": { "texture_suffix": "generic_hc" } included), for every animation frame
                 for (int frame = 0; frame < item.getAnimationFrames(); ++frame) {
                     builder.addAll(partData.getTextureVariants(toolClass, position, frame));
 
-                    // Guard texture for swords
                     if (hasGuard && part instanceof PartMain)
                         builder.addAll(partData.getTextureVariants(toolClass, PartPositions.GUARD, frame));
                 }
@@ -184,9 +182,6 @@ public final class ToolModel implements IModel {
             String key = GearData.getCachedModelKey(stack, animationFrame);
             GearClientHelper.updateDebugModelKey(stack, key);
 
-            // DEBUG:
-            // model.cache.clear();
-
             if (!GearClientHelper.modelCache.containsKey(key)) {
                 ICoreTool itemTool = (ICoreTool) stack.getItem();
                 String toolClass = itemTool.getGearClass();
@@ -195,8 +190,8 @@ public final class ToolModel implements IModel {
                 PartDataList parts = GearData.getConstructionParts(stack);
                 Map<IPartPosition, ItemPartData> renderLayers = new LinkedHashMap<>();
                 for (IPartPosition position : IPartPosition.RENDER_LAYERS) {
-                    // We have a few special cases. These return a default part for rendering if the
-                    // part is missing or invalid.
+                    // Special-case positions: these return a default part for rendering if the part
+                    // is missing or invalid.
                     if (position == PartPositions.HEAD) {
                         renderLayers.put(PartPositions.HEAD, itemTool.getPrimaryPart(stack));
                     } else if (position == PartPositions.GUARD && itemTool.hasSwordGuard()) {
@@ -204,14 +199,12 @@ public final class ToolModel implements IModel {
                     } else if (position == PartPositions.ROD) {
                         renderLayers.put(PartPositions.ROD, itemTool.getRodPart(stack));
                     } else {
-                        // For most cases just get the first (usually only) matching part in the list
                         final ItemPartData part = parts.firstInPosition(position);
                         if (part != null) renderLayers.put(position, part);
                     }
                 }
 
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-                // Populate the map builder with textures, function handles null checks
                 renderLayers.forEach((pos, part) ->
                         processTexture(stack, toolClass, pos, part, animationFrame, isBroken, builder));
 
@@ -222,7 +215,6 @@ public final class ToolModel implements IModel {
                 IBakedModel bakedModel = parent.bake(new SimpleModelState(model.transforms), model.getVertexFormat(), textureGetter);
                 GearClientHelper.modelCache.put(key, bakedModel);
 
-                // Color cache
                 ColorHandlers.gearColorCache.put(key, renderLayers.values().stream()
                         .map(part -> part.getColor(stack, animationFrame))
                         .toArray(Integer[]::new));
@@ -239,7 +231,6 @@ public final class ToolModel implements IModel {
                         ? part.getBrokenTexture(stack, toolClass, position)
                         : part.getTexture(stack, toolClass, position, animationFrame);
                 if (texture != null) {
-//                    SilentGear.log.debug("{}: {}", texture, part);
                     builder.put(position.getModelIndex(), texture.toString());
                 }
             }

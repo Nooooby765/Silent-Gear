@@ -59,7 +59,7 @@ public class NetherwoodLeaves extends BlockLeaves {
 
     @Override
     public void getDrops(net.minecraft.util.NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        // Mostly a direct copy from BlockLeaves, needed to change fruit drop rate
+        // Mirrors BlockLeaves#getDrops, with a custom fruit drop chance.
         Random rand = world instanceof World ? ((World) world).rand : new Random();
         int chance = this.getSaplingDropChance(state);
 

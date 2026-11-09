@@ -31,11 +31,9 @@ import java.util.Locale;
 import java.util.function.Function;
 
 /**
- * Used to map enum values to items for easy grouping. Intended to be implemented on the enum, but
- * any class would work (you would still have to make the enum though). Every value of the enum
- * should represent one and only one unique item. Remember to store the item, preferably in a
- * private field. This does not register the items for you, but the {@code registerItems} method can
- * be used. Enum values can be added or sorted with no ill effects.
+ * Maps enum values to items for easy grouping. Intended to be implemented on an enum, with each
+ * value representing one unique item. Items are not registered automatically, see
+ * {@code registerItems}.
  *
  * @param <E> The enum, which would typically implement this interface
  * @param <I> The Item class, provided to reduce the need for casting

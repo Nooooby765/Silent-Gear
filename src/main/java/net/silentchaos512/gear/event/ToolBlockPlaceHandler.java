@@ -29,7 +29,6 @@ public class ToolBlockPlaceHandler {
     @SubscribeEvent
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         ItemStack stack = event.getItemStack();
-        // Is the item allowed to place blocks?
         if (stack.isEmpty() || !canToolPlaceBlock(stack)) return;
 
         EntityPlayer player = event.getEntityPlayer();
@@ -52,13 +51,11 @@ public class ToolBlockPlaceHandler {
         ItemStack lastStack = player.inventory.getStackInSlot(8);
 
         if (toolSlot < 8) {
-            // Get stack in slot after tool
             nextStack = player.inventory.getStackInSlot(itemSlot);
             // If there's nothing there we can use, try slot 9 instead
             if (itemNotPlaceable(nextStack)) {
                 nextStack = lastStack;
                 itemSlot = 8;
-                // And is that stack placeable?
                 if (itemNotPlaceable(nextStack)) return;
             }
         }
@@ -87,7 +84,6 @@ public class ToolBlockPlaceHandler {
 
         // Don't consume blocks in creative mode
         if (player.capabilities.isCreativeMode) nextStack.setCount(prevSize);
-        // Remove empty stacks
         if (nextStack.isEmpty()) {
             nextStack = ItemStack.EMPTY;
             player.inventory.setInventorySlotContents(itemSlot, ItemStack.EMPTY);
@@ -104,7 +100,6 @@ public class ToolBlockPlaceHandler {
 
     private boolean canToolPlaceBlock(ItemStack stack) {
         Item item = stack.getItem();
-        // Ignore broken tools
         if (item instanceof ICoreItem && GearHelper.isBroken(stack)) return false;
         return Config.blockPlacerTools.matches(item);
     }

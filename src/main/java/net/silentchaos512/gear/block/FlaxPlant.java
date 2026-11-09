@@ -33,7 +33,6 @@ public class FlaxPlant extends BlockCrops implements ICustomModel {
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        // Always get one seed back
         drops.add(new ItemStack(getSeed()));
 
         int age = getAge(state);

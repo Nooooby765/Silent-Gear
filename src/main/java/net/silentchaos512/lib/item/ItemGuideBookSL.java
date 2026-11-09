@@ -88,7 +88,6 @@ public class ItemGuideBookSL extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         player.openGui(SilentLib.instance, bookId, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-        // TODO
         return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 

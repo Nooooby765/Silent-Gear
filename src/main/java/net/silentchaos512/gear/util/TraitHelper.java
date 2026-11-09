@@ -42,6 +42,16 @@ public final class TraitHelper {
     private TraitHelper() {throw new IllegalAccessError("Utility class");}
 
     /**
+     * Gets the trait list, or null when the gear has no traits. Avoids allocating an empty
+     * NBTTagList (NBTTagCompound#getTagList creates one when the key is absent).
+     */
+    @Nullable
+    static NBTTagList getTraitList(ItemStack gear) {
+        NBTTagCompound properties = GearData.getPropertiesData(gear);
+        return properties != null && properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
+    }
+
+    /**
      * An easy way to activate an item's traits from anywhere. <strong>Use with care!</strong>
      * Calling this frequently (like every render tick) causes FPS to tank.
      * <p>
@@ -55,23 +65,12 @@ public final class TraitHelper {
      *                   result.
      * @return The {@code inputValue} modified by traits.
      */
-    /**
-     * Gets the trait list, or null when the gear has no traits. Avoids allocating an empty
-     * NBTTagList (NBTTagCompound#getTagList creates one when the key is absent).
-     */
-    @Nullable
-    static NBTTagList getTraitList(ItemStack gear) {
-        NBTTagCompound properties = GearData.getPropertiesData(gear);
-        return properties != null && properties.hasKey("Traits", 9) ? properties.getTagList("Traits", 10) : null;
-    }
-
     public static float activateTraits(ItemStack gear, final float inputValue, TraitFunction action) {
         return activateTraits(getTraitList(gear), inputValue, action);
     }
 
     /**
-     * 与 {@link #activateTraits(ItemStack, float, TraitFunction)} 等价，但允许同一轮属性聚合
-     * 复用已解析的 traits NBT 列表，避免每个统计项都重新查一次 properties。
+     * 与 {@link #activateTraits(ItemStack, float, TraitFunction)} 等价，但允许属性聚合复用已解析的列表。
      */
     static float activateTraits(@Nullable NBTTagList tagList, float inputValue, TraitFunction action) {
         if (tagList == null)
@@ -197,7 +196,7 @@ public final class TraitHelper {
     }
 
     static void tickTraits(World world, @Nullable EntityPlayer player, ItemStack gear, boolean isEquipped) {
-        // Performance test on 2018-11-26 - roughly 5% FPS loss max (negligible), average ~420 FPS
+        // Hot path: keep allocation-free (NBT reads only).
         NBTTagList tagList = getTraitList(gear);
         if (tagList == null)
             return;

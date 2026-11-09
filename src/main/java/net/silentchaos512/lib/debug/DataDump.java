@@ -118,7 +118,6 @@ public final class DataDump {
             }
         }
 
-//        lines.sort(String::compareToIgnoreCase);
         lines.forEach(SilentLib.LOGGER::info);
         SilentLib.LOGGER.info(SEPARATOR);
     }

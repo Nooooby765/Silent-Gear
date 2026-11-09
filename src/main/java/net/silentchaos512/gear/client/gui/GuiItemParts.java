@@ -77,7 +77,6 @@ public class GuiItemParts extends GuiScreen {
                         b -> sortParts(true, Comparator.comparingDouble(part -> part.computeStatValue(stat)))), buttonList));
         buttonList.add(dropDownList);
 
-        // Build part button list
         int i = 0;
         for (ItemPart part : PartRegistry.getValues()) {
             if (!part.isBlacklisted()) {
@@ -110,7 +109,6 @@ public class GuiItemParts extends GuiScreen {
     private void sortParts(boolean reversed, Comparator<ItemPart> comparator) {
         partList.sort(comparator);
 
-        // Also resort the buttons... maybe not the best solution?
         List<PartButton> sortedList = new ArrayList<>();
         for (ItemPart part : partList) {
             for (PartButton button : partButtons) {
@@ -197,7 +195,7 @@ public class GuiItemParts extends GuiScreen {
             if (!modifiers.isEmpty()) {
                 StatInstance inst = stat.computeForDisplay(0, MaterialGrade.NONE, modifiers);
                 if (inst.shouldList(part, stat, true)) {
-                    // Just copied from TooltipHandler for now... Should probably have a Lib utility for rounding?
+                    // TODO: duplicated rounding logic from TooltipHandler; should live in a Lib utility.
                     boolean isZero = inst.getValue() == 0;
                     TextFormatting nameColor = isZero ? TextFormatting.DARK_GRAY : stat.displayColor;
                     TextFormatting statColor = isZero ? TextFormatting.DARK_GRAY : TextFormatting.WHITE;

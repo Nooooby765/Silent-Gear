@@ -72,7 +72,6 @@ public final class InventoryUtils {
         for (ItemStack stack : stacks) {
             stack = mergeItem(inventory, slotStart, slotEndExclusive, stack);
 
-            // Failed to merge?
             if (!stack.isEmpty()) {
                 leftovers.add(stack);
             }

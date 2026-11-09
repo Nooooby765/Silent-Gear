@@ -37,7 +37,6 @@ import java.awt.*;
  * @since 3.0.4
  */
 public interface ICustomEnchantColor {
-    // Some NBT keys used to control color.
     String NBT_LIB_EFFECT_COLOR = "SilentLib:EffectColor";
     String NBT_QUARK_RUNE_ATTACHED = "Quark:RuneAttached";
     String NBT_QUARK_RUNE_COLOR = "Quark:RuneColor";

@@ -44,8 +44,7 @@ public final class GearClientHelper {
     public static void addInformation(ItemStack stack, World world, List<String> tooltip, TooltipFlagTC flag) {
         LoaderState state = Loader.instance().getLoaderState();
         if (state == LoaderState.INITIALIZATION || state == LoaderState.SERVER_ABOUT_TO_START || state == LoaderState.SERVER_STOPPING) {
-            // Skip tooltips during block/item remapping
-            // JEI tooltip caches are done in AVAILABLE, in-game is SERVER_STARTED
+            // Skip tooltips during block/item remapping (JEI caches in AVAILABLE, in-game in SERVER_STARTED)
             return;
         }
 
@@ -73,7 +72,6 @@ public final class GearClientHelper {
                 tooltip.add(TextFormatting.YELLOW + SilentGear.i18n.translate("misc", "lockedStats"));
             }
 
-            // Let parts add information if they need to
             Collections.reverse(constructionParts);
             for (ItemPartData data : constructionParts) {
                 data.getPart().addInformation(data, stack, world, tooltip, flag.isAdvanced());
@@ -87,19 +85,15 @@ public final class GearClientHelper {
             tooltip.add("Synergy: " + color + String.format("%d%%", (int) (100 * synergyDisplayValue)));
 
             if (flag.isAdvanced()) {
-                // ICoreTool itemTool = (ICoreTool) item;
-                // tooltip.add(itemTool.getGearClass());
                 NBTTagCompound tagCompound = StackHelper.getTagCompound(stack, true);
                 if (tagCompound.hasKey("debug_modelkey")) {
                     tooltip.add(TextFormatting.DARK_GRAY + tagCompound.getString("debug_modelkey"));
                 }
             }
 
-            // Stats!
             String strStats = TextFormatting.GOLD + SilentGear.i18n.translate("misc", "tooltip.stats.name");
             if (ctrlDown && flag.showStats) {
                 tooltip.add(strStats);
-                // Display only stats relevant to the item class
                 for (ItemStat stat : item.getRelevantStats(stack)) {
                     float statValue = GearData.getStat(stack, stat);
 
@@ -121,7 +115,6 @@ public final class GearClientHelper {
                     String nameStr = "- " + stat.displayColor + SilentGear.i18n.translate("stat." + stat.getName());
                     String statStr = inst.formattedString(stat.displayAsInt ? 0 : 1, false);
 
-                    // Some stat-specific formatting...
                     if (stat == CommonItemStats.DURABILITY) {
                         int durabilityLeft = stack.getMaxDamage() - stack.getItemDamage();
                         int durabilityMax = stack.getMaxDamage();
@@ -139,7 +132,6 @@ public final class GearClientHelper {
                 tooltip.add(strStats);
             }
 
-            // Tool construction
             String strConstruction = TextFormatting.GOLD + SilentGear.i18n.translate("misc", "tooltip.construction.name");
             if (altDown && flag.showConstruction) {
                 tooltip.add(strConstruction);
@@ -170,9 +162,8 @@ public final class GearClientHelper {
     }
 
     /**
-     * Stores the model key used by the advanced tooltip debug line. Only writes when advanced
-     * tooltips are enabled and the value actually changed: this method runs during item model
-     * lookup, which happens every frame for every visible gear stack.
+     * Stores the model key used by the advanced tooltip debug line. Runs every frame for every
+     * visible gear stack, so only writes when advanced tooltips are on and the value changed.
      */
     public static void updateDebugModelKey(ItemStack stack, String key) {
         if (!Minecraft.getMinecraft().gameSettings.advancedItemTooltips)

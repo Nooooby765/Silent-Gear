@@ -104,7 +104,6 @@ public interface IAOETool {
                     break;
             }
         }
-//        SilentGear.log.debug("{}", positions);
         return positions;
     }
 
@@ -204,11 +203,9 @@ public interface IAOETool {
         }
 
         /**
-         * Determine if the blocks are similar enough to be considered the same. This depends on the
-         * match mode configs. STRICT will only match the same block (ignoring exact state),
-         * MODERATE will break anything with the same or lower harvest level (except level -1 and 0
-         * blocks will still break together regardless of which is targeted), and LOOSE will match
-         * anything.
+         * Determine if the blocks are similar enough to be considered the same, depending on the
+         * match mode configs. STRICT matches only the same block; MODERATE allows the same or lower
+         * harvest level; LOOSE matches anything.
          *
          * @return True if the blocks are the same (equal) or similar, false otherwise
          */
@@ -237,10 +234,9 @@ public interface IAOETool {
         private HighlightHandler() {}
 
         /**
-         * The highlight is drawn once per frame, but the extra blocks it shows only change when
-         * the targeted block, the face, the held stack or the player's sneaking changes. Caching
-         * one result per client tick removes eight block state lookups, ore-set lookups and
-         * hardness queries from every frame without changing what is drawn.
+         * The highlight is drawn every frame, but its blocks only change when the targeted block,
+         * face, held stack or sneaking state changes; caching per client tick avoids repeated
+         * lookups without changing what is drawn.
          */
         private static long cachedTick = Long.MIN_VALUE;
         private static BlockPos cachedPos;

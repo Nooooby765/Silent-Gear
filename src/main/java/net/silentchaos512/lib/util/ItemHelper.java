@@ -82,7 +82,6 @@ public class ItemHelper {
     ItemStack currentOffhand = player.getHeldItemOffhand();
     player.setHeldItem(EnumHand.OFF_HAND, stack);
 
-    // Use the item.
     Item item = stack.getItem();
     EnumActionResult result;
     result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side, hitX, hitY, hitZ);

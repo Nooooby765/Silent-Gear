@@ -57,10 +57,6 @@ public abstract class GuideBook {
         this.resourceGadgets = new ResourceLocation(SilentLib.MOD_ID, "textures/gui/gui_guide_gadgets.png");
     }
 
-    // ==========================================================
-    // = Initializers. Call them during the appropriate phases! =
-    // ==========================================================
-
     /**
      * <b>Call during your pre-init phase!</b> Calls initEntries to register entries.
      */
@@ -69,9 +65,8 @@ public abstract class GuideBook {
     }
 
     /**
-     * <b>Call during your post-init phase!</b> Calls initChapters to populate entries, sorts
-     * everything, and spits out
-     * some stats.
+     * <b>Call during your post-init phase!</b> Calls initChapters to populate entries, then sorts
+     * everything.
      */
     public final void postInit() {
         initChapters();
@@ -113,10 +108,6 @@ public abstract class GuideBook {
         SilentLib.LOGGER.info("    Pages:    {}", countPage);
         SilentLib.LOGGER.info("    Info:     {}", countInfo);
     }
-
-    // =======================================================================
-    // = Override these methods to control guide book contents/behavior/etc. =
-    // =======================================================================
 
     /**
      * Initialize your entries here. DO NOT populate the entries!
@@ -206,10 +197,6 @@ public abstract class GuideBook {
         String str = edition + (mod10 == 1 ? "st" : mod10 == 2 ? "nd" : mod10 == 3 ? "rd" : "th");
         return str;
     }
-
-    // ==============================================
-    // = Some random methods you likely won't need. =
-    // ==============================================
 
     /**
      * @return The mod ID the guide book is associated with.

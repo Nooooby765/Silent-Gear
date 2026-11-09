@@ -69,8 +69,7 @@ public enum MaterialGrade {
      * @return A MaterialGrade that is not NONE
      */
     public static MaterialGrade selectRandom(Random random, MaterialGrade maxGrade) {
-        // If I understand the math here, 95% of the time, we should get grades between E and SS,
-        // inclusive. SSS should be about 2.5% chance, I think. E picks up the 2.5% on the low end.
+        // ~95% of grades fall between E and SS; SSS and the low E tail are ~2.5% each.
         return selectRandom(random, MaterialGrade.B, 1.5, maxGrade);
     }
 

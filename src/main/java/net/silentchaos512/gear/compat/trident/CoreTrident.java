@@ -37,17 +37,12 @@ import net.silentchaos512.gear.config.ConfigOptionEquipment;
 import net.silentchaos512.gear.item.gear.CoreSword;
 
 /**
- * Modular trident, available only when the Trident mod is installed.
+ * Modular trident, available only when the Trident mod is installed. Stats, traits, blueprints,
+ * templates, repairing and salvage use the normal Silent Gear systems; the Trident mod only
+ * supplies the throwable entity and its rendering. The item is a {@link CoreSword} subclass.
  * <p>
- * Stats, traits, blueprints, templates, repairing and salvage all flow through the normal Silent
- * Gear systems; the Trident mod only supplies the throwable entity and its rendering. The item
- * itself is a {@link CoreSword} subclass, so melee behaviour is identical to the other modular
- * weapons.
- * <p>
- * Rendering: the mod's mixins ask an {@link ITrident} for its GUI and hand models. Returning the
- * Silent Gear layered model makes the inventory icon material-colored (standard {@code ToolModel}
- * + item color handlers), while the mod's own renderer takes over for the hand, dropped and
- * thrown-entity views, where its 3D model is used.
+ * The mod's mixins ask an {@link ITrident} for its GUI and hand models; returning the Silent Gear
+ * layered model keeps the inventory icon material-colored ({@code ToolModel} + item colors).
  */
 public class CoreTrident extends CoreSword implements ITrident {
     private static final int USE_DURATION = 72000;
@@ -75,10 +70,7 @@ public class CoreTrident extends CoreSword implements ITrident {
         return GEAR_TYPE;
     }
 
-    /**
-     * Resolves the otherwise ambiguous default inherited from {@code ICoreItem} and
-     * {@code ITrident}.
-     */
+    /** Resolves the ambiguous default inherited from {@code ICoreItem} and {@code ITrident}. */
     @Override
     public Item getItem() {
         return this;
@@ -116,15 +108,13 @@ public class CoreTrident extends CoreSword implements ITrident {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        // Delegates to the Trident mod so behavior (riptide checks, durability checks, active
-        // hand) stays in sync with the mod instead of being duplicated here.
+        // Delegates to the Trident mod so riptide/durability/active-hand behavior stays in sync.
         return ITrident.super.onItemRightClick(world, player, hand);
     }
 
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World world, EntityLivingBase living, int timeLeft) {
-        // Throws the mod's EntityTrident, which already handles damage, loyalty/impaling and
-        // returning logic.
+        // Throws the mod's EntityTrident, which handles damage, loyalty/impaling and returning.
         ITrident.super.onPlayerStoppedUsing(stack, world, living, timeLeft);
     }
 }

@@ -165,7 +165,7 @@ public abstract class PlayerDataHandler<Data extends PlayerDataHandler.PlayerDat
         public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
             if (event.player instanceof EntityPlayerMP) {
                 EntityPlayerMP playerMP = (EntityPlayerMP) event.player;
-                // TODO Send data sync message
+                // TODO: Send data sync message to client
             }
         }
     }

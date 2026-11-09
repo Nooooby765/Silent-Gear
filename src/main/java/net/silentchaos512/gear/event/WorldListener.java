@@ -75,8 +75,7 @@ public class WorldListener implements IWorldEventListener {
 
     @Override
     public void sendBlockBreakProgress(int breakerId, BlockPos pos, int progress) {
-        // Called once per server tick while a player is mining. Resolve the breaker through the
-        // world's entity map instead of scanning the whole player list.
+        // Runs every server tick while mining; use the entity map instead of scanning all players.
         Entity breaker = this.world.getEntityByID(breakerId);
         if (!(breaker instanceof EntityPlayerMP)) return;
         EntityPlayerMP player = (EntityPlayerMP) breaker;

@@ -43,8 +43,6 @@ public abstract class GuiGuide extends GuiGuideBase {
     private GuiButton buttonRight;
     private GuiButton buttonBack;
 
-    // private GuiButton buttonTrials;
-
     private float smallFontSize = 0.5f;
     private float mediumFontSize = 0.75f;
     private float largeFontSize = 0.8f;
@@ -103,25 +101,6 @@ public abstract class GuiGuide extends GuiGuideBase {
             this.searchField.setMaxStringLength(50);
             this.searchField.setEnableBackgroundDrawing(false);
         }
-
-        // FIXME
-        // if (this.hasBookmarkButtons()) {
-        // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
-        //
-        // int xStart = this.guiLeft + this.xSize / 2 - 16 * this.bookmarkButtons.length / 2;
-        // for (int i = 0; i < this.bookmarkButtons.length; i++) {
-        // this.bookmarkButtons[i] = new BookmarkButton(1337 + i, xStart + i * 16,
-        // this.guiTop + this.ySize, this);
-        // this.buttonList.add(this.bookmarkButtons[i]);
-        //
-        // if (data.bookmarks[i] != null) {
-        // this.bookmarkButtons[i].assignedPage = data.bookmarks[i];
-        // }
-        // }
-        // }
-
-        // this.buttonTrials = new TrialsButton(this);
-        // this.buttonList.add(this.buttonTrials);
     }
 
     @Override
@@ -130,22 +109,6 @@ public abstract class GuiGuide extends GuiGuideBase {
 
         // Don't cache the parent GUI, otherwise it opens again when you close the cached book!
         this.previousScreen = null;
-
-        // FIXME
-        // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
-        // data.lastOpenBooklet = this;
-        //
-        // boolean change = false;
-        // for(int i = 0; i < this.bookmarkButtons.length; i++){
-        // if(data.bookmarks[i] != this.bookmarkButtons[i].assignedPage){
-        // data.bookmarks[i] = this.bookmarkButtons[i].assignedPage;
-        // change = true;
-        // }
-        // }
-        //
-        // if(change){
-        // PacketHandlerHelper.sendPlayerDataToServer(true, 0);
-        // }
     }
 
     @Override
@@ -296,10 +259,6 @@ public abstract class GuiGuide extends GuiGuideBase {
         } else if (this.hasBackButton() && button == this.buttonBack) {
             this.onBackButtonPressed();
         }
-        /*
-         * if (button == this.buttonTrials) { this.mc.displayGuiScreen( new GuiEntry(this.previousScreen, this,
-         * ActuallyAdditionsAPI.entryTrials, 0, "", false)); } else
-         */
         if (this.hasBookmarkButtons() && button instanceof BookmarkButton) {
             int index = ArrayUtils.indexOf(this.bookmarkButtons, button);
             if (index >= 0) {

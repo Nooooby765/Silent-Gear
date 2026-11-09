@@ -62,7 +62,7 @@ public class ConfigMultiValueLineParser {
    * Attempt to parse the line. If an error occurs (too few values in line, a value can't be parsed), null will be
    * returned. Lines with extra values will still be parsed if not in strict mode.
    *
-   * Currently supported types (as of version 2.2.16): Integer, Float, Boolean, String
+   * Currently supported types: Integer, Float, Boolean, String
    *
    * @param line
    *          The line to parse. Typically one line in a string list from your config.
@@ -87,7 +87,6 @@ public class ConfigMultiValueLineParser {
 
     for (int i = 0; i < valueClasses.length; ++i) {
       String value = values[i];
-      // Integer
       if (valueClasses[i] == Integer.class) {
         try {
           result[i] = Integer.parseInt(value);
@@ -96,7 +95,6 @@ public class ConfigMultiValueLineParser {
           return null;
         }
       }
-      // Float
       else if (valueClasses[i] == Float.class) {
         try {
           result[i] = Float.parseFloat(value);
@@ -105,7 +103,6 @@ public class ConfigMultiValueLineParser {
           return null;
         }
       }
-      // Boolean
       else if (valueClasses[i] == Boolean.class) {
         if (value.equalsIgnoreCase("true")) {
           result[i] = true;
@@ -116,11 +113,9 @@ public class ConfigMultiValueLineParser {
           return null;
         }
       }
-      // String
       else if (valueClasses[i] == String.class) {
         result[i] = value;
       }
-      // Unknown
       else {
         warning("Don't know how to parse " + valueClasses[i] + "!");
         return null;

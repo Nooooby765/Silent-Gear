@@ -35,12 +35,5 @@ public final class ModBlocks {
         reg.registerBlock(flower, "flower");
         reg.registerBlock(flaxPlant, "flax_plant");
         reg.registerBlock(phantomLight, "phantom_light");
-
-//        if (GameUtil.isDeobfuscated()) {
-//            Block block = new BlockFalling(Material.SAND);
-//            block.setHardness(3);
-//            block.setHarvestLevel("shovel", 1);
-//            reg.registerBlock(block, "test_block");
-//        }
     }
 }

@@ -35,11 +35,8 @@ import net.silentchaos512.lib.client.render.TEISRCustomEnchantedEffect;
 
 /**
  * Client-side setup for the trident integration: models, the enchanted-effect TESR and the
- * blueprint/template item colors. The gear item's own material colors are handled by the normal
- * {@code ColorHandlers} class, because the trident is in {@code ModItems.toolClasses}.
- * <p>
- * This class is only subscribed on the physical client and exits immediately when the Trident mod
- * is absent, so it never affects a vanilla launch.
+ * blueprint/template item colors (gear colors come from {@code ColorHandlers}). Only subscribed on
+ * the physical client and exits immediately when the Trident mod is absent.
  */
 @Mod.EventBusSubscriber(modid = SilentGear.MOD_ID, value = Side.CLIENT)
 public final class TridentClientEventHandler {
@@ -59,8 +56,7 @@ public final class TridentClientEventHandler {
 
         Item item = trident.getItem();
         registerModel(item);
-        // Same TESR SRegistry applies to every ICustomEnchantColor item. It renders the layered
-        // ToolModel through the item color handlers, so the GUI icon follows the material.
+        // Same TESR applies to every ICustomEnchantColor item; renders the layered ToolModel through item colors.
         item.setTileEntityItemStackRenderer(TEISRCustomEnchantedEffect.INSTANCE);
 
         for (Blueprint blueprint : TridentIntegration.getBlueprints()) {

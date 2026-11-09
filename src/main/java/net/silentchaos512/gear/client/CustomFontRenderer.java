@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-// Copied from somewhere... unused
 public class CustomFontRenderer extends FontRenderer {
 
     public static CustomFontRenderer INSTANCE = new CustomFontRenderer(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().renderEngine);
@@ -139,13 +138,6 @@ public class CustomFontRenderer extends FontRenderer {
 
         return s;
     }
-
-    // @Override
-    // public int renderString(@Nonnull String text, float x, float y, int color, boolean dropShadow) {
-    //
-    // this.dropShadow = dropShadow;
-    // return super.renderString(text, x, y, color, dropShadow);
-    // }
 
     @Override
     protected float renderUnicodeChar(char letter, boolean italic) {

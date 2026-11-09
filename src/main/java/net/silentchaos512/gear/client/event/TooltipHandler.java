@@ -35,8 +35,7 @@ public final class TooltipHandler {
     public static void onTooltip(ItemTooltipEvent event) {
         LoaderState state = Loader.instance().getLoaderState();
         if (state == LoaderState.INITIALIZATION || state == LoaderState.SERVER_ABOUT_TO_START || state == LoaderState.SERVER_STOPPING) {
-            // Skip tooltips during block/item remapping
-            // JEI tooltip caches are done in AVAILABLE, in-game is SERVER_STARTED
+            // Skip tooltips during block/item remapping (JEI caches in AVAILABLE, in-game in SERVER_STARTED)
             return;
         }
 
@@ -48,8 +47,7 @@ public final class TooltipHandler {
             return;
         }
 
-        // Nerfed gear? The default list is empty, so avoid allocating the registry name string
-        // on every tooltip frame for every non-part item.
+        // Nerfed gear? The default list is empty, so avoid allocating the registry name every tooltip frame.
         if (!Config.nerfedGear.isEmpty()) {
             ResourceLocation name = stack.getItem().getRegistryName();
             if (name != null && Config.nerfedGear.contains(name.toString())) {
@@ -63,7 +61,6 @@ public final class TooltipHandler {
         event.getToolTip().add(TextFormatting.GREEN + SilentGear.i18n.translate("part",
                 "type." + part.getType().getName(), part.getTier()));
 
-        // Traits
         Map<Trait, Integer> traits = partData.getTraits();
         int numTraits = traits.size();
         int traitIndex = getTraitDisplayIndex(numTraits);

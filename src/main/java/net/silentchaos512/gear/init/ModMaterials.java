@@ -43,8 +43,6 @@ public class ModMaterials implements IPhasedInitializer {
         mainEmerald = PartRegistry.putPart(new PartMain(getPath("main_emerald"), PartOrigins.BUILTIN_CORE));
         mainDiamond = PartRegistry.putPart(new PartMain(getPath("main_diamond"), PartOrigins.BUILTIN_CORE));
         mainObsidian = PartRegistry.putPart(new PartMain(getPath("main_obsidian"), PartOrigins.BUILTIN_CORE));
-//        PartRegistry.putPart(new PartMain(getPath("main_test")));
-//        PartRegistry.putPart(new PartMain(getPath("main_test2"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_netherwood"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_crimson_iron"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_crimson_steel"), PartOrigins.BUILTIN_CORE));
@@ -54,9 +52,8 @@ public class ModMaterials implements IPhasedInitializer {
         PartRegistry.putPart(new PartMain(getPath("main_quartz"), PartOrigins.BUILTIN_CORE));
         PartRegistry.putPart(new PartMain(getPath("main_bone"), PartOrigins.BUILTIN_CORE));
 
-        // Thermal Foundation add-on: register these metal materials only when thermalfoundation is present.
-        // Material data lives in assets/silentgear/materials/main_*.json; crafting uses ore dictionary
-        // entries (ingotCopper, ingotTin, etc.), so they also work with any mod registering those keys.
+        // Thermal Foundation add-on: data lives in assets/silentgear/materials/main_*.json; crafted
+        // from ore dictionary entries (ingotCopper, ingotTin, ...), so any mod registering them works.
         if (Loader.isModLoaded("thermalfoundation")) {
             PartRegistry.putPart(new PartMain(getPath("main_copper"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_tin"), PartOrigins.BUILTIN_CORE));
@@ -74,26 +71,23 @@ public class ModMaterials implements IPhasedInitializer {
             PartRegistry.putPart(new PartMain(getPath("main_enderium"), PartOrigins.BUILTIN_CORE));
         }
 
-        // Mekanism add-on: osmium, refined glowstone and refined obsidian, only when mekanism is present.
-        // Crafting uses ore dictionary entries provided by Mekanism (ingotOsmium, ingotRefinedGlowstone,
-        // ingotRefinedObsidian).
+        // Mekanism add-on: crafted from Mekanism ore dictionary entries (ingotOsmium,
+        // ingotRefinedGlowstone, ingotRefinedObsidian).
         if (Loader.isModLoaded("mekanism")) {
             PartRegistry.putPart(new PartMain(getPath("main_osmium"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_refined_glowstone"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_refined_obsidian"), PartOrigins.BUILTIN_CORE));
         }
 
-        // Twilight Forest add-on: ironwood, knightmetal and fiery, only when twilightforest is present.
-        // Crafting uses ore dictionary entries provided by Twilight Forest (ingotIronwood,
-        // ingotKnightmetal, ingotFiery).
+        // Twilight Forest add-on: crafted from Twilight Forest ore dictionary entries
+        // (ingotIronwood, ingotKnightmetal, ingotFiery).
         if (Loader.isModLoaded("twilightforest")) {
             PartRegistry.putPart(new PartMain(getPath("main_ironwood"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_knightmetal"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_fiery"), PartOrigins.BUILTIN_CORE));
         }
 
-        // Aether Legacy add-on: skyroot, holystone, zanite and enchanted gravitite, only when
-        // aether_legacy is present. Crafting uses items/ore dictionary entries from Aether Legacy.
+        // Aether Legacy add-on: crafted from Aether Legacy items/ore dictionary entries.
         if (Loader.isModLoaded("aether_legacy")) {
             PartRegistry.putPart(new PartMain(getPath("main_skyroot"), PartOrigins.BUILTIN_CORE));
             PartRegistry.putPart(new PartMain(getPath("main_holystone"), PartOrigins.BUILTIN_CORE));
@@ -132,8 +126,7 @@ public class ModMaterials implements IPhasedInitializer {
 
     @Override
     public void init(SRegistry registry, FMLInitializationEvent event) {
-        // Update part caches
-        // All mods should have added their parts during pre-init
+        // All mods add their parts during pre-init; refresh the caches now.
         PartRegistry.resetVisiblePartCaches();
         GearHelper.resetSubItemsCache();
     }
@@ -158,7 +151,6 @@ public class ModMaterials implements IPhasedInitializer {
                 String filename = file.getName().replace(".json", "");
                 ResourceLocation name = getPath(filename);
 
-                // Add to registered parts if it doesn't exist
                 if (!PartRegistry.getKeySet().contains(name.toString())) {
                     Matcher match = typeRegex.matcher(filename);
                     if (match.find()) {

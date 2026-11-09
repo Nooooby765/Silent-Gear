@@ -79,10 +79,8 @@ public class ArmorItemModel implements IModel {
             for (PartMain part : PartRegistry.getMains()) {
                 ItemPartData partData = ItemPartData.instance(part);
 
-                // Every display variant the part can select at runtime
                 builder.addAll(partData.getTextureVariants(armorClass, PartPositions.ARMOR, 0));
 
-                // Broken texture
                 ResourceLocation textureBroken = partData.getBrokenTexture(ItemStack.EMPTY, armorClass, PartPositions.ARMOR);
                 if (textureBroken != null)
                     builder.add(textureBroken);
@@ -175,7 +173,7 @@ public class ArmorItemModel implements IModel {
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
                 // Resolve the primary part once: getPrimaryPart parses the construction NBT and
-                // copies the crafting stack, and the two call sites used to do it separately.
+                // copies the crafting stack.
                 ItemPartData primaryPart = itemArmor.getPrimaryPart(stack);
                 processTexture(stack, itemArmor.getGearClass(), PartPositions.ARMOR, primaryPart, GearHelper.isBroken(stack), builder);
 

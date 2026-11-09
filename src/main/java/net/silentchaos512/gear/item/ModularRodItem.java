@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A single item representing modular rods of any rod material. The material id is stored in NBT
- * so only one item and one part need to be registered.
+ * One item representing modular rods of any material; the material id is stored in NBT, so only a
+ * single item and part need to be registered.
  */
 public class ModularRodItem extends Item implements IColoredItem {
     public static ItemStack createStack(@Nullable ItemPartData material) {

@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CoreArmor extends ItemArmor implements ICoreArmor {
-    // Just using my own UUIDs, ItemArmor can keep being stingy.
+    // Own UUIDs; ItemArmor's are not accessible.
     private static final UUID[] ARMOR_MODIFIERS = {UUID.fromString("cfea1f82-ab07-40ed-8384-045446707a98"), UUID.fromString("9f441293-6f6e-461f-a3e2-3cad0c06f3a5"), UUID.fromString("4c90545f-c314-4db4-8a60-dac8b3a132a2"), UUID.fromString("f96e4ac9-ab1d-423b-8392-d820d12fc454")};
     // sum = 1, starts with boots
     private static final float[] ABSORPTION_RATIO_BY_SLOT = {0.175f, 0.3f, 0.4f, 0.125f};
@@ -236,20 +236,17 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
-        // In order for colors to work, it seems the following must be true:
-        // 1. Armor texture must be named using the vanilla convention
-        // 2. Return value of this may NOT be cached... wat? Not a big deal I guess.
-        // 3. You got lucky. The tiniest change can break everything for no apparent reason.
+        // Colors require vanilla armor texture naming and a non-cached return value;
+        // even tiny changes can break rendering.
 
         int layer = slot == EntityEquipmentSlot.LEGS ? 2 : 1;
-        // Overlay - default to a blank texture
+        // Overlay uses a blank texture.
         if ("overlay".equals(type))
             return SilentGear.MOD_ID + ":textures/models/armor/all_layer_" + layer + "_overlay.png";
 
         ItemPartData part = GearData.getPrimaryRenderPartFast(stack);
         if (part == null) part = ItemPartData.instance(ModMaterials.mainIron);
 
-        // Actual armor texture
         PartDisplayProperties props = part.getPart().getDisplayProperties(part, stack, 0);
         return props.getTextureDomain() + ":textures/models/armor/"
                 + props.getTextureSuffix()

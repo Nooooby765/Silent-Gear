@@ -84,7 +84,6 @@ public class DebugLog {
 
         // Print to standard out in dev, for easy monitoring
         if (mod.isDevBuild() && allowStdOut) {
-            // Anti-spam feature
             if (!isSameAsLastOutput) {
                 System.out.println(output);
                 lastOutput = output;
@@ -93,14 +92,12 @@ public class DebugLog {
     }
 
     private void spamDetection(boolean isSameAsLastOutput) {
-        // Spam detection, just in case something slips into a distribution build
         if (isSameAsLastOutput) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastSpamTimer > SPAM_TIME_LIMIT) {
                 ++spamCounter;
                 lastSpamTimer = currentTime;
                 if (spamCounter > SPAM_COUNTER_LIMIT && !userInformedOfSpam) {
-                    // Uh-oh
                     logger.warn("Mod '{}' ({}) seems to be spamming the debug log. This is probably a bug! Include" +
                             " your debug.log when reporting this.", mod.getModId(), mod.getModName());
                     userInformedOfSpam = true;

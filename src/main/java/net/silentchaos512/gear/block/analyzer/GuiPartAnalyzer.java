@@ -62,7 +62,6 @@ public class GuiPartAnalyzer extends GuiContainer {
         int posY = (this.height - this.ySize) / 2;
         drawTexturedModalRect(posX, posY, 0, 0, this.xSize, this.ySize);
 
-        // Progress arrow
         drawTexturedModalRect(posX + 49, posY + 34, 176, 14, getAnalyzeProgress(24) + 1, 16);
     }
 }

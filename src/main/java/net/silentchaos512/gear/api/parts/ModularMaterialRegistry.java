@@ -146,9 +146,8 @@ public final class ModularMaterialRegistry {
     }
 
     /**
-     * 重建旧工具 NBT 中的尖端/覆层数据。旧独立物品已被删除，{@code Item} 子标签可能指向
-     * 不存在的物品；这里改用模块化部件的合成物品，并写入对应的材料 id，使读取、属性重算、
-     * tooltip、拆解、修理与模型渲染都能继续解析到同一材料。
+     * 重建旧工具 NBT 中的尖端/覆层数据。旧独立物品已删除，{@code Item} 子标签可能指向不存在的
+     * 物品；这里改用模块化部件的合成物品并写入材料 id。
      */
     @Nullable
     public static ItemPartData getAliasedData(@Nullable String legacyKey, MaterialGrade grade) {

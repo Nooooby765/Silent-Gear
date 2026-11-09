@@ -198,14 +198,6 @@ public class Config extends ConfigBaseNew {
     @ConfigOption.Comment("The maximum number of netherwood trees per cluster. The actual number will vary, depending on the terrain and random chance.")
     public static int netherwoodClusterMaxSize;
 
-    /*
-     * Debug
-     */
-//    @ConfigOption(name = "Model Test", category = CAT_DEBUG)
-//    @ConfigOption.BooleanDefault(false)
-//    @ConfigOption.Comment("Modifies model render code for testing purposes. This will likely decrease FPS.")
-//    public static boolean modelDebug;
-
     File directory;
 
     public Config() {
@@ -240,16 +232,10 @@ public class Config extends ConfigBaseNew {
         try {
             super.load();
 
-            /*
-             * Items
-             */
-
             blueprintTypes = loadEnum("Blueprint Types Allowed", CAT_ITEMS, BlueprintType.class, BlueprintType.BOTH,
                     "Allow players to use blueprints, templates, or both?");
 
-            // Sinew
             sinewAnimals.loadConfig(config, "Animals That Drop Sinew", CAT_SINEW, SINEW_ANIMALS_COMMENT);
-            // Block placer tools
             blockPlacerTools.loadConfig(config, "Items That Place Blocks", CAT_ITEMS, BLOCK_PLACER_TOOLS_COMMENT);
             itemsThatToolsCanUse.loadConfig(config, "Items That Block Placer Tools Can Use", CAT_ITEMS, ITEMS_THAT_TOOLS_CAN_USE_COMMENT);
 
@@ -264,44 +250,28 @@ public class Config extends ConfigBaseNew {
 
             config.setCategoryRequiresMcRestart(CAT_GEAR_RECIPE, true);
 
-            /*
-             * Nerfed gear
-             */
-
             config.setCategoryComment(CAT_NERFED_GEAR, "Settings for nerfing gear from vanilla or other mods.");
             config.setCategoryRequiresMcRestart(CAT_NERFED_GEAR, true);
 
             String[] nerfedItems = config.getStringList("Nerfed Gear List", CAT_NERFED_GEAR, getDefaultNerfedGear(), NERFED_GEAR_COMMENT);
             nerfedGear = ImmutableSet.copyOf(nerfedItems);
 
-            /*
-             * Tools
-             */
-
             for (ConfigOptionEquipment option : equipmentConfigs)
                 option.loadValue(config);
 
-            /*
-             * World Generation
-             */
             crimsonIronOreGen = new ConfigOptionOreGen("Crimson Iron Ore", -1, 24, 6, 24, 120);
             crimsonIronOreGen.loadValue(config, CAT_WORLD);
 
-            // Flax
             config.setCategoryComment(CAT_WORLD_FLAX, "Settings for flax and flaxseed drops");
             config.setCategoryRequiresMcRestart(CAT_WORLD_FLAX, true);
 
-            // Flowers
             flowerDimensionBlacklist = config.get(CAT_WORLD_FLOWER, "Dimension Blacklist", new int[0]).getIntList();
 
-            // Netherwood
             if (netherwoodClusterMaxSize < netherwoodClusterMinSize)
                 netherwoodClusterMaxSize = netherwoodClusterMinSize;
 
-            // Grab last build number for potential changes?
             int currentBuild = SilentGear.instance.getBuildNum();
             int lastBuild = config.get("last_version", "last_build", currentBuild).getInt(currentBuild);
-            // TODO
         } catch (Exception ex) {
             SilentGear.log.fatal("Could not load configuration file! This could end badly...");
             SilentGear.log.catching(ex);
@@ -323,8 +293,7 @@ public class Config extends ConfigBaseNew {
     }
 
     private static String[] getDefaultNerfedGear() {
-        // Nerfing vanilla gear is disabled by default. Users can add item IDs to the
-        // "Nerfed Gear List" option to opt in.
+        // Nerfing vanilla gear is off by default; users opt in via the "Nerfed Gear List" option.
         return new String[0];
     }
 

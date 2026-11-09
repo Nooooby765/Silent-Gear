@@ -18,7 +18,6 @@ public class DropsHandler {
         if (entity == null)
             return;
 
-        // Sinew drops
         if (Config.sinewAnimals.matches(entity)) {
             float chance = Config.sinewDropRate * (1 + 0.3f * event.getLootingLevel());
             if (SilentGear.RANDOM.nextFloat() < chance) {

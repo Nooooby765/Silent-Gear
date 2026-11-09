@@ -143,8 +143,6 @@ public class CoreBow extends ItemBow implements ICoreRangedWeapon {
             ItemStack ammo = this.findAmmo(player);
 
             int i = this.getMaxItemUseDuration(stack) - timeLeft;
-            // i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn,
-            // (EntityPlayer) entityLiving, i, StackHelper.isValid(ammo) || infiniteAmmo);
             if (i < 0)
                 return;
 
@@ -198,8 +196,6 @@ public class CoreBow extends ItemBow implements ICoreRangedWeapon {
                     }
 
                     player.addStat(StatList.getObjectUseStats(this));
-                    // Shots fired statistic
-                    // ToolHelper.incrementStatShotsFired(stack, 1);
                 }
             }
         }

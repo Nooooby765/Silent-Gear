@@ -34,7 +34,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-//@Mod.EventBusSubscriber
 public class GearStatistics {
     public static final String BLOCKS_MINED = "silentgear.blocks_mined";
 
@@ -76,7 +75,6 @@ public class GearStatistics {
         NBTTagCompound tags = GearData.getStatisticsCompound(stack);
         data.stats.forEach(tags::setInteger);
 
-        // debug
         if (SilentGear.LOGGER.isDebugEnabled()) {
             data.stats.forEach((stat, value) -> SilentGear.LOGGER.debug("    {} = {}", stat, value));
         }
@@ -85,21 +83,6 @@ public class GearStatistics {
     private static void onCacheRemoval(RemovalNotification<UUIDStack, Data> notification) {
         saveToNBT(notification.getKey().stack, notification.getValue());
     }
-
-//    @SubscribeEvent
-//    public static void onPlayerUpdate(TickEvent.PlayerTickEvent event) {
-//        if (event.player.ticksExisted % 600 == 0) {
-//            SilentGear.log.debug("Saving gear statistics for player {}", event.player.getName());
-//            for (ItemStack stack : PlayerHelper.getNonEmptyStacks(event.player, stack -> stack.getItem() instanceof ICoreItem)) {
-//                try {
-//                    Data data = CACHE.get(UUIDStack.from(stack));
-//                    if (data != null) saveToNBT(stack, data);
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 
     private static final class Data {
         private final Map<String, Integer> stats = new HashMap<>();

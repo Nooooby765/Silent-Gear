@@ -38,7 +38,6 @@ public class ModWorldGenerator extends WorldGeneratorSL {
     }
 
     private void generateFlowers(World world, Random random, int posX, int posZ) {
-        // Blacklisted from dimension?
         if (world.provider != null && ArrayUtils.contains(Config.flowerDimensionBlacklist, world.provider.getDimension()))
             return;
 
@@ -58,7 +57,6 @@ public class ModWorldGenerator extends WorldGeneratorSL {
 
             IBlockState state = ModBlocks.flower.getDefaultState();
 
-            // Find top-most valid block
             for (; y > 50; --y) {
                 if (world.isAirBlock(pos) && pos.getY() < 255 && ModBlocks.flower.canBlockStay(world, pos, state)) {
                     world.setBlockState(pos, state, 2);

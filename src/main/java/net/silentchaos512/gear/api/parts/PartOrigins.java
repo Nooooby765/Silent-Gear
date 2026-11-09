@@ -29,7 +29,7 @@ public enum PartOrigins {
      */
     BUILTIN_ADDON,
     /**
-     * A part defined in the config folder (data packs in 1.13+, hopefully).
+     * A part defined in the config folder.
      */
     USER_DEFINED;
 

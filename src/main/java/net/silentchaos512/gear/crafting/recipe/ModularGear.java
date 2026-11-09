@@ -103,9 +103,7 @@ public class ModularGear implements IRecipeFactory {
         }
 
         private Collection<ItemStack> getComponents(InventoryCrafting inv) {
-            // Tool heads first, then every other non-empty stack. matchesRecipe rejects non-part
-            // stacks itself, so the old PartRegistry filter and the non-empty count check are
-            // redundant. One result list instead of three temporary lists.
+            // Tool heads first, then other non-empty stacks; matchesRecipe rejects non-part stacks itself.
             List<ItemStack> parts = new ArrayList<>();
             for (int i = 0; i < inv.getSizeInventory(); ++i) {
                 ItemStack stack = inv.getStackInSlot(i);

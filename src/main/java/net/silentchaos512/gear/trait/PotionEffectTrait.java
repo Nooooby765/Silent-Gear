@@ -64,7 +64,6 @@ public class PotionEffectTrait extends Trait {
             throw new JsonParseException("Potion effect trait '" + this.getName() + "' is missing 'potion_effects' object");
         }
 
-        // Parse potion effects array
         JsonObject jsonEffects = json.getAsJsonObject("potion_effects");
         for (Map.Entry<String, JsonElement> entry : jsonEffects.entrySet()) {
             // Key (gear type)
@@ -96,7 +95,6 @@ public class PotionEffectTrait extends Trait {
         private ResourceLocation effectId;
         private int duration;
         private int[] levels;
-//        private boolean addPieceCount;
 
         static PotionData from(JsonObject json) {
             PotionData ret = new PotionData();
@@ -113,7 +111,6 @@ public class PotionEffectTrait extends Trait {
                 throw new JsonParseException("level element not found, should be either int or object");
             }
             if (elementLevel.isJsonPrimitive()) {
-                // Single level
                 ret.levels = new int[]{JsonUtils.getInt(json, "level", 1)};
             } else if (elementLevel.isJsonArray()) {
                 // Levels by piece count

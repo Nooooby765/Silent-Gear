@@ -55,7 +55,6 @@ public final class NBTTrait extends Trait {
             throw new JsonParseException("NBT trait '" + trait.getName() + "' is missing 'nbt' object");
         }
 
-        // Parse potion effects array
         JsonObject jsonNbt = json.getAsJsonObject("nbt");
         for (Map.Entry<String, JsonElement> entry : jsonNbt.entrySet()) {
             // Key (gear type)

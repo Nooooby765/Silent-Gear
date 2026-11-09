@@ -129,7 +129,6 @@ public interface ICoreItem extends IStatItem, ICustomEnchantColor {
                     builder.append("|").append(part.getModelIndex(animationFrame));
                 }
             } else {
-                // Non-main
                 builder.append("|").append(part.getModelIndex(animationFrame));
             }
         }

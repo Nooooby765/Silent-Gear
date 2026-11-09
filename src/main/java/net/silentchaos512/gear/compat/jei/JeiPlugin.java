@@ -65,12 +65,6 @@ public class JeiPlugin implements IModPlugin {
         initFailed = true;
         subtypeRegistry.registerSubtypeInterpreter(ModItems.toolHead, ToolHead::getSubtypeKey);
 
-//        ModItems.gearClasses.forEach(
-//                (key, item) -> subtypeRegistry.registerSubtypeInterpreter(item.getItem(),
-//                        stack -> {
-//                            ItemPartData part = GearData.getPrimaryPart(stack);
-//                            return part == null ? key : key + "|" + part.getPart().getRegistryName().toString();
-//                        }));
         initFailed = false;
     }
 
@@ -83,8 +77,7 @@ public class JeiPlugin implements IModPlugin {
         registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerCraftingStation.class, VanillaRecipeCategoryUid.CRAFTING,
                 0, 9, 15, 36 + TileCraftingStation.SIDE_INVENTORY_SIZE);
 
-        // Add "example recipes". We can't allow these to be crafted, but it's helpful to have them
-        // show in JEI. Some people can't read...
+        // "Example recipes": not craftable, but useful to show in JEI.
         registry.addRecipes(ModItems.toolHead.getExampleRecipes(), VanillaRecipeCategoryUid.CRAFTING);
         for (ICoreItem item : ModItems.gearClasses.values())
             if (item instanceof ICoreTool)
@@ -93,13 +86,11 @@ public class JeiPlugin implements IModPlugin {
             if (item instanceof CoreArmor)
                 registry.addRecipes(((CoreArmor) item).getExampleRecipes(), VanillaRecipeCategoryUid.CRAFTING);
 
-        // Examples of applying upgrades, yay!
         List<IRecipe> builtRecipes = new ArrayList<>();
         for (ICoreItem item : ModItems.gearClasses.values()) {
             ItemStack gear = getSampleStack(item);
             // 旧固定 tip 仅作 legacy 部件保留，JEI 中不再展示其用途示例
             if (item instanceof ICoreTool && item.canReceiveUpgrades()) {
-                // Modular tip example (iron)
                 ItemPart ironTip = ModularMaterialRegistry.get("silentgear:tip_iron", PartType.TIP);
                 if (ModMaterials.modularTip.isValidFor(item) && ironTip != null) {
                     ItemStack modularIronTip = ModularTipItem.createStack(ItemPartData.instance(ironTip));
@@ -112,7 +103,6 @@ public class JeiPlugin implements IModPlugin {
                     }
                 }
             }
-            // Modular coating example (gold)
             if (item.canReceiveUpgrades() && ModMaterials.modularCoating.isValidFor(item)) {
                 ItemPartData goldCoatingData = ModularCoatingPart.getBlueprintMaterial(ModMaterials.mainGold.getCraftingStack());
                 ItemStack modularGoldCoating = ModularCoatingItem.createStack(goldCoatingData);
@@ -124,7 +114,6 @@ public class JeiPlugin implements IModPlugin {
                     builtRecipes.add(recipeMaker.makeShapeless(gearWithCoating, gear, ModItems.modularCoating));
                 }
             }
-            // Misc upgrades
             for (MiscUpgrades upgrade : MiscUpgrades.values()) {
                 if (item.canReceiveUpgrades() && upgrade.getPart().isValidFor(item)) {
                     ItemStack gearWithUpgrade = gear.copy();
@@ -154,7 +143,6 @@ public class JeiPlugin implements IModPlugin {
             builtRecipes.add(recipeMaker.makeShapeless(result, templateTipStack, ingredient));
         }
 
-        // Modular coating blueprint examples
         ItemStack blueprintCoatingStack = new ItemStack(ModItems.blueprintCoating);
         ItemStack templateCoatingStack = new ItemStack(ModItems.templateCoating);
         ItemStack goldIngredient = ModMaterials.mainGold.getCraftingStack();
@@ -164,7 +152,6 @@ public class JeiPlugin implements IModPlugin {
             builtRecipes.add(recipeMaker.makeShapeless(coatingResult, templateCoatingStack, goldIngredient));
         }
 
-        // Modular rod blueprint examples (wood/iron/stone)
         ItemStack modularBlueprintStack = new ItemStack(ModItems.blueprintModularRod);
         ItemStack modularTemplateStack = new ItemStack(ModItems.templateModularRod);
         for (PartMain main : Arrays.asList(ModMaterials.mainWood, ModMaterials.mainIron, ModMaterials.mainStone)) {
@@ -178,7 +165,6 @@ public class JeiPlugin implements IModPlugin {
             builtRecipes.add(recipeMaker.makeShapeless(result, modularTemplateStack, ingredient));
         }
 
-        // Modular fletching blueprint examples (feather/leaves/paper)
         ItemStack fletchingBlueprintStack = new ItemStack(ModItems.blueprintModularFletching);
         ItemStack fletchingTemplateStack = new ItemStack(ModItems.templateModularFletching);
         for (ItemStack ingredient : Arrays.asList(new ItemStack(Items.FEATHER),
@@ -192,7 +178,6 @@ public class JeiPlugin implements IModPlugin {
             builtRecipes.add(recipeMaker.makeShapeless(result, fletchingTemplateStack, ingredient));
         }
 
-        // Modular lining blueprint examples (leather/white wool/flax string)
         ItemStack liningBlueprintStack = new ItemStack(ModItems.blueprintLining);
         ItemStack liningTemplateStack = new ItemStack(ModItems.templateLining);
         for (ItemStack ingredient : Arrays.asList(new ItemStack(Items.LEATHER),
@@ -206,7 +191,6 @@ public class JeiPlugin implements IModPlugin {
             builtRecipes.add(recipeMaker.makeShapeless(result, liningTemplateStack, ingredient));
         }
 
-        // Modular fishing rod blueprint examples (two iron mains, optionally one wooden rod)
         ItemStack fishingRodBlueprintStack = new ItemStack(ModItems.blueprintFishingRod);
         ItemStack fishingRodTemplateStack = new ItemStack(ModItems.templateFishingRod);
         ItemStack ironIngot = ModMaterials.mainIron.getCraftingStack();
@@ -232,33 +216,22 @@ public class JeiPlugin implements IModPlugin {
 
         registry.addRecipes(builtRecipes, VanillaRecipeCategoryUid.CRAFTING);
 
-        // Ingredient Info Pages
         addIngredientInfoPages(registry, SilentGear.registry.getBlocks());
         addIngredientInfoPages(registry, SilentGear.registry.getItems());
-        // Blueprints and templates (all in one)
         registry.addIngredientInfo(ModItems.blueprints.stream().map(ItemStack::new).collect(Collectors.toList()),
                 ItemStack.class, getDescKey("blueprint"));
-        // Part blueprints (modular tips)
         registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintTip), new ItemStack(ModItems.templateTip)),
                 ItemStack.class, getDescKey("part_blueprint"));
-        // Modular tip
         registry.addIngredientInfo(new ItemStack(ModItems.modularTip), ItemStack.class, getDescKey("modular_tip"));
-        // Part blueprints (modular coatings)
         registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintCoating), new ItemStack(ModItems.templateCoating)),
                 ItemStack.class, getDescKey("part_blueprint_coating"));
-        // Modular coating
         registry.addIngredientInfo(new ItemStack(ModItems.modularCoating), ItemStack.class, getDescKey("modular_coating"));
-        // Part blueprints (modular rods)
         registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintModularRod), new ItemStack(ModItems.templateModularRod)),
                 ItemStack.class, getDescKey("part_blueprint_modular_rod"));
-        // Modular rod
         registry.addIngredientInfo(new ItemStack(ModItems.modularRod), ItemStack.class, getDescKey("modular_rod"));
-        // Part blueprints (modular fletchings)
         registry.addIngredientInfo(Arrays.asList(new ItemStack(ModItems.blueprintModularFletching),
                 new ItemStack(ModItems.templateModularFletching)), ItemStack.class, getDescKey("part_blueprint_modular_fletching"));
-        // Modular fletching
         registry.addIngredientInfo(new ItemStack(ModItems.modularFletching), ItemStack.class, getDescKey("modular_fletching"));
-        // Tool Heads
         for (Map.Entry<String, ICoreItem> entry : ModItems.gearClasses.entrySet()) {
             if (!(entry.getValue() instanceof ICoreTool)) continue;
             String toolClass = entry.getKey();
@@ -311,7 +284,6 @@ public class JeiPlugin implements IModPlugin {
     private void addIngredientInfoPages(IModRegistry registry, Collection<? extends IForgeRegistryEntry<?>> list) {
         for (IForgeRegistryEntry<?> obj : list) {
             String key = getDescKey(Objects.requireNonNull(obj.getRegistryName()));
-//            SilentGear.log.debug("JEI info page {}: {}", key, SilentGear.i18n.hasKey(key));
             if (SilentGear.i18n.hasKey(key))
                 registry.addIngredientInfo(StackHelper.fromBlockOrItem(obj), ItemStack.class, key);
         }
