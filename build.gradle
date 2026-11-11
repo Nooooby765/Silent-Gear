@@ -57,8 +57,9 @@ repositories {
 }
 
 // ---------------------------------------------------------------------------
-// Optional integration: Trident mod API stubs (compile only, never shipped)
-// The real mod is a soft dependency loaded at runtime via Loader.isModLoaded.
+// Extra source sets
+// tridentApi: optional Trident mod API stubs (compile only, never shipped).
+// silentlib: the bundled Silent Lib sources, compiled but never packed into this mod.
 // ---------------------------------------------------------------------------
 sourceSets {
     tridentApi {
@@ -66,14 +67,26 @@ sourceSets {
         // Reuse the main compile classpath (Minecraft, Forge, JEI), but never its output.
         compileClasspath += sourceSets.main.compileClasspath
     }
+    // Silent Lib is a separate mod with its own modid, not part of Silent Gear's artifact. Its
+    // sources stay in the repository but are compiled outside the main source set, so they never
+    // reach the mod jar or the dev launch classpath (either would register a duplicate silentlib).
+    // Conventional dirs: src/silentlib/java and src/silentlib/resources.
+    silentlib {
+        compileClasspath += sourceSets.main.compileClasspath
+    }
 }
 
-// Feed the stub classes to the main compilation only. Adding them at the task level (instead of
-// a dependency configuration) prevents a circular task graph. They are never on the runtime
-// classpath nor in the mod jar.
+// Feed the stub and library classes to the main compilation only. Adding them at the task level
+// (instead of a dependency configuration) prevents a circular task graph and keeps them off the
+// runtime classpath: a second @Mod("silentlib") there would be a duplicate mod.
 tasks.named('compileJava').configure {
-    dependsOn tasks.named('tridentApiClasses')
-    classpath = classpath + sourceSets.tridentApi.output
+    dependsOn tasks.named('tridentApiClasses'), tasks.named('silentlibClasses')
+    classpath = classpath + sourceSets.tridentApi.output + sourceSets.silentlib.output
+}
+
+// The bundled Silent Lib sources use Lombok, same as the main source set.
+tasks.named('compileSilentlibJava', JavaCompile).configure {
+    options.annotationProcessorPath = configurations.annotationProcessor
 }
 
 // ---------------------------------------------------------------------------
@@ -114,4 +127,26 @@ jar {
             'Implementation-Version': project.version,
         )
     }
+}
+
+// ---------------------------------------------------------------------------
+// Dev-only Silent Lib jar
+// FML discovers mods on the launch classpath, so the bundled library classes must not be there.
+// Instead they are packaged into a standalone jar inside the run directory, where FML finds it
+// exactly like a user-installed Silent Lib. This never affects the published artifact.
+// ---------------------------------------------------------------------------
+def devSilentLibJar = tasks.register('devSilentLibJar', Jar) {
+    group = 'minecraft'
+    description = 'Packages the bundled Silent Lib sources as a standalone mod jar in run/mods'
+    archiveFileName = 'SilentLib-3.0.13.jar'
+    destinationDirectory = layout.projectDirectory.dir('run/mods')
+    from sourceSets.silentlib.output
+    manifest {
+        attributes('Implementation-Title': 'SilentLib', 'Implementation-Version': '3.0.13')
+    }
+}
+
+// Both dev run configurations need Silent Lib to be present and current.
+tasks.matching { it.name == 'runClient' || it.name == 'runServer' }.configureEach {
+    dependsOn devSilentLibJar
 }
