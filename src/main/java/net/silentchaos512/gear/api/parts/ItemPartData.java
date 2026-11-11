@@ -32,13 +32,15 @@ import net.silentchaos512.gear.api.traits.Trait;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter(value = AccessLevel.PUBLIC)
 public final class ItemPartData {
-    private static final Map<ResourceLocation, ItemPartData> CACHE_UNGRADED_PARTS = new HashMap<>();
+    // Read from client rendering and written from the integrated server as well, so it must be
+    // thread-safe. computeIfAbsent also avoids the containsKey/get race of the old version.
+    private static final Map<ResourceLocation, ItemPartData> CACHE_UNGRADED_PARTS = new ConcurrentHashMap<>();
 
     final ItemPart part;
     final MaterialGrade grade;
@@ -53,12 +55,8 @@ public final class ItemPartData {
 
     public static ItemPartData instance(ItemPart part) {
         ResourceLocation registryName = part.getRegistryName();
-        if (CACHE_UNGRADED_PARTS.containsKey(registryName))
-            return CACHE_UNGRADED_PARTS.get(registryName);
-
-        ItemPartData data = new ItemPartData(part, MaterialGrade.NONE, part.getCraftingStack());
-        CACHE_UNGRADED_PARTS.put(registryName, data);
-        return data;
+        return CACHE_UNGRADED_PARTS.computeIfAbsent(registryName,
+                k -> new ItemPartData(part, MaterialGrade.NONE, part.getCraftingStack()));
     }
 
     public static ItemPartData instance(ItemPart part, MaterialGrade grade) {

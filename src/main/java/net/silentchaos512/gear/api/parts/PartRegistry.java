@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Used to register gear parts, and match parts to item stacks.
@@ -22,8 +23,10 @@ public final class PartRegistry {
     private static ImmutableList<PartMain> visibleMains = null;
     private static ImmutableList<PartRod> visibleRods = null;
     // Keyed by item + metadata: no string key allocation on tooltip/model lookups.
-    private static final Map<Item, Map<Integer, ItemPart>> STACK_TO_PART = new HashMap<>();
-    private static final Map<Item, Set<Integer>> STACK_TO_PART_MISSES = new HashMap<>();
+    // Both sides use this cache (client tooltips/models, server crafting), so it must be
+    // thread-safe: on an integrated server those run on different threads.
+    private static final Map<Item, Map<Integer, ItemPart>> STACK_TO_PART = new ConcurrentHashMap<>();
+    private static final Map<Item, Set<Integer>> STACK_TO_PART_MISSES = new ConcurrentHashMap<>();
     @Getter private static int highestMainPartTier = 0;
 
     private PartRegistry() {
@@ -78,7 +81,7 @@ public final class PartRegistry {
         if (part == null)
             part = getPart(stack, true);
         if (part == null)
-            STACK_TO_PART_MISSES.computeIfAbsent(item, k -> new HashSet<>()).add(damage);
+            STACK_TO_PART_MISSES.computeIfAbsent(item, k -> ConcurrentHashMap.newKeySet()).add(damage);
         return part;
     }
 
@@ -86,7 +89,7 @@ public final class PartRegistry {
     private static ItemPart getPart(ItemStack stack, boolean matchOreDict) {
         for (ItemPart part : map.values()) {
             if (part.matchesForCrafting(stack, matchOreDict)) {
-                STACK_TO_PART.computeIfAbsent(stack.getItem(), k -> new HashMap<>())
+                STACK_TO_PART.computeIfAbsent(stack.getItem(), k -> new ConcurrentHashMap<>())
                         .put(stack.getItemDamage(), part);
                 return part;
             }
