@@ -89,6 +89,19 @@ tasks.named('compileSilentlibJava', JavaCompile).configure {
     options.annotationProcessorPath = configurations.annotationProcessor
 }
 
+// Reobfuscation decides whether a method overrides a Minecraft method by walking the class
+// hierarchy. Classes of the compile-only source sets are not in the jar, so without them on the
+// reference classpath every override inherited through one of them keeps its MCP name and blows
+// up with AbstractMethodError in production (e.g. IRecipe.getRecipeOutput). Every extra source
+// set is therefore added here automatically; only main is already part of the jar.
+tasks.withType(com.gtnewhorizons.retrofuturagradle.mcp.ReobfuscatedJar).configureEach {
+    sourceSets.each { extra ->
+        if (extra != sourceSets.main && extra != sourceSets.test) {
+            referenceClasspath.from(extra.output.classesDirs)
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Dependencies
 // ---------------------------------------------------------------------------
