@@ -169,7 +169,8 @@ public class ArmorItemModel implements IModel {
             String key = GearData.getCachedModelKey(stack, 0);
             GearClientHelper.updateDebugModelKey(stack, key);
 
-            if (!GearClientHelper.modelCache.containsKey(key)) {
+            IBakedModel cachedModel = GearClientHelper.modelCache.get(key);
+            if (cachedModel == null) {
                 ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
 
                 // Resolve the primary part once: getPrimaryPart parses the construction NBT and
@@ -188,7 +189,7 @@ public class ArmorItemModel implements IModel {
                 return bakedModel;
             }
 
-            return GearClientHelper.modelCache.get(key);
+            return cachedModel;
         }
 
         private void processTexture(ItemStack stack, String toolClass, IPartPosition position, ItemPartData part, boolean isBroken, ImmutableMap.Builder<String, String> builder) {

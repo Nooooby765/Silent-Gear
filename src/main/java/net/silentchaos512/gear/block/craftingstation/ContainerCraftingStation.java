@@ -59,7 +59,6 @@ public class ContainerCraftingStation extends Container {
         setupSideInventory();
         setupPlayerSlots(playerInv);
 
-        // Output
         outputSlot = this.addSlotToContainer(new SlotCraftingStationOutput(this, playerInv.player,
                 this.craftMatrix, this.craftResult, tile, tile.getSizeInventory(), 146, 35));
 
@@ -85,7 +84,6 @@ public class ContainerCraftingStation extends Container {
     }
 
     private void setupPlayerSlots(InventoryPlayer playerInventory) {
-        // Player backpack
         for (int y = 0; y < 3; ++y) {
             for (int x = 0; x < 9; ++x) {
                 final int index = x + (y + 1) * 9;
@@ -93,7 +91,6 @@ public class ContainerCraftingStation extends Container {
             }
         }
 
-        // Player hotbar
         for (int x = 0; x < 9; ++x) {
             addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 142));
         }

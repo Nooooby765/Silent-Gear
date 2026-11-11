@@ -18,7 +18,9 @@
 
 package net.silentchaos512.gear.compat.trident;
 
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -94,6 +96,28 @@ public class CoreTrident extends CoreSword implements ITrident {
     @Override
     public ModelResourceLocation getHandModel() {
         return TridentClientModels.INVENTORY;
+    }
+
+    /**
+     * The Trident mod renders every {@link ITrident} item through its own {@code RenderItem}
+     * mixin. When the item model is a built-in-renderer model (Silent Gear's layered tools are),
+     * that mixin delegates the actual draw to this hook, which defaults to a no-op. That left the
+     * trident invisible in hand, in item frames and in third person while the GUI icon (which goes
+     * through RenderItem's own built-in-renderer path) worked.
+     * <p>
+     * Drawing through the item's {@link TileEntityItemStackRenderer} is exactly what the vanilla
+     * and GUI paths do: the renderer resolves the model via {@code getItemModelWithOverrides}, so
+     * the material textures, per-layer colors and the enchant glint all stay intact. The camera
+     * transform has already been applied by the caller; the renderer works in model space like
+     * {@code RenderItem.renderModel}.
+     */
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void render(ItemStack stack, ItemCameraTransforms.TransformType type) {
+        TileEntityItemStackRenderer renderer = stack.getItem().getTileEntityItemStackRenderer();
+        if (renderer != null) {
+            renderer.renderByItem(stack, 1f);
+        }
     }
 
     @Override

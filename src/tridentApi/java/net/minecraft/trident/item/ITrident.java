@@ -1,5 +1,6 @@
 package net.minecraft.trident.item;
 
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Compile-time API stub for the Trident mod (LGPL-2.1).
@@ -25,6 +28,15 @@ public interface ITrident {
 
     default ModelResourceLocation getHandModel() {
         return null;
+    }
+
+    /**
+     * Called by the Trident mod's {@code RenderItem} mixin instead of the normal model render when
+     * the item's baked model is a built-in-renderer model (Silent Gear's layered gear model is).
+     * Without an override nothing is drawn in hand, in item frames and in third person.
+     */
+    @SideOnly(Side.CLIENT)
+    default void render(ItemStack stack, ItemCameraTransforms.TransformType type) {
     }
 
     default ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {

@@ -63,7 +63,6 @@ public class ToolBlockPlaceHandler {
         Item item = nextStack.getItem();
         BlockPos targetPos = side != null ? pos.offset(side) : pos;
 
-        // Check for block overlap with player, if necessary
         if (item instanceof ItemBlock) {
             int px = targetPos.getX();
             int py = targetPos.getY();

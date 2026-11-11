@@ -182,7 +182,8 @@ public final class ToolModel implements IModel {
             String key = GearData.getCachedModelKey(stack, animationFrame);
             GearClientHelper.updateDebugModelKey(stack, key);
 
-            if (!GearClientHelper.modelCache.containsKey(key)) {
+            IBakedModel cachedModel = GearClientHelper.modelCache.get(key);
+            if (cachedModel == null) {
                 ICoreTool itemTool = (ICoreTool) stack.getItem();
                 String toolClass = itemTool.getGearClass();
                 boolean isBroken = GearHelper.isBroken(stack);
@@ -222,7 +223,7 @@ public final class ToolModel implements IModel {
                 return bakedModel;
             }
 
-            return GearClientHelper.modelCache.get(key);
+            return cachedModel;
         }
 
         private static void processTexture(ItemStack stack, String toolClass, IPartPosition position, @Nullable ItemPartData part, int animationFrame, boolean isBroken, ImmutableMap.Builder<String, String> builder) {

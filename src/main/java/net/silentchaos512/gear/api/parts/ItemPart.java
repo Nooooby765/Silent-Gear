@@ -208,15 +208,9 @@ public abstract class ItemPart {
     }
 
     /**
-     * Gets a texture to use based on the item class.
-     *
-     * <p>Subclasses must override {@link #getTexture(PartDisplayProperties, String, IPartPosition, int)},
-     * not this method, so texture dependencies cover every display variant.
-     *
-     * @param part           The part
-     * @param gear           The equipment item (tool/weapon/armor)
-     * @param gearClass      The gear class string (pickaxe/sword/etc.)
-     * @param animationFrame Animation frame, usually 0
+     * Gets a texture to use based on the item class. Subclasses must override
+     * {@link #getTexture(PartDisplayProperties, String, IPartPosition, int)}, not this method, so
+     * texture dependencies cover every display variant.
      */
     @Nullable
     public final ResourceLocation getTexture(ItemPartData part, ItemStack gear, String gearClass, IPartPosition position, int animationFrame) {

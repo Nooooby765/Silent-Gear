@@ -98,7 +98,6 @@ public final class GearData {
                 propertiesCompound.setFloat(stat.getName().getPath(), value);
             }
 
-            // Cache traits in properties compound as well
             NBTTagList traitList = new NBTTagList();
             for (Trait trait : traits.keySet()) {
                 int level = traits.get(trait);
@@ -404,12 +403,7 @@ public final class GearData {
     }
 
     /**
-     * Determine if the gear has the specified part by scanning the construction NBT directly
-     * (no part list is created). Compares part registry names only.
-     *
-     * @param gear    The gear item
-     * @param upgrade The part to check for
-     * @return True if the item has the part in its construction, false otherwise
+     * Checks the construction NBT directly (no part list is created), comparing registry names only.
      */
     public static boolean hasPart(ItemStack gear, ItemPart upgrade) {
         // Read-only: CorePickaxe#getToolClasses queries this during mining checks.

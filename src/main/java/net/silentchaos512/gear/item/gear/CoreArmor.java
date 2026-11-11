@@ -1,6 +1,7 @@
 package net.silentchaos512.gear.item.gear;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -115,16 +116,17 @@ public class CoreArmor extends ItemArmor implements ICoreArmor {
     @Nonnull
     @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+        if (slot != this.armorType)
+            return ImmutableMultimap.of();
+
         Multimap<String, AttributeModifier> multimap = HashMultimap.create();
-        if (slot == this.armorType) {
-            UUID uuid = ARMOR_MODIFIERS[slot.getIndex()];
-            multimap.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(
-                    uuid, "Armor modifier", getArmorProtection(stack), 0));
-            multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(
-                    uuid, "Armor toughness", getArmorToughness(stack), 0));
-            multimap.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(
-                    uuid, "Armor knockback resistance", getArmorKnockbackResistance(stack), 0));
-        }
+        UUID uuid = ARMOR_MODIFIERS[slot.getIndex()];
+        multimap.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(
+                uuid, "Armor modifier", getArmorProtection(stack), 0));
+        multimap.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(
+                uuid, "Armor toughness", getArmorToughness(stack), 0));
+        multimap.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(
+                uuid, "Armor knockback resistance", getArmorKnockbackResistance(stack), 0));
         return multimap;
     }
 
